@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="src\control\Game.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\view\Layer.cpp" />
+    <ClCompile Include="src\control\HelloWorldControl.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\control\Game.hpp" />
+    <ClInclude Include="src\model\Constants.hpp" />
+    <ClInclude Include="src\view\Layer.hpp" />
+    <ClInclude Include="src\control\HelloWorldControl.hpp" />
+  </ItemGroup>
+</Project>
