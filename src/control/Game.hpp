@@ -3,36 +3,40 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "../view/AssetLoader.hpp"
 #include "../view/Layer.hpp"
-#include "HelloWorldControl.hpp"
+#include "PlayerControl.hpp"
+#include "Inputs.hpp"
 
-// Game class
-class Game {
+class Game 
+{
 
 public:
-    //initialize the game (window and controls)
     Game();
 
-    // start the game
     void start();
 
 private:
-    // processes user input, returns true if window has been closed
-    bool input();
+    enum class PollResult_t
+    {
+        running,
+        closed
+    };
 
-    // updates all game elements
-    void update(float time_passed);
+    PollResult_t poll_events();
 
-    // draws the scene
+    void update(float delta);
+
     void draw();
 
-    sf::RenderWindow window;
+    sf::RenderWindow m_window;
+    sf::View m_view;
 
-    // view area and layers
-    sf::View view;
-    Layer game_layer;
+    Inputs m_inputs;
 
-    HelloWorldControl hello_world_control;
+    Layer m_actors_layer;
+
+    ActorList m_actors;
 };
 
 #endif

@@ -4,78 +4,70 @@
 
 #include "../model/Constants.hpp"
 
-Game::Game() : window(sf::VideoMode({ constants::VIEW_WIDTH, constants::VIEW_HEIGHT }), "Space Invaders"),
-    view(sf::FloatRect(sf::Vector2f(0.0f, 0.0f), sf::Vector2f(constants::VIEW_WIDTH, constants::VIEW_HEIGHT))),
-    game_layer(window),
-    hello_world_control(game_layer) {
-    // limit frame rate
-    window.setFramerateLimit(constants::FRAME_RATE);
-
-    // set the view (visible area) for our game
-    game_layer.set_view(view);
+Game::Game() :
+    m_window{
+        sf::VideoMode{ { constants::VIEW_WIDTH, constants::VIEW_HEIGHT } }, 
+        "Space Invaders"
+    },
+    m_view{ sf::FloatRect{ { 0.0f, 0.0f }, { constants::VIEW_WIDTH, constants::VIEW_HEIGHT } } },
+    m_actors_layer{ m_window }
+{
+    m_window.setFramerateLimit(constants::FRAME_RATE);
+    m_actors.spawn<PlayerControl>({
+        (constants::VIEW_WIDTH - constants::PLAYER_SIZE.x) / 2.0f,
+        constants::VIEW_HEIGHT - constants::PLAYER_SIZE.y - constants::PADDING
+    });
 }
 
-void Game::start() {
-    // The clock is needed to control the speed of movement
+void Game::start() 
+{
     sf::Clock clock;
 
-    while (window.isOpen()) {
-        // Restart the clock and save the elapsed time into elapsed_time
+    while (m_window.isOpen())
+    {
         sf::Time elapsed_time = clock.restart();
  
-        // handle input, check if window is still open
-        if (!input()) {
-            // update the scene according to the passed time
-            update(elapsed_time.asSeconds());
-            // draw the scene
-            draw();
-        }
+        PollResult_t poll_result = poll_events();
+        if (poll_result == PollResult_t::closed)
+            break;
+
+        update(elapsed_time.asSeconds());
+        draw();
     }
+
+    m_window.close();
 }
 
-// returns true, if the window has been closed
-bool Game::input() {
-    while (std::optional<sf::Event> event = window.pollEvent()) {
-        if (event->is<sf::Event::Closed>()) {
-            // quit
-            window.close();
-            return true;
-        }
+Game::PollResult_t Game::poll_events()
+{
+    m_inputs.update();
 
-        if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>()) {
-            switch (keyPressed->code) {
-            case sf::Keyboard::Key::W:
-                hello_world_control.move(sf::Vector2(0.0f, -5.0f));
-                break;
-            case sf::Keyboard::Key::A:
-                hello_world_control.move(sf::Vector2(-5.0f, 0.0f));
-                break;
-            case sf::Keyboard::Key::S:
-                hello_world_control.move(sf::Vector2(0.0f, 5.0f));
-                break;
-            case sf::Keyboard::Key::D:
-                hello_world_control.move(sf::Vector2(5.0f, 0.0f));
-                break;
-            }
-        }
+    while (std::optional<sf::Event> event = m_window.pollEvent())
+    {
+        if (event->is<sf::Event::Closed>())
+            return PollResult_t::closed;
+
+        m_inputs.event(*event);
     }
-    return false;
+    return PollResult_t::running;
 }
 
-void Game::update(float time_passed) {
-    // TODO: update the game objects with the current time stamp
-    game_layer.set_view(view);
+void Game::update(float delta) 
+{
+    m_actors.update(delta, m_inputs);
+
+    m_actors_layer.set_view(m_view);
 }
 
-void Game::draw() {
-    window.clear();
+void Game::draw() 
+{
+    m_window.clear();
 
-    game_layer.clear();
+    m_actors_layer.clear();
 
-    hello_world_control.draw();
+    m_actors.draw(m_actors_layer);
     
-    // TODO: add game elements to layer
-    game_layer.draw();
+    m_actors_layer.draw();
 
-    window.display();
+    m_window.display();
 }

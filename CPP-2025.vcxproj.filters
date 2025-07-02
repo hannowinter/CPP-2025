@@ -4,12 +4,29 @@
     <ClCompile Include="src\control\Game.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\view\Layer.cpp" />
-    <ClCompile Include="src\control\HelloWorldControl.cpp" />
+    <ClCompile Include="src\control\PlayerControl.cpp" />
+    <ClCompile Include="src\view\AssetLoader.cpp" />
+    <ClCompile Include="src\model\Player.cpp" />
+    <ClCompile Include="src\view\PlayerView.cpp" />
+    <ClCompile Include="src\control\Inputs.cpp" />
+    <ClCompile Include="src\control\Actors.cpp" />
+    <ClCompile Include="src\control\BulletControl.cpp" />
+    <ClCompile Include="src\model\Bullet.cpp" />
+    <ClCompile Include="src\view\BulletView.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\control\Game.hpp" />
     <ClInclude Include="src\model\Constants.hpp" />
     <ClInclude Include="src\view\Layer.hpp" />
-    <ClInclude Include="src\control\HelloWorldControl.hpp" />
+    <ClInclude Include="src\control\PlayerControl.hpp" />
+    <ClInclude Include="src\view\AssetLoader.hpp" />
+    <ClInclude Include="src\model\Player.hpp" />
+    <ClInclude Include="src\view\PlayerView.hpp" />
+    <ClInclude Include="src\control\Actors.hpp" />
+    <ClInclude Include="src\control\BulletControl.hpp" />
+    <ClInclude Include="src\control\Inputs.hpp" />
+    <ClInclude Include="src\model\Bullet.hpp" />
+    <ClInclude Include="src\view\BulletView.hpp" />
+    <ClInclude Include="src\Util.hpp" />
   </ItemGroup>
 </Project>
