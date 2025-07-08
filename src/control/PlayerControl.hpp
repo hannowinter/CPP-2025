@@ -3,12 +3,12 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "Actors.hpp"
+#include "Controls.hpp"
 #include "../model/Player.hpp"
 #include "../view/Layer.hpp"
 #include "../view/PlayerView.hpp"
 
-class PlayerControl : public ActorControl
+class PlayerControl : public Control
 {
 public:
 	PlayerControl(sf::Vector2f position);

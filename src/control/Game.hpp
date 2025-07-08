@@ -5,7 +5,7 @@
 
 #include "../view/AssetLoader.hpp"
 #include "../view/Layer.hpp"
-#include "PlayerControl.hpp"
+#include "Controls.hpp"
 #include "Inputs.hpp"
 
 class Game 
@@ -36,7 +36,7 @@ private:
 
     Layer m_actors_layer;
 
-    ActorList m_actors;
+    ControlList m_control_list;
 };
 
 #endif

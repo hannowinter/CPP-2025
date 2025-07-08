@@ -11,8 +11,8 @@ BulletControl::BulletControl(sf::Vector2f position) :
 void BulletControl::update(const UpdateState& state)
 {
 	m_bullet.move_up(state.delta);
-	if (!overlaps(constants::VIEW_RECT, m_bullet.hitbox()))
-		state.actors.despawn(this);
+	if (!overlaps(constants::VIEW_RECT, m_bullet.hitbox())) // bullet is outside of view
+		state.controls.remove(this);
 }
 
 void BulletControl::draw(Layer& layer)

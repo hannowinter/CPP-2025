@@ -3,12 +3,12 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "Actors.hpp"
+#include "Controls.hpp"
 #include "../model/Bullet.hpp"
 #include "../view/Layer.hpp"
 #include "../view/BulletView.hpp"
 
-class BulletControl : public ActorControl
+class BulletControl : public Control
 {
 public:
 	BulletControl(sf::Vector2f position);

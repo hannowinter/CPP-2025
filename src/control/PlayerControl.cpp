@@ -20,7 +20,7 @@ void PlayerControl::update(const UpdateState& state)
 	}
 	if (state.inputs.pressed_keys.contains(sf::Keyboard::Key::Space))
 	{
-		state.actors.spawn<BulletControl>({
+		state.controls.add<BulletControl>(sf::Vector2f{
 			m_player.hitbox().getCenter().x - constants::BULLET_SIZE.x / 2.0f,
 			m_player.hitbox().position.y - constants::BULLET_SIZE.y
 		});

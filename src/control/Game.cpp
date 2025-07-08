@@ -2,6 +2,7 @@
 
 #include <SFML/Window/Keyboard.hpp>
 
+#include "GameControl.hpp"
 #include "../model/Constants.hpp"
 
 Game::Game() :
@@ -9,14 +10,11 @@ Game::Game() :
         sf::VideoMode{ { constants::VIEW_WIDTH, constants::VIEW_HEIGHT } }, 
         "Space Invaders"
     },
-    m_view{ sf::FloatRect{ { 0.0f, 0.0f }, { constants::VIEW_WIDTH, constants::VIEW_HEIGHT } } },
+    m_view{ constants::VIEW_RECT },
     m_actors_layer{ m_window }
 {
     m_window.setFramerateLimit(constants::FRAME_RATE);
-    m_actors.spawn<PlayerControl>({
-        (constants::VIEW_WIDTH - constants::PLAYER_SIZE.x) / 2.0f,
-        constants::VIEW_HEIGHT - constants::PLAYER_SIZE.y - constants::PADDING
-    });
+    m_control_list.add<GameControl, ControlList&>(m_control_list);
 }
 
 void Game::start() 
@@ -54,7 +52,7 @@ Game::PollResult_t Game::poll_events()
 
 void Game::update(float delta) 
 {
-    m_actors.update(delta, m_inputs);
+    m_control_list.update(delta, m_inputs);
 
     m_actors_layer.set_view(m_view);
 }
@@ -65,7 +63,9 @@ void Game::draw()
 
     m_actors_layer.clear();
 
-    m_actors.draw(m_actors_layer);
+    // TODO:
+    // don't just pass the actors layer
+    m_control_list.draw(m_actors_layer);
     
     m_actors_layer.draw();
 

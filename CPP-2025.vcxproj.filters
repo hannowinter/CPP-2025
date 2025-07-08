@@ -9,10 +9,14 @@
     <ClCompile Include="src\model\Player.cpp" />
     <ClCompile Include="src\view\PlayerView.cpp" />
     <ClCompile Include="src\control\Inputs.cpp" />
-    <ClCompile Include="src\control\Actors.cpp" />
+    <ClCompile Include="src\control\Controls.cpp" />
     <ClCompile Include="src\control\BulletControl.cpp" />
     <ClCompile Include="src\model\Bullet.cpp" />
     <ClCompile Include="src\view\BulletView.cpp" />
+    <ClCompile Include="src\control\AlienControl.cpp" />
+    <ClCompile Include="src\model\Alien.cpp" />
+    <ClCompile Include="src\view\AlienView.cpp" />
+    <ClCompile Include="src\control\GameControl.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\control\Game.hpp" />
@@ -22,11 +26,15 @@
     <ClInclude Include="src\view\AssetLoader.hpp" />
     <ClInclude Include="src\model\Player.hpp" />
     <ClInclude Include="src\view\PlayerView.hpp" />
-    <ClInclude Include="src\control\Actors.hpp" />
+    <ClInclude Include="src\control\Controls.hpp" />
     <ClInclude Include="src\control\BulletControl.hpp" />
     <ClInclude Include="src\control\Inputs.hpp" />
     <ClInclude Include="src\model\Bullet.hpp" />
     <ClInclude Include="src\view\BulletView.hpp" />
     <ClInclude Include="src\Util.hpp" />
+    <ClInclude Include="src\control\AlienControl.hpp" />
+    <ClInclude Include="src\model\Alien.hpp" />
+    <ClInclude Include="src\view\AlienView.hpp" />
+    <ClInclude Include="src\control\GameControl.hpp" />
   </ItemGroup>
 </Project>
