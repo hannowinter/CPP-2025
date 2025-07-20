@@ -1,12 +1,12 @@
-#ifndef BULLET_H
-#define BULLET_H
+#ifndef PLAYERBULLET_H
+#define PLAYERBULLET_H
 
 #include <SFML/Graphics.hpp>
 
-class Bullet
+class PlayerBullet
 {
 public:
-	Bullet(sf::Vector2f position);
+	PlayerBullet(sf::Vector2f position);
 
 	sf::FloatRect hitbox() const;
 	void move_up(float delta);

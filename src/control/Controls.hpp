@@ -21,6 +21,7 @@ class Control
 public:
 	virtual ~Control() = default;
 
+	virtual void init(const ControlList& controls) = 0;
 	virtual void update(const UpdateState& state) = 0;
 	virtual void draw(Layer& layer) = 0;
 
@@ -42,6 +43,7 @@ class ControlList
 	using control_list_t = std::vector<std::unique_ptr<Control>>;
 
 public:
+	void init();
 	void update(float delta, const Inputs& inputs);
 	void draw(Layer& layer);
 
@@ -54,10 +56,20 @@ public:
 		);
 	}
 
-	void remove(Control* control);
+	void remove(const Control* control);
 
 	template <std::derived_from<Control> C>
-	C* get(size_t nth = 0)
+	size_t count() const
+	{
+		return std::count_if(
+			m_controls.begin(),
+			m_controls.end(),
+			[](const auto& control) { return control->template is<C>(); }
+		);
+	}
+
+	template <std::derived_from<Control> C>
+	C* get(size_t nth = 0) const
 	{
 		for (const auto& control : m_controls)
 		{
@@ -81,7 +93,7 @@ private:
 	control_list_t m_controls; // currently active controls
 
 	std::vector<std::unique_ptr<Control>> m_controls_to_add; // controls to be added
-	std::vector<Control*> m_controls_to_remove; // controls to be removed
+	std::vector<const Control*> m_controls_to_remove; // controls to be removed
 
 	// The `update` method iterates through `m_controls` in order to update each control.
 	// During this process, we need to prevent any insertion or erasure of elements to or from `m_controls`,

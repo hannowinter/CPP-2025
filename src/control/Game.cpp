@@ -21,6 +21,8 @@ void Game::start()
 {
     sf::Clock clock;
 
+    m_control_list.init();
+
     while (m_window.isOpen())
     {
         sf::Time elapsed_time = clock.restart();

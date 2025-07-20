@@ -131,39 +131,47 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\control\AlienBulletControl.cpp" />
+    <ClCompile Include="src\control\AlienGridControl.cpp" />
     <ClCompile Include="src\control\Controls.cpp" />
     <ClCompile Include="src\control\AlienControl.cpp" />
-    <ClCompile Include="src\control\BulletControl.cpp" />
+    <ClCompile Include="src\control\PlayerBulletControl.cpp" />
     <ClCompile Include="src\control\Game.cpp" />
     <ClCompile Include="src\control\GameControl.cpp" />
     <ClCompile Include="src\control\Inputs.cpp" />
     <ClCompile Include="src\control\PlayerControl.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\model\Alien.cpp" />
-    <ClCompile Include="src\model\Bullet.cpp" />
+    <ClCompile Include="src\model\AlienBullet.cpp" />
+    <ClCompile Include="src\model\PlayerBullet.cpp" />
     <ClCompile Include="src\model\Player.cpp" />
+    <ClCompile Include="src\view\AlienBulletView.cpp" />
     <ClCompile Include="src\view\AlienView.cpp" />
     <ClCompile Include="src\view\AssetLoader.cpp" />
-    <ClCompile Include="src\view\BulletView.cpp" />
+    <ClCompile Include="src\view\PlayerBulletView.cpp" />
     <ClCompile Include="src\view\Layer.cpp" />
     <ClCompile Include="src\view\PlayerView.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\control\AlienBulletControl.hpp" />
+    <ClInclude Include="src\control\AlienGridControl.hpp" />
     <ClInclude Include="src\control\Controls.hpp" />
     <ClInclude Include="src\control\AlienControl.hpp" />
-    <ClInclude Include="src\control\BulletControl.hpp" />
+    <ClInclude Include="src\control\PlayerBulletControl.hpp" />
     <ClInclude Include="src\control\Game.hpp" />
     <ClInclude Include="src\control\GameControl.hpp" />
     <ClInclude Include="src\control\Inputs.hpp" />
     <ClInclude Include="src\control\PlayerControl.hpp" />
     <ClInclude Include="src\model\Alien.hpp" />
-    <ClInclude Include="src\model\Bullet.hpp" />
+    <ClInclude Include="src\model\AlienBullet.hpp" />
+    <ClInclude Include="src\model\PlayerBullet.hpp" />
     <ClInclude Include="src\model\Constants.hpp" />
     <ClInclude Include="src\model\Player.hpp" />
     <ClInclude Include="src\Util.hpp" />
+    <ClInclude Include="src\view\AlienBulletView.hpp" />
     <ClInclude Include="src\view\AlienView.hpp" />
     <ClInclude Include="src\view\AssetLoader.hpp" />
-    <ClInclude Include="src\view\BulletView.hpp" />
+    <ClInclude Include="src\view\PlayerBulletView.hpp" />
     <ClInclude Include="src\view\Layer.hpp" />
     <ClInclude Include="src\view\PlayerView.hpp" />
   </ItemGroup>

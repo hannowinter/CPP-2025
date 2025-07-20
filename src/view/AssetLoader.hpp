@@ -2,13 +2,15 @@
 #define ASSETLOADER_H
 
 #include <SFML/Graphics.hpp>
+#include <array>
 
 struct AssetLoader
 {
 	const sf::Texture player;
-	const sf::Texture yellow;
-	const sf::Texture green;
-	const sf::Texture red;
+	const std::array<sf::Texture, 2> yellow;
+	const std::array<sf::Texture, 2> green;
+	const std::array<sf::Texture, 2> red;
+	const sf::Texture alien_bullet;
 
 	AssetLoader();
 

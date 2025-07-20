@@ -1,11 +1,11 @@
-#include "BulletView.hpp"
+#include "PlayerBulletView.hpp"
 
-BulletView::BulletView()
+PlayerBulletView::PlayerBulletView()
 {
 	m_sprite.setFillColor(sf::Color::White);
 }
 
-void BulletView::draw(Layer& layer, const Bullet& bullet)
+void PlayerBulletView::draw(Layer& layer, const PlayerBullet& bullet)
 {
 	m_sprite.setPosition(bullet.hitbox().position);
 	m_sprite.setSize(bullet.hitbox().size);

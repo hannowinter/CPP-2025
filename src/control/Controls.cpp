@@ -1,5 +1,13 @@
 #include "Controls.hpp"
 
+void ControlList::init()
+{
+	std::swap(m_controls, m_controls_to_add);
+
+	for (const auto& control : m_controls)
+		control->init(*this);
+}
+
 void ControlList::update(float delta, const Inputs& inputs)
 {
 	UpdateState update_state{
@@ -35,7 +43,7 @@ void ControlList::draw(Layer& layer)
 		control->draw(layer);
 }
 
-void ControlList::remove(Control* control)
+void ControlList::remove(const Control* control)
 {
 	m_controls_to_remove.push_back(control);
 }
