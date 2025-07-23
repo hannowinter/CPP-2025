@@ -8,12 +8,13 @@
 #include "../view/Layer.hpp"
 #include "../view/AlienView.hpp"
 
+// Controls an individual alien.
 class AlienControl : public Control
 {
 public:
 	enum Mode
 	{
-		IN_GRID, // alien is aligned with the grid and shaking smoothly
+		GRID_ALIGNED, // alien is aligned with the grid and shaking smoothly
 		SWERVE, // alien is swerving out of the grid heading towards the player
 		RETREAT // alien is retreating back to the grid after swerving out
 	};
@@ -24,14 +25,17 @@ public:
 	void update(const UpdateState& state) override;
 	void draw(Layer& layer) override;
 
+	// Gets the stored alien model.
 	Alien& get();
 	const Alien& get() const;
 
-	void refresh_shoot_timer(float frequency, std::mt19937& random);
+	// Resets the wait time until shooting again.
+	void reset_shoot_timer(float intensity, std::mt19937& random);
 
 	void refresh_shake(float intensity, std::mt19937& random);
 	void reset_shake();
 
+	// Initiates a swerve, putting the alien into `SWERVE` mode.
 	void start_swerve(sf::Vector2f init_velocity, size_t target_column, size_t target_row);
 
 private:
@@ -44,8 +48,8 @@ private:
 
 	sf::Vector2f m_shake_start;
 	sf::Vector2f m_shake_target;
-	float m_shake_duration;
 	float m_shake_timer;
+	float m_shake_duration;
 
 	sf::Vector2f m_swerve_position;
 	sf::Vector2f m_swerve_velocity;

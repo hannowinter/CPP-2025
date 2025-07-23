@@ -23,7 +23,7 @@ public:
 private:
 	Player m_player;
 	PlayerView m_player_view;
-	float m_shoot_cooldown = 0.0f;
+	float m_shoot_cooldown;
 };
 
 #endif

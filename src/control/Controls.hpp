@@ -15,7 +15,7 @@ struct UpdateState
 	ControlList& controls;
 };
 
-// Base class for all control classes
+// base class for all control classes
 class Control
 {
 public:
@@ -38,6 +38,7 @@ public:
 	}
 };
 
+// Stores all controls.
 class ControlList
 {
 	using control_list_t = std::vector<std::unique_ptr<Control>>;
@@ -47,6 +48,8 @@ public:
 	void update(float delta, const Inputs& inputs);
 	void draw(Layer& layer);
 
+	// Constructs a new control of type `C` and adds it to the list.
+	// The control is only added after the call to `update` has finished.
 	template <std::derived_from<Control> C, typename... ArgTs> requires
 		std::is_constructible_v<C, ArgTs...>
 	C& add(ArgTs&&... args)
@@ -56,8 +59,11 @@ public:
 		);
 	}
 
+	// Removes the specified control from the list.
+	// The control is only removed after the call to `update` has finished.
 	void remove(const Control* control);
 
+	// Gets the count of all controls of type `C`.
 	template <std::derived_from<Control> C>
 	size_t count() const
 	{
@@ -68,6 +74,7 @@ public:
 		);
 	}
 
+	// Gets the n-th controls of type `C`.
 	template <std::derived_from<Control> C>
 	C* get(size_t nth = 0) const
 	{
@@ -83,6 +90,8 @@ public:
 		}
 		return nullptr;
 	}
+
+	// Provide iterators in order to allow for using range-based for loops.
 
 	typename control_list_t::iterator begin();
 	typename control_list_t::iterator end();

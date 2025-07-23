@@ -10,9 +10,16 @@
 AlienControl::AlienControl(Alien::Variant variant, sf::Vector2f grid_origin, size_t column, size_t row) :
 	m_alien{ variant, grid_origin, column, row },
 	m_alien_view{ variant },
-	m_mode{ IN_GRID },
-	m_shake_start{ 0.0f, 0.0f },
-	m_shake_target{ 0.0f, 0.0f }
+	m_mode{ GRID_ALIGNED },
+	m_shoot_timer{},
+	m_shake_start{},
+	m_shake_target{},
+	m_shake_timer{},
+	m_shake_duration{},
+	m_swerve_position{},
+	m_swerve_velocity{},
+	m_swerve_target_column{},
+	m_swerve_target_row{}
 {
 
 }
@@ -21,30 +28,31 @@ void AlienControl::init(const ControlList& controls)
 {
 	GameControl& game_control = *controls.get<GameControl>();
 	m_alien_view.randomize_animation(game_control.random());
-	refresh_shoot_timer(1.0f, game_control.random());
-	refresh_shake(1.0f, game_control.random());
+	reset_shoot_timer(constants::alien_grid::MIN_INTENSITY, game_control.random());
+	refresh_shake(constants::alien_grid::MIN_INTENSITY, game_control.random());
 }
 
 void AlienControl::update(const UpdateState& state)
 {
 	const AlienGridControl& alien_grid_control = *state.controls.get<AlienGridControl>();
+	GameControl& game_control = *state.controls.get<GameControl>();
 
+	// check for collisions with bullets
 	for (const auto& control : state.controls)
 	{
 		if (const PlayerBulletControl* bullet = control->is<PlayerBulletControl>())
 		{
 			if (overlaps(bullet->get().hitbox(), m_alien.hitbox()))
-			{
+			{ // collision detected, despawn alien and bullet
 				state.controls.remove(this);
 				state.controls.remove(bullet);
 			}
 		}
 	}
 
-	m_alien_view.update(state.delta * alien_grid_control.speed_multiplier());
+	m_alien_view.update(state.delta * alien_grid_control.intensity());
 
-	GameControl& game_control = *state.controls.get<GameControl>();
-
+	// check if alien needs to shoot
 	m_shoot_timer -= state.delta;
 	if (m_shoot_timer < 0.0f)
 	{
@@ -52,26 +60,32 @@ void AlienControl::update(const UpdateState& state)
 			m_alien.hitbox().getCenter().x - constants::alien_bullet::SIZE.x / 2.0f,
 			m_alien.hitbox().position.y + constants::alien::SIZE.y
 		});
-		refresh_shoot_timer(alien_grid_control.speed_multiplier(), game_control.random());
+		reset_shoot_timer(alien_grid_control.intensity(), game_control.random());
 	}
 
-	sf::Vector2f position{};
-
+	// update alien depending on current mode
 	switch (m_mode)
 	{
-	case IN_GRID:
+	case GRID_ALIGNED:
 	{
+		// check if alien needs to initiate a new shake iteration
 		m_shake_timer += state.delta;
 		if (m_shake_timer >= m_shake_duration)
 		{
 			refresh_shake(
-				alien_grid_control.speed_multiplier(),
+				alien_grid_control.intensity(),
 				game_control.random()
 			);
 		}
+		// calculate the shake offset
+		constexpr static auto lerp = []<typename T, typename R>(const T& v1, const T& v2, const R& r)
+		{ // std::lerp does not work with sf::Vector2f unfortunately
+			return v1 * (R{ 1 } - r) + v2 * r;
+		};
 		float shake_ratio = m_shake_timer / m_shake_duration;
-		sf::Vector2f shake_offset = m_shake_start * (1.0f - shake_ratio) + m_shake_target * shake_ratio;
-		position = alien_grid_control.origin() + m_alien.grid_offset() + shake_offset;
+		sf::Vector2f shake_offset = lerp(m_shake_start, m_shake_target, shake_ratio);
+		
+		m_alien.set_position(alien_grid_control.origin() + m_alien.grid_offset() + shake_offset);
 		break;
 	}
 	case SWERVE:
@@ -88,10 +102,10 @@ void AlienControl::update(const UpdateState& state)
 			m_swerve_velocity = m_swerve_velocity.normalized() * MAX_SPEED;
 		m_swerve_position += m_swerve_velocity * state.delta;
 
-		if (player_position.y - m_swerve_position.y < constants::alien::RETREAT_THRESHOLD)
+		if (m_swerve_position.y >= constants::VIEW_HEIGHT - constants::alien::RETREAT_THRESHOLD)
 			m_mode = RETREAT;
 
-		position = m_swerve_position;
+		m_alien.set_position(m_swerve_position);
 		break;
 	}
 	case RETREAT:
@@ -101,7 +115,7 @@ void AlienControl::update(const UpdateState& state)
 		float dist = (m_swerve_position - target).length();
 		float acceleration_length = constants::alien::RETREAT_ACCELERATION;
 		float max_speed = std::max(
-			constants::alien::MOVE_SPEED_X * alien_grid_control.speed_multiplier() * 1.5f,
+			constants::alien_grid::SHIFT_SPEED * alien_grid_control.intensity() * 1.5f,
 			constants::alien::RETREAT_MIN_SPEED
 		);
 		if (dist <= 100.0f)
@@ -113,8 +127,8 @@ void AlienControl::update(const UpdateState& state)
 			}
 			else
 			{
-				position = target;
-				m_mode = IN_GRID;
+				m_alien.set_position(target);
+				m_mode = GRID_ALIGNED;
 				break;
 			}
 		}
@@ -128,12 +142,10 @@ void AlienControl::update(const UpdateState& state)
 				m_swerve_velocity = m_swerve_velocity.normalized() * max_speed;
 		}
 		m_swerve_position += m_swerve_velocity * state.delta;
-		position = m_swerve_position;
+		m_alien.set_position(m_swerve_position);
 		break;
 	}
 	}
-
-	m_alien.set_position(position);
 }
 
 void AlienControl::draw(Layer& layer)
@@ -151,7 +163,7 @@ const Alien& AlienControl::get() const
 	return m_alien;
 }
 
-void AlienControl::refresh_shoot_timer(float frequency, std::mt19937& random)
+void AlienControl::reset_shoot_timer(float frequency, std::mt19937& random)
 {
 	std::uniform_real_distribution<float> dist{
 		0.0f,
@@ -164,8 +176,8 @@ void AlienControl::refresh_shake(float intensity, std::mt19937& random)
 {
 	intensity = std::pow(intensity, constants::alien::SHAKE_INTENSITY_EXPONENT);
 	std::uniform_real_distribution<float> target_dist{
-		constants::alien::SHAKE_MIN_TARGET,
-		constants::alien::SHAKE_MAX_TARGET * intensity
+		constants::alien::SHAKE_MIN_TARGET_OFFSET,
+		constants::alien::SHAKE_MAX_TARGET_OFFSET * intensity
 	};
 	std::uniform_real_distribution<float> duration_dist{
 		constants::alien::SHAKE_MIN_DURATION,
@@ -182,7 +194,6 @@ void AlienControl::reset_shake()
 {
 	m_shake_start = { 0.0f, 0.0f };
 	m_shake_target = { 0.0f, 0.0f };
-	m_shake_duration = 0.0f;
 	m_shake_timer = 0.0f;
 }
 

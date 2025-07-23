@@ -3,7 +3,9 @@
 #include "PlayerBulletControl.hpp"
 
 PlayerControl::PlayerControl(sf::Vector2f position) :
-	m_player{ position }
+	m_player{ position },
+	m_player_view{},
+	m_shoot_cooldown{ 0.0f }
 {
 
 }

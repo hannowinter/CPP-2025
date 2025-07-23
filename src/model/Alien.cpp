@@ -40,8 +40,11 @@ void Alien::set_column_row(size_t column, size_t row)
 
 sf::Vector2f Alien::grid_offset() const
 {
-	return sf::Vector2f{ (float)m_column, (float)m_row }.
-		componentWiseMul(constants::alien::SIZE + constants::alien::SPACING);
+	sf::Vector2f offset = sf::Vector2f{ (float)m_column, (float)m_row }.
+		componentWiseMul(constants::alien::SIZE + constants::alien_grid::SPACING);
+	if (m_row % 2 == 1)
+		offset.x = constants::VIEW_WIDTH - offset.x;
+	return offset;
 }
 
 void Alien::set_position(sf::Vector2f position)

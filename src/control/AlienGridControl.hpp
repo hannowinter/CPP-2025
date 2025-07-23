@@ -7,12 +7,17 @@
 #include "Inputs.hpp"
 #include "../model/Alien.hpp"
 
+// Controls the alien grid as a whole.
+// This class is responsible for spawning all aliens, moving the grid`s origin point around,
+// determining the intensity and picking pairs of aliens to swerve at random times.
 class AlienGridControl : public Control
 {
 public:
 	enum Mode
 	{
-		SHIFT_RIGHT, SHIFT_LEFT, DESCEND
+		SHIFT_RIGHT, // alien grid is moving to the right until hitting the screen's border
+		SHIFT_LEFT, // alien grid is moving to the left until hitting the screen's border
+		DESCEND // alien grid is descending downwards for a certain amount of time
 	};
 
 	AlienGridControl(ControlList& controls);
@@ -21,17 +26,26 @@ public:
 	void update(const UpdateState& state) override;
 	void draw(Layer& layer) override;
 
+	// Returns the position of the grid's top-leftmost point.
 	sf::Vector2f origin() const;
-	float speed_multiplier() const;
 
+	// Returns the current intensity, which depends on the current amount of aliens left (the less, the more intense).
+	// The intensity controls the difficulty by influencing move speed, timers and shoot frequency.
+	float intensity() const;
+
+	// Sets the mode.
+	void set_mode(Mode new_mode);
+	
+	// Resets the wait time until picking a new pair of aliens to swerve.
 	void reset_swerve_timer(std::mt19937& random);
 
 private:
+	float m_intensity = 1.0f;
+	
+	Mode m_mode;
 	Mode m_prev_mode;
-	Mode m_mode = SHIFT_RIGHT;
 	sf::Vector2f m_origin;
 	float m_descend_timer = 0.0f;
-	float m_speed_multiplier = 1.0f;
 
 	float m_swerve_timer = 0.0f;
 };
