@@ -1,0 +1,8 @@
+- HUD (Punktestand, Level, Leben)              // Hanno
+- Spieler kann getroffen werden / verlieren    // Henri
+- Spieler kann Level aufsteigen                // Henri
+- Schutzwälle
+- Items (Bomben, Laser)
+
+- Kommentare verbessern                        // Henri
+- Tests

@@ -148,6 +148,7 @@
     <ClCompile Include="src\view\AlienBulletView.cpp" />
     <ClCompile Include="src\view\AlienView.cpp" />
     <ClCompile Include="src\view\AssetLoader.cpp" />
+    <ClCompile Include="src\view\HUDView.cpp" />
     <ClCompile Include="src\view\PlayerBulletView.cpp" />
     <ClCompile Include="src\view\Layer.cpp" />
     <ClCompile Include="src\view\PlayerView.cpp" />
@@ -171,9 +172,13 @@
     <ClInclude Include="src\view\AlienBulletView.hpp" />
     <ClInclude Include="src\view\AlienView.hpp" />
     <ClInclude Include="src\view\AssetLoader.hpp" />
+    <ClInclude Include="src\view\HUDView.hpp" />
     <ClInclude Include="src\view\PlayerBulletView.hpp" />
     <ClInclude Include="src\view\Layer.hpp" />
     <ClInclude Include="src\view\PlayerView.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="todo.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

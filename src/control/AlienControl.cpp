@@ -163,11 +163,11 @@ const Alien& AlienControl::get() const
 	return m_alien;
 }
 
-void AlienControl::reset_shoot_timer(float frequency, std::mt19937& random)
+void AlienControl::reset_shoot_timer(float intensity, std::mt19937& random)
 {
 	std::uniform_real_distribution<float> dist{
 		0.0f,
-		constants::alien::MAX_SHOOT_TIME / frequency
+		constants::alien::MAX_SHOOT_TIME / intensity
 	};
 	m_shoot_timer = dist(random);
 }

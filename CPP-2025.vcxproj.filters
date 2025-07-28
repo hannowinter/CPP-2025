@@ -21,6 +21,7 @@
     <ClCompile Include="src\model\AlienBullet.cpp" />
     <ClCompile Include="src\view\AlienBulletView.cpp" />
     <ClCompile Include="src\control\AlienBulletControl.cpp" />
+    <ClCompile Include="src\view\HUDView.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\control\Game.hpp" />
@@ -44,5 +45,9 @@
     <ClInclude Include="src\model\AlienBullet.hpp" />
     <ClInclude Include="src\view\AlienBulletView.hpp" />
     <ClInclude Include="src\control\AlienBulletControl.hpp" />
+    <ClInclude Include="src\view\HUDView.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="todo.txt" />
   </ItemGroup>
 </Project>

@@ -1,6 +1,6 @@
 #include <SFML/Graphics.hpp>
 
-namespace constants 
+namespace constants
 {
     constexpr int VIEW_WIDTH = 1200;
     constexpr int VIEW_HEIGHT = 900;
