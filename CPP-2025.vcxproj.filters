@@ -48,6 +48,7 @@
     <ClInclude Include="src\control\AlienBulletControl.hpp" />
     <ClInclude Include="src\view\HUDView.hpp" />
     <ClInclude Include="src\view\LayerManager.hpp" />
+    <ClInclude Include="src\model\GameState.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="todo.txt" />

@@ -28,10 +28,20 @@ void GameControl::update(const UpdateState& state)
 
 void GameControl::draw(LayerManager& layers)
 {
-
+    m_hud.draw(layers.get(LayerID::HUD), m_state);
 }
 
 std::mt19937& GameControl::random()
 {
     return m_random;
+}
+
+GameState& GameControl::state()
+{
+    return m_state;
+}
+
+const GameState& GameControl::state() const
+{
+    return m_state;
 }

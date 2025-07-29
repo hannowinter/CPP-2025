@@ -4,7 +4,7 @@
 #include "Layer.hpp"
 
 enum class LayerID
-{
+{ // reorder these in order to change draw order
 	ACTORS,
 	HUD,
 
