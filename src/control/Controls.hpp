@@ -2,7 +2,7 @@
 #define CONTROLS_H
 
 #include "Inputs.hpp"
-#include "../view/Layer.hpp"
+#include "../view/LayerManager.hpp"
 #include <vector>
 #include <memory>
 
@@ -23,7 +23,7 @@ public:
 
 	virtual void init(const ControlList& controls) = 0;
 	virtual void update(const UpdateState& state) = 0;
-	virtual void draw(Layer& layer) = 0;
+	virtual void draw(LayerManager& layers) = 0;
 
 	template <std::derived_from<Control> C>
 	const C* is() const
@@ -46,7 +46,7 @@ class ControlList
 public:
 	void init();
 	void update(float delta, const Inputs& inputs);
-	void draw(Layer& layer);
+	void draw(LayerManager& layers);
 
 	// Constructs a new control of type `C` and adds it to the list.
 	// The control is only added after the call to `update` has finished.

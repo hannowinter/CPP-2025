@@ -37,10 +37,10 @@ void ControlList::update(float delta, const Inputs& inputs)
 	m_controls_to_remove.clear();
 }
 
-void ControlList::draw(Layer& layer)
+void ControlList::draw(LayerManager& layers)
 {
 	for (const auto& control : m_controls)
-		control->draw(layer);
+		control->draw(layers);
 }
 
 void ControlList::remove(const Control* control)

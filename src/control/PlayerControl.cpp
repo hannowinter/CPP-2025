@@ -40,9 +40,9 @@ void PlayerControl::update(const UpdateState& state)
 	}
 }
 
-void PlayerControl::draw(Layer& layer) 
+void PlayerControl::draw(LayerManager& layers)
 {
-	m_player_view.draw(layer, m_player);
+	m_player_view.draw(layers.get(LayerID::ACTORS), m_player);
 }
 
 const Player& PlayerControl::get() const

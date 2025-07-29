@@ -15,7 +15,7 @@ public:
 
 	void init(const ControlList& controls) override;
 	void update(const UpdateState& state) override;
-	void draw(Layer& layer) override;
+	void draw(LayerManager& layers) override;
 
 	const PlayerBullet& get() const;
 	PlayerBullet& get();

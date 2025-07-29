@@ -21,9 +21,9 @@ void AlienBulletControl::update(const UpdateState& state)
 	m_bullet_view.update(state.delta);
 }
 
-void AlienBulletControl::draw(Layer& layer)
+void AlienBulletControl::draw(LayerManager& layers)
 {
-	m_bullet_view.draw(layer, m_bullet);
+	m_bullet_view.draw(layers.get(LayerID::ACTORS), m_bullet);
 }
 
 const AlienBullet& AlienBulletControl::get() const

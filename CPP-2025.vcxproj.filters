@@ -22,6 +22,7 @@
     <ClCompile Include="src\view\AlienBulletView.cpp" />
     <ClCompile Include="src\control\AlienBulletControl.cpp" />
     <ClCompile Include="src\view\HUDView.cpp" />
+    <ClCompile Include="src\view\LayerManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\control\Game.hpp" />
@@ -46,6 +47,7 @@
     <ClInclude Include="src\view\AlienBulletView.hpp" />
     <ClInclude Include="src\control\AlienBulletControl.hpp" />
     <ClInclude Include="src\view\HUDView.hpp" />
+    <ClInclude Include="src\view\LayerManager.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="todo.txt" />

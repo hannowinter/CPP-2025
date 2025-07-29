@@ -11,7 +11,7 @@ Game::Game() :
         "Space Invaders"
     },
     m_view{ constants::VIEW_RECT },
-    m_actors_layer{ m_window }
+    m_layer_manager{ m_window }
 {
     m_window.setFramerateLimit(constants::FRAME_RATE);
     m_control_list.add<GameControl, ControlList&>(m_control_list);
@@ -56,20 +56,20 @@ void Game::update(float delta)
 {
     m_control_list.update(delta, m_inputs);
 
-    m_actors_layer.set_view(m_view);
+    m_layer_manager.set_view(m_view);
 }
 
 void Game::draw() 
 {
     m_window.clear();
 
-    m_actors_layer.clear();
+    m_layer_manager.clear();
 
     // TODO:
     // don't just pass the actors layer
-    m_control_list.draw(m_actors_layer);
+    m_control_list.draw(m_layer_manager);
     
-    m_actors_layer.draw();
+    m_layer_manager.draw();
 
     m_window.display();
 }

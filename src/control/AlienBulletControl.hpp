@@ -5,7 +5,7 @@
 
 #include "Controls.hpp"
 #include "../model/AlienBullet.hpp"
-#include "../view/Layer.hpp"
+#include "../view/LayerManager.hpp"
 #include "../view/AlienBulletView.hpp"
 
 class AlienBulletControl : public Control
@@ -15,7 +15,7 @@ public:
 
 	void init(const ControlList& controls) override;
 	void update(const UpdateState& state) override;
-	void draw(Layer& layer) override;
+	void draw(LayerManager& layers) override;
 
 	const AlienBullet& get() const;
 	AlienBullet& get();

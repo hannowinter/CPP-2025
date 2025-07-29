@@ -4,7 +4,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "../view/AssetLoader.hpp"
-#include "../view/Layer.hpp"
+#include "../view/LayerManager.hpp"
 #include "Controls.hpp"
 #include "Inputs.hpp"
 
@@ -34,7 +34,7 @@ private:
 
     Inputs m_inputs;
 
-    Layer m_actors_layer;
+    LayerManager m_layer_manager;
 
     ControlList m_control_list;
 };

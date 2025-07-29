@@ -148,9 +148,9 @@ void AlienControl::update(const UpdateState& state)
 	}
 }
 
-void AlienControl::draw(Layer& layer)
+void AlienControl::draw(LayerManager& layers)
 {
-	m_alien_view.draw(layer, m_alien);
+	m_alien_view.draw(layers.get(LayerID::ACTORS), m_alien);
 }
 
 Alien& AlienControl::get()

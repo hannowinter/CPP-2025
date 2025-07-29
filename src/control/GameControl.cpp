@@ -26,7 +26,7 @@ void GameControl::update(const UpdateState& state)
 
 }
 
-void GameControl::draw(Layer& layer)
+void GameControl::draw(LayerManager& layers)
 {
 
 }

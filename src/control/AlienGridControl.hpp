@@ -24,7 +24,7 @@ public:
 
 	void init(const ControlList& controls) override;
 	void update(const UpdateState& state) override;
-	void draw(Layer& layer) override;
+	void draw(LayerManager& layers) override;
 
 	// Returns the position of the grid's top-leftmost point.
 	sf::Vector2f origin() const;

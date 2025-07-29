@@ -5,7 +5,7 @@
 
 #include "Controls.hpp"
 #include "../model/Alien.hpp"
-#include "../view/Layer.hpp"
+#include "../view/LayerManager.hpp"
 #include "../view/AlienView.hpp"
 
 // Controls an individual alien.
@@ -23,7 +23,7 @@ public:
 
 	void init(const ControlList& controls) override;
 	void update(const UpdateState& state) override;
-	void draw(Layer& layer) override;
+	void draw(LayerManager& layers) override;
 
 	// Gets the stored alien model.
 	Alien& get();

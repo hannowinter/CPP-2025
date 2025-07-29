@@ -6,6 +6,7 @@
 #include "Controls.hpp"
 #include "Inputs.hpp"
 #include "../model/Alien.hpp"
+#include "../view/LayerManager.hpp"
 
 class GameControl : public Control
 {
@@ -14,7 +15,7 @@ public:
 
 	void init(const ControlList& controls) override;
 	void update(const UpdateState& state) override;
-	void draw(Layer& layer) override;
+	void draw(LayerManager& layers) override;
 
 	std::mt19937& random();
 

@@ -20,9 +20,9 @@ void PlayerBulletControl::update(const UpdateState& state)
 		state.controls.remove(this);
 }
 
-void PlayerBulletControl::draw(Layer& layer)
+void PlayerBulletControl::draw(LayerManager& layers)
 {
-	m_bullet_view.draw(layer, m_bullet);
+	m_bullet_view.draw(layers.get(LayerID::ACTORS), m_bullet);
 }
 
 const PlayerBullet& PlayerBulletControl::get() const

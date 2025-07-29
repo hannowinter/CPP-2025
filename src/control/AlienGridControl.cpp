@@ -155,7 +155,7 @@ void AlienGridControl::reset_swerve_timer(std::mt19937& random)
     }(random);
 }
 
-void AlienGridControl::draw(Layer& layer)
+void AlienGridControl::draw(LayerManager& layers)
 {
 
 }
