@@ -8,28 +8,31 @@
 #include "../model/Alien.hpp"
 
 // Controls the alien grid as a whole.
-// This class is responsible for spawning all aliens, moving the grid`s origin point around,
+// This class is responsible for spawning all aliens, moving the grid's origin point around,
 // determining the intensity and picking pairs of aliens to swerve at random times.
 class AlienGridControl : public Control
 {
 public:
+	// Possible states of the grid
 	enum Mode
 	{
-		SHIFT_RIGHT, // alien grid is moving to the right until hitting the screen's border
-		SHIFT_LEFT, // alien grid is moving to the left until hitting the screen's border
-		DESCEND // alien grid is descending downwards for a certain amount of time
+		SHIFT_RIGHT, 	// alien grid is moving to the right until hitting the screen's border
+		SHIFT_LEFT, 	// alien grid is moving to the left until hitting the screen's border
+		DESCEND 	// alien grid is descending downwards for a certain amount of time
 	};
 
+	// Create AlienGridControl
 	AlienGridControl(ControlList& controls);
 
+	// Abstract methods inherited from parent
 	void init(const ControlList& controls) override;
 	void update(const UpdateState& state) override;
 	void draw(LayerManager& layers) override;
 
-	// Returns the position of the grid's top-leftmost point.
+	// Returns the position of the grid's top-leftmost point
 	sf::Vector2f origin() const;
 
-	// Returns the current intensity, which depends on the current amount of aliens left (the less, the more intense).
+	// Returns the current intensity, which depends on the current amount of aliens left (fewer aliens -> more intense).
 	// The intensity controls the difficulty by influencing move speed, timers and shoot frequency.
 	float intensity() const;
 
@@ -40,13 +43,20 @@ public:
 	void reset_swerve_timer(std::mt19937& random);
 
 private:
+	// Surrogate for difficulty
 	float m_intensity = 1.0f;
-	
+
+	// Current and previous mode of grid
 	Mode m_mode;
 	Mode m_prev_mode;
+
+	// Origin of grid
 	sf::Vector2f m_origin;
+
+	// Timer measuring length of descend phase
 	float m_descend_timer = 0.0f;
 
+	// Cooldown until next swerve
 	float m_swerve_timer = 0.0f;
 };
 

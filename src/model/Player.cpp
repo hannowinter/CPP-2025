@@ -1,12 +1,14 @@
 #include "Player.hpp"
 #include "Constants.hpp"
 
+// Create player character at a specific position
 Player::Player(sf::Vector2f position) :
 	m_position{ position }
 {
 
 }
 
+// Get hitbox of player
 sf::FloatRect Player::hitbox() const
 {
 	return {
@@ -15,8 +17,10 @@ sf::FloatRect Player::hitbox() const
 	};
 }
 
+// Move player character
 void Player::move(Direction direction, float delta)
 {
+	// Calculate offset from player speed and amount of time passed
 	switch (direction)
 	{
 	case LEFT:
@@ -26,6 +30,8 @@ void Player::move(Direction direction, float delta)
 		m_position.x += constants::player::MOVE_SPEED * delta;
 		break;
 	}
+
+	// Ensure player is still within boundaries
 	m_position.x = std::clamp(
 		m_position.x, 
 		constants::PADDING,

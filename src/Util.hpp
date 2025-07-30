@@ -3,9 +3,11 @@
 
 #include <SFML/Graphics.hpp>
 
+// Determine whetcher two rectangles overlap
 template <typename T>
 bool overlaps(const sf::Rect<T>& r1, const sf::Rect<T>& r2)
 {
+	// Detect axis-aligned bounding box collisions
 	return
 		r1.position.x + r1.size.x > r2.position.x &&
 		r1.position.y + r1.size.y > r2.position.y &&

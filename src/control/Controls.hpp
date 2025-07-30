@@ -8,6 +8,7 @@
 
 class ControlList; // forward declaration
 
+// Information to be passed on every update (time passed, current inputs, list of all controls)
 struct UpdateState
 {
 	float delta;
@@ -19,18 +20,21 @@ struct UpdateState
 class Control
 {
 public:
+	// Methods for all controllers
 	virtual ~Control() = default;
 
 	virtual void init(const ControlList& controls) = 0;
 	virtual void update(const UpdateState& state) = 0;
 	virtual void draw(LayerManager& layers) = 0;
 
+	// Check if constant controller is specifically of specified type and cast
 	template <std::derived_from<Control> C>
 	const C* is() const
 	{
 		return dynamic_cast<const C*>(this);
 	}
 
+	// Check if non-constant controller is specifically of specified type and cast
 	template <std::derived_from<Control> C>
 	C* is()
 	{
@@ -44,12 +48,13 @@ class ControlList
 	using control_list_t = std::vector<std::unique_ptr<Control>>;
 
 public:
+	// Used to call method on all controllers in list
 	void init();
 	void update(float delta, const Inputs& inputs);
 	void draw(LayerManager& layers);
 
-	// Constructs a new control of type `C` and adds it to the list.
-	// The control is only added after the call to `update` has finished.
+	// Constructs a new control of type "C" and adds it to the list.
+	// The control is only added after the call to "update" has finished.
 	template <std::derived_from<Control> C, typename... ArgTs> requires
 		std::is_constructible_v<C, ArgTs...>
 	C& add(ArgTs&&... args)
@@ -60,10 +65,10 @@ public:
 	}
 
 	// Removes the specified control from the list.
-	// The control is only removed after the call to `update` has finished.
+	// The control is only removed after the call to "update" has finished.
 	void remove(const Control* control);
 
-	// Gets the count of all controls of type `C`.
+	// Gets the count of all controls of type "C".
 	template <std::derived_from<Control> C>
 	size_t count() const
 	{
@@ -74,7 +79,7 @@ public:
 		);
 	}
 
-	// Gets the n-th controls of type `C`.
+	// Gets the n-th controls of type "C".
 	template <std::derived_from<Control> C>
 	C* get(size_t nth = 0) const
 	{
@@ -92,7 +97,6 @@ public:
 	}
 
 	// Provide iterators in order to allow for using range-based for loops.
-
 	typename control_list_t::iterator begin();
 	typename control_list_t::iterator end();
 	typename control_list_t::const_iterator begin() const;
@@ -104,13 +108,13 @@ private:
 	std::vector<std::unique_ptr<Control>> m_controls_to_add; // controls to be added
 	std::vector<const Control*> m_controls_to_remove; // controls to be removed
 
-	// The `update` method iterates through `m_controls` in order to update each control.
-	// During this process, we need to prevent any insertion or erasure of elements to or from `m_controls`,
+	// The "update" method iterates through "m_controls" in order to update each control.
+	// During this process, we need to prevent any insertion or erasure of elements to or from "m_controls",
 	// otherwise its iterators may be invalidated, leading to undefined behavior.
-	// The `add` and `remove` methods may be called during this iteration process.
+	// The "add" and "remove" methods may be called during this iteration process.
 	// Instead of immediately inserting or erasing the specified control, we first put them into
-	// separate lists `m_controls_to_add` and `m_controls_to_remove` to remember them,
-	// and only after the iteration process is done, we insert or erase them to or from `m_controls`.
+	// separate lists "m_controls_to_add" and "m_controls_to_remove" to remember them,
+	// and only after the iteration process is done, we insert or erase them to or from "m_controls".
 };
 
 #endif

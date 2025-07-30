@@ -1,5 +1,6 @@
 #include "AssetLoader.hpp"
 
+// Create AssetLoader with all textures loaded
 AssetLoader::AssetLoader() :
 	player{ "assets/player.png" },
 	yellow{ sf::Texture{ "assets/yellow_0.png" }, sf::Texture{ "assets/yellow_1.png" } },
@@ -10,8 +11,10 @@ AssetLoader::AssetLoader() :
 
 }
 
+// Get AssetLoader instance
 const AssetLoader& AssetLoader::get()
 {
+	// If no AssetLoader exists, create one
 	if (!inst)
 		inst = std::make_unique<AssetLoader>();
 	return *inst;

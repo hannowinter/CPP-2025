@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include <array>
 
+// Struct to hold all relevant textures (Singleton)
 struct AssetLoader
 {
 	const sf::Texture player;

@@ -4,13 +4,17 @@
 #include <SFML/Graphics.hpp>
 #include <unordered_set>
 
+// Struct to manage pressed and held keys
 struct Inputs
 {
 	std::unordered_set<sf::Keyboard::Key> held_keys;
 	std::unordered_set<sf::Keyboard::Key> pressed_keys;
 
 public:
+	// Clear list of active inputs
 	void update();
+
+	// Record when a key is pressed
 	void event(const sf::Event& event);
 };
 

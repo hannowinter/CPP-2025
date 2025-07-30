@@ -1,6 +1,7 @@
 #ifndef GAMESTATE_H
 #define GAMESTATE_H
 
+// Store state of game (score, level, number of lives left)
 struct GameState
 {
 	size_t score = 2000;

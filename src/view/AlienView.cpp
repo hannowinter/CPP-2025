@@ -2,6 +2,7 @@
 
 constexpr float ANIMATION_LENGTH = 0.5f;
 
+// Get texture for specific variant and animation state
 const sf::Texture& get_texture(Alien::Variant variant, size_t index)
 {
 	switch (variant)
@@ -15,14 +16,17 @@ const sf::Texture& get_texture(Alien::Variant variant, size_t index)
 	}
 }
 
+// Create AlienView and load texture
 AlienView::AlienView(Alien::Variant variant) :
 	m_sprite{ get_texture(variant, 0) }
 {
 
 }
 
+// Update animation based on elapsed time
 void AlienView::update(float delta)
 {
+	// Check if animation state has to be changed
 	m_animation_timer += delta;
 	if (m_animation_timer >= ANIMATION_LENGTH)
 	{
@@ -31,13 +35,16 @@ void AlienView::update(float delta)
 	}
 }
 
+// Draw view
 void AlienView::draw(Layer& layer, const Alien& alien)
 {
+	// Set texture / position and add to layer
 	m_sprite.setTexture(get_texture(alien.variant(), m_sprite_index), true);
 	m_sprite.setPosition(alien.hitbox().position);
 	layer.add_to_layer(m_sprite);
 }
 
+// Randomize animation by setting a random animation time
 void AlienView::randomize_animation(std::mt19937& random)
 {
 	m_animation_timer = 

@@ -5,6 +5,7 @@
 #include "GameControl.hpp"
 #include "../model/Constants.hpp"
 
+// Create new game instance with defined parameters and initialize GameController
 Game::Game() :
     m_window{
         sf::VideoMode{ { constants::VIEW_WIDTH, constants::VIEW_HEIGHT } }, 
@@ -17,12 +18,16 @@ Game::Game() :
     m_control_list.add<GameControl, ControlList&>(m_control_list);
 }
 
+// Start game
 void Game::start() 
 {
+    // Game clock
     sf::Clock clock;
 
+    // Initialize controllers
     m_control_list.init();
 
+    // While game is running, read new state und update view
     while (m_window.isOpen())
     {
         sf::Time elapsed_time = clock.restart();
@@ -35,9 +40,11 @@ void Game::start()
         draw();
     }
 
+    // Close window if game has been closed
     m_window.close();
 }
 
+// Read inputs and check game state
 Game::PollResult_t Game::poll_events()
 {
     m_inputs.update();
@@ -52,6 +59,7 @@ Game::PollResult_t Game::poll_events()
     return PollResult_t::running;
 }
 
+// Update all controllers and set current view
 void Game::update(float delta) 
 {
     m_control_list.update(delta, m_inputs);
@@ -59,6 +67,7 @@ void Game::update(float delta)
     m_layer_manager.set_view(m_view);
 }
 
+// Clear window and layers and draw new state
 void Game::draw() 
 {
     m_window.clear();

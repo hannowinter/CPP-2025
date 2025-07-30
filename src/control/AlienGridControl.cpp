@@ -5,6 +5,7 @@
 #include "GameControl.hpp"
 #include "../model/Constants.hpp"
 
+// Create AlienGridControl
 AlienGridControl::AlienGridControl(ControlList& controls) :
     m_intensity{ constants::alien_grid::MIN_INTENSITY },
     m_mode{ SHIFT_RIGHT },
@@ -13,6 +14,7 @@ AlienGridControl::AlienGridControl(ControlList& controls) :
     m_descend_timer{},
     m_swerve_timer{}
 {
+    // Fill grid with aliens
     for (size_t x = 0; x < constants::alien_grid::COLUMNS; x++)
     {
         size_t y = 0;
@@ -31,24 +33,31 @@ AlienGridControl::AlienGridControl(ControlList& controls) :
     }
 }
 
+// Initialize this controller
 void AlienGridControl::init(const ControlList& controls)
 {
+    // Get game controller
     GameControl& game_control = *controls.get<GameControl>();
+
+    // Set random time until first swerve
     reset_swerve_timer(game_control.random());
 }
 
+// Execute all updates
 void AlienGridControl::update(const UpdateState& state)
 {
+    // Get game controller
     GameControl& game_control = *state.controls.get<GameControl>();
     
-    // calculate intensity
+    // Calculate intensity
     constexpr static size_t initial_alien_count = constants::alien_grid::COLUMNS * constants::alien_grid::TOTAL_ROWS;
     size_t alien_count = std::count_if(
         state.controls.begin(),
         state.controls.end(),
         [](const auto& c) { return c->template is<AlienControl>(); }
     );
-    // `ratio == 0.0` initially, `ratio == 1.0` when only one alien is left
+
+    // "ratio == 0.0" initially, "ratio == 1.0" when only one alien is left
     float ratio = 1.0f - static_cast<float>(alien_count - 1) / (initial_alien_count - 1);
     ratio = std::pow(ratio, 3.0f); // make the intensity increase more gentle initially and steeper towards the end
     m_intensity = std::lerp(
@@ -69,6 +78,7 @@ void AlienGridControl::update(const UpdateState& state)
             alien_max_col = std::max(alien->get().column(), alien_max_col);
         }
     }
+
     float alien_grid_leftmost = 
         alien_min_col * (constants::alien::SIZE.x + constants::alien_grid::SPACING.x);
     float alien_grid_rightmost = 
@@ -79,26 +89,37 @@ void AlienGridControl::update(const UpdateState& state)
     switch (m_mode)
     {
     case SHIFT_RIGHT:
+        // Determine velocity and move origin
         velocity = { constants::alien_grid::SHIFT_SPEED, 0.0f };
         m_origin += velocity * state.delta * intensity();
+
+        // Check if border has been reached
         if (m_origin.x + alien_grid_rightmost > constants::VIEW_WIDTH - constants::PADDING)
         {
             m_origin.x = constants::VIEW_WIDTH - constants::PADDING - alien_grid_rightmost;
             set_mode(DESCEND);
         }
+
         break;
     case SHIFT_LEFT:
+        // Determine velocity and move origin
         velocity = { -constants::alien_grid::SHIFT_SPEED, 0.0f };
         m_origin += velocity * state.delta * intensity();
+
+        // Check if border has been reached
         if (m_origin.x + alien_grid_leftmost < constants::PADDING)
         {
             m_origin.x = constants::PADDING - alien_grid_leftmost;
             set_mode(DESCEND);
         }
+
         break;
     case DESCEND:
+        // Determine velocity and move origin
         velocity = { 0.0f, constants::alien_grid::DESCEND_SPEED };
         m_origin += velocity * state.delta * intensity();
+
+        // Check if descend phase is over
         m_descend_timer += state.delta;
         if (m_descend_timer >= constants::alien_grid::DESCEND_DURATION / intensity())
         {
@@ -108,6 +129,7 @@ void AlienGridControl::update(const UpdateState& state)
             if (m_prev_mode == SHIFT_RIGHT)
                 set_mode(SHIFT_LEFT);
         }
+
         break;
     }
 
@@ -117,12 +139,15 @@ void AlienGridControl::update(const UpdateState& state)
     {
         reset_swerve_timer(game_control.random());
         size_t count = state.controls.count<AlienControl>();
+
+        // Choose aliens to swerve
         size_t alien1_to_swerve = 
             std::uniform_int_distribution<size_t>{ 0, count - 1 }(game_control.random());
         size_t alien2_to_swerve =
             std::uniform_int_distribution<size_t>{ 0, count - 1 }(game_control.random());
-        // we will allow `alien1_to_swerve == alien2_to_swerve`
+        // we will allow "alien1_to_swerve == alien2_to_swerve"
 
+        // Make chosen aliens swerve
         AlienControl& alien1_control = *state.controls.get<AlienControl>(alien1_to_swerve);
         AlienControl& alien2_control = *state.controls.get<AlienControl>(alien2_to_swerve);
 
@@ -131,22 +156,26 @@ void AlienGridControl::update(const UpdateState& state)
     }
 }
 
+// Get origin of grid
 sf::Vector2f AlienGridControl::origin() const
 {
     return m_origin;
 }
 
+// Get current intensity
 float AlienGridControl::intensity() const
 {
     return m_intensity;
 }
 
+// Set mode of grid
 void AlienGridControl::set_mode(Mode new_mode)
 {
     m_prev_mode = m_mode;
     m_mode = new_mode;
 }
 
+// Randomly set time until next swerve
 void AlienGridControl::reset_swerve_timer(std::mt19937& random)
 {
     m_swerve_timer = std::uniform_real_distribution<float>{
@@ -155,7 +184,8 @@ void AlienGridControl::reset_swerve_timer(std::mt19937& random)
     }(random);
 }
 
+// Draw grid
 void AlienGridControl::draw(LayerManager& layers)
 {
-
+    // nothing to do here
 }

@@ -1,7 +1,9 @@
 #include <SFML/Graphics.hpp>
 
+// Important globally used constants
 namespace constants
 {
+    // Video constants (window size, framerate, ...)
     constexpr int VIEW_WIDTH = 1200;
     constexpr int VIEW_HEIGHT = 900;
     constexpr sf::FloatRect VIEW_RECT = { { 0.0f, 0.0f }, { VIEW_WIDTH, VIEW_HEIGHT } };
@@ -9,6 +11,7 @@ namespace constants
 
     constexpr float PADDING = 10.0f; // minimum distance of actors to the view's border
 
+    // Constants for player character
     namespace player
     {
         constexpr float MOVE_SPEED = 400.0f;
@@ -16,20 +19,24 @@ namespace constants
         constexpr float SHOOT_COOLDOWN = 0.4f;
     }
 
+    // Constants for player bullet
     namespace player_bullet
     {
         constexpr float MOVE_SPEED = 1000.0f;
         constexpr sf::Vector2f SIZE = { 6.0f, 12.0f };
     }
 
+    // Constants for alien bullet
     namespace alien_bullet
     {
         constexpr float MOVE_SPEED = 300.0f;
         constexpr sf::Vector2f SIZE = { 6.0f, 32.0f };
     }
 
+    // Constants for grid of aliens
     namespace alien_grid
     {
+        // Intensity is used as a measure of game difficulty
         constexpr float MIN_INTENSITY = 1.0f;
         constexpr float MAX_INTENSITY = 10.0f;
 
@@ -40,15 +47,16 @@ namespace constants
         constexpr size_t YELLOW_ROWS = 3;
         constexpr size_t RED_ROWS = 3;
         constexpr size_t TOTAL_ROWS = GREEN_ROWS + YELLOW_ROWS + RED_ROWS;
-        constexpr float SHIFT_SPEED = 40.0f; // move speed when in mode `SHIFT_LEFT` or `SHIFT_RIGHT`
-        constexpr float DESCEND_SPEED = 20.0f; // move speed when in mode `DESCEND`
-        constexpr float DESCEND_DURATION = 1.0f; // duration of mode `DESCEND`
+        constexpr float SHIFT_SPEED = 40.0f; // move speed when in mode "SHIFT_LEFT" or "SHIFT_RIGHT"
+        constexpr float DESCEND_SPEED = 20.0f; // move speed when in mode "DESCEND"
+        constexpr float DESCEND_DURATION = 1.0f; // duration of mode "DESCEND"
 
         // constants controlling the wait time between consecutive swerves
         constexpr float SWERVE_MIN_WAIT = 3.0f;
         constexpr float SWERVE_MAX_WAIT = 8.0f;
     }
 
+    // Constants for aliens
     namespace alien
     {
         constexpr sf::Vector2f SIZE = { 40.0f, 32.0f };
