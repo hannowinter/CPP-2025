@@ -89,7 +89,7 @@ void GameControl::update(const UpdateState& state)
     }
 
     // Check if game should continue
-    if (m_state.level_won && state.inputs.held_keys.contains(sf::Keyboard::Key::Space))
+    if (m_state.level_won && state.inputs.held_keys.contains(sf::Keyboard::Key::Space) && m_state.level < 10)
     {
         // Remove all controllers from list
         for (const auto& control : state.controls)
@@ -99,6 +99,18 @@ void GameControl::update(const UpdateState& state)
         }
 
         increment_level();
+        add_children(state.controls);
+    }
+    else if (m_state.level_won && state.inputs.held_keys.contains(sf::Keyboard::Key::Space) && m_state.level == 10)
+    {
+        // Remove all controllers from list
+        for (const auto& control : state.controls)
+        {
+            if (!control->is<GameControl>())
+                state.controls.remove(control.get());
+        }
+
+        reset_game();
         add_children(state.controls);
     }
 }

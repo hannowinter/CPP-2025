@@ -2,7 +2,7 @@
 - Spieler kann getroffen werden / verlieren             // Henri (fertig)
 - Spieler kann Level aufsteigen                         // Hanno / Henri (fertig)
 - Sounds                                                // Henri (fertig)
-- Make Intensity depend on level, not number of aliens
+- Intensity von Level abhängig machen, nicht Alienzahl  // Henri (fertig)
 - smoke.png auf Aliens anwenden
 - smoke.png bei Niederlage auf Spieler anwenden
 - Items (Bomben, Laser)

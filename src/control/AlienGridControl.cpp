@@ -56,15 +56,8 @@ void AlienGridControl::update(const UpdateState& state)
     GameControl& game_control = *state.controls.get<GameControl>();
     
     // Calculate intensity
-    constexpr static size_t initial_alien_count = constants::alien_grid::COLUMNS * constants::alien_grid::TOTAL_ROWS;
-    size_t alien_count = std::count_if(
-        state.controls.begin(),
-        state.controls.end(),
-        [](const auto& c) { return c->template is<AlienControl>(); }
-    );
-
     // "ratio == 0.0" initially, "ratio == 1.0" when only one alien is left
-    float ratio = 1.0f - static_cast<float>(alien_count - 1) / (initial_alien_count - 1);
+    float ratio = 1.0f - (float) game_control.state().level / 10.0f;
     ratio = std::pow(ratio, 3.0f); // make the intensity increase more gentle initially and steeper towards the end
     m_intensity = std::lerp(
         constants::alien_grid::MIN_INTENSITY,
