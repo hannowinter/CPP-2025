@@ -14,6 +14,7 @@ private:
     sf::SoundBuffer laser_buffer;
     sf::SoundBuffer player_hit_bullet_buffer;
     sf::SoundBuffer player_hit_swerve_buffer;
+    sf::SoundBuffer level_won_buffer;
 
     static std::unique_ptr<AudioPlayer> inst;
 
@@ -24,6 +25,7 @@ public:
     sf::Sound laser;
     sf::Sound player_hit_bullet;
     sf::Sound player_hit_swerve;
+    sf::Sound level_won;
 
     AudioPlayer();
 

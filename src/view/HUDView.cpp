@@ -51,4 +51,19 @@ void HUDView::draw(Layer& layer, const GameState& state)
 								(constants::VIEW_HEIGHT - m_restart.getLocalBounds().size.y) / 2.0f});
 		layer.add_to_layer(m_restart);
 	}
+	else if (state.level_won)
+	{
+		m_level_won.setString("Level won!");
+		m_level_won.setCharacterSize(100);
+		m_level_won.setStyle(sf::Text::Bold);
+		m_level_won.setPosition({(constants::VIEW_WIDTH - m_level_won.getLocalBounds().size.x) / 2.0f,
+								(constants::VIEW_HEIGHT - m_level_won.getLocalBounds().size.y) / 2.0f - 20 * constants::PADDING});
+		layer.add_to_layer(m_level_won);
+
+		m_continue.setString("Press SPACE to continue.");
+		m_continue.setCharacterSize(70);
+		m_continue.setPosition({(constants::VIEW_WIDTH - m_continue.getLocalBounds().size.x) / 2.0f,
+								(constants::VIEW_HEIGHT - m_continue.getLocalBounds().size.y) / 2.0f});
+		layer.add_to_layer(m_continue);
+	}
 }

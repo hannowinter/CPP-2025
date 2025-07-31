@@ -1,5 +1,6 @@
 #include "GameControl.hpp"
 
+#include "AlienControl.hpp"
 #include "PlayerControl.hpp"
 #include "AlienGridControl.hpp"
 #include "AudioPlayer.hpp"
@@ -20,6 +21,15 @@ void GameControl::increment_level()
     m_state.lives = 5;   // ?
     m_state.over = false;
 }
+
+void GameControl::reset_game()
+{
+    m_state.level = 1;
+    m_state.lives = 5;
+    m_state.score = 0;
+    m_state.over = false;
+}
+
 
 void GameControl::add_children(ControlList& controls)
 {
@@ -56,6 +66,30 @@ void GameControl::update(const UpdateState& state)
 
     // Check if game should be restarted
     if (m_state.over && state.inputs.held_keys.contains(sf::Keyboard::Key::Space))
+    {
+        // Remove all controllers from list
+        for (const auto& control : state.controls)
+        {
+            if (!control->is<GameControl>())
+                state.controls.remove(control.get());
+        }
+
+        reset_game();
+        add_children(state.controls);
+    }
+
+    // Check if all alien have been shot and player can advance to next level
+    if (state.controls.count<AlienControl>() == 0 && !m_victory_shown)
+    {
+        // Play sound
+        AudioPlayer::get().level_won.play();
+
+        m_state.level_won = true;
+        m_victory_shown = true;
+    }
+
+    // Check if game should continue
+    if (m_state.level_won && state.inputs.held_keys.contains(sf::Keyboard::Key::Space))
     {
         // Remove all controllers from list
         for (const auto& control : state.controls)

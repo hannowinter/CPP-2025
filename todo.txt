@@ -1,8 +1,11 @@
-- HUD (Punktestand, Level, Leben)              // Hanno (fertig)
-- Spieler kann getroffen werden / verlieren    // Henri (fertig)
-- Spieler kann Level aufsteigen                // Hanno
-- Sounds                                       // Henri (fertig)
+- HUD (Punktestand, Level, Leben)                       // Hanno (fertig)
+- Spieler kann getroffen werden / verlieren             // Henri (fertig)
+- Spieler kann Level aufsteigen                         // Hanno / Henri (fertig)
+- Sounds                                                // Henri (fertig)
+- Make Intensity depend on level, not number of aliens
+- smoke.png auf Aliens anwenden
+- smoke.png bei Niederlage auf Spieler anwenden
 - Items (Bomben, Laser)
 
-- Kommentare verbessern                        // Henri (fertig)
-- Tests                                        // Haissam
+- Kommentare verbessern                                 // Henri (fertig)
+- Tests                                                 // Haissam

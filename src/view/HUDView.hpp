@@ -24,6 +24,10 @@ private:
 	// GameOver texts
 	sf::Text m_gameover;
 	sf::Text m_restart;
+
+	// Level won texts;
+	sf::Text m_level_won;
+	sf::Text m_continue;
 };
 
 #endif

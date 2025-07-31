@@ -23,7 +23,9 @@ public:
 	void update(const UpdateState& state) override;
 	void draw(LayerManager& layers) override;
 
+	// Get to next level or rest game
 	void increment_level();
+	void reset_game();
 
 	// Get pseudo-random number generator
 	std::mt19937& random();
@@ -47,6 +49,9 @@ private:
 
 	// Boolean indicating whether GameOver screen has been shown to prevent audio bugs
 	bool m_gameover_shown = false;
+
+	// Boolean indicating whether Level Won screen has been shown to prevent audio bugs
+	bool m_victory_shown = false;
 };
 
 #endif

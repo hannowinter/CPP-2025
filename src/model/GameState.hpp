@@ -8,6 +8,7 @@ struct GameState
 	size_t level = 1;
 	size_t lives = 5;
 	bool over = false;
+	bool level_won = false;
 };
 
 #endif
