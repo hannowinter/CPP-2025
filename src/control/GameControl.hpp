@@ -44,6 +44,9 @@ private:
 
 	// Pseudo-random number generator
 	std::mt19937 m_random;
+
+	// Boolean indicating whether GameOver screen has been shown to prevent audio bugs
+	bool m_gameover_shown = false;
 };
 
 #endif
