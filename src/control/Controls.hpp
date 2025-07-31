@@ -27,14 +27,14 @@ public:
 	virtual void update(const UpdateState& state) = 0;
 	virtual void draw(LayerManager& layers) = 0;
 
-	// Check if constant controller is specifically of specified type and cast
+	// Check if constant controller is of specified type and cast
 	template <std::derived_from<Control> C>
 	const C* is() const
 	{
 		return dynamic_cast<const C*>(this);
 	}
 
-	// Check if non-constant controller is specifically of specified type and cast
+	// Check if non-constant controller is of specified type and cast
 	template <std::derived_from<Control> C>
 	C* is()
 	{

@@ -1,6 +1,7 @@
 #include "PlayerControl.hpp"
 
 #include "AlienBulletControl.hpp"
+#include "AlienControl.hpp"
 #include "Game.hpp"
 #include "GameControl.hpp"
 #include "../model/Constants.hpp"
@@ -29,9 +30,9 @@ void PlayerControl::update(const UpdateState& state)
 	// Decrement remaining cooldown
 	m_shoot_cooldown -= state.delta;
 
-	// Check if player has been hit
 	GameControl& game_control = *state.controls.get<GameControl>();
 
+	// Check if player has been hit
 	for (const auto& control : state.controls)
 	{
 		if (const AlienBulletControl* bullet = control->is<AlienBulletControl>())
@@ -46,6 +47,24 @@ void PlayerControl::update(const UpdateState& state)
 
 				// Decrement lives
 				game_control.state().lives -= 1;
+			}
+		}
+	}
+
+	// Check if swerving alien has hit player
+	for (const auto& control : state.controls)
+	{
+		if (AlienControl* alien = control->is<AlienControl>())
+		{
+			// Check if alien is swerving, close to player and may hit player
+			if (alien->get_mode() == AlienControl::SWERVE &&
+				!alien->get().has_hit_player &&
+				(m_player.hitbox().position - alien->get().hitbox().position).length() <= 100.0f)
+			{
+				// Decrement lives and start hit animation
+				m_player_view.hit_animation();
+				game_control.state().lives -= 1;
+				alien->get().has_hit_player = true;
 			}
 		}
 	}

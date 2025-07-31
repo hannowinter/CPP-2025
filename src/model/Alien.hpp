@@ -32,6 +32,9 @@ public:
 	sf::Vector2f grid_offset() const;
 	void set_position(sf::Vector2f position);
 
+	// Remember if alien has already hit player
+	bool has_hit_player = false;
+
 private:
 	// Attributes for position and type of alien
 	Variant m_variant;

@@ -141,6 +141,8 @@ void AlienControl::update(const UpdateState& state)
 		m_alien.set_column_row(m_swerve_target_column, m_swerve_target_row);
 		sf::Vector2f target = alien_grid_control.origin() + m_alien.grid_offset();
 
+		m_alien.has_hit_player = false;
+
 		// Calculate distance from grid position, acceleration and speed
 		float dist = (m_swerve_position - target).length();
 		float acceleration_length = constants::alien::RETREAT_ACCELERATION;
@@ -189,6 +191,13 @@ void AlienControl::draw(LayerManager& layers)
 {
 	m_alien_view.draw(layers.get(LayerID::ACTORS), m_alien);
 }
+
+// Get mode of alien
+AlienControl::Mode AlienControl::get_mode() const
+{
+	return m_mode;
+}
+
 
 // Get reference to alien
 Alien& AlienControl::get()

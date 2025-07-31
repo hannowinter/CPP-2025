@@ -28,6 +28,9 @@ public:
 	void update(const UpdateState& state) override;
 	void draw(LayerManager& layers) override;
 
+	// Get mode of alien
+	Mode get_mode() const;
+
 	// Gets the stored alien
 	Alien& get();
 	const Alien& get() const;
