@@ -1,7 +1,8 @@
 - HUD (Punktestand, Level, Leben)              // Hanno (fertig)
 - Spieler kann getroffen werden / verlieren    // Henri
 - Spieler kann Level aufsteigen                // Henri
-- Schutzwaelle
+- Sounds                                       // Henri
+(- Schutzwaelle)
 - Items (Bomben, Laser)
 
 - Kommentare verbessern                        // Henri (fertig)

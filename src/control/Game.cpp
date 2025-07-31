@@ -15,7 +15,7 @@ Game::Game() :
     m_layer_manager{ m_window }
 {
     m_window.setFramerateLimit(constants::FRAME_RATE);
-    m_control_list.add<GameControl, ControlList&>(m_control_list);
+    m_control_list.add<GameControl>();
 }
 
 // Start game
@@ -33,7 +33,9 @@ void Game::start()
     // While game is running, read new state und update view
     while (m_window.isOpen())
     {
-        sf::Time elapsed_time = game_control->state().over ? sf::Time::Zero : clock.restart();
+        sf::Time elapsed_time = clock.restart();
+        if (game_control->state().over)
+            elapsed_time = sf::Time::Zero;
 
         PollResult_t poll_result = poll_events();
         if (poll_result == PollResult_t::closed)
@@ -78,7 +80,8 @@ void Game::update(float delta)
                 m_control_list.remove(control.get());
         }
 
-        game_control->reset(m_control_list);
+        game_control->increment_level();
+        game_control->spawn_children(m_control_list);
         m_control_list.init();
     }
 

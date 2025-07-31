@@ -6,13 +6,19 @@
 #include "../model/Constants.hpp"
 
 // Create AlienGridControl
-AlienGridControl::AlienGridControl(ControlList& controls) :
+AlienGridControl::AlienGridControl() :
     m_intensity{ constants::alien_grid::MIN_INTENSITY },
     m_mode{ SHIFT_RIGHT },
     m_prev_mode{ m_mode },
     m_origin{ constants::PADDING, 5 * constants::PADDING },
     m_descend_timer{},
-    m_swerve_timer{}
+    m_swerve_timer{},
+    m_bottom{ INFINITY }
+{
+    
+}
+
+void AlienGridControl::spawn_children(ControlList& controls)
 {
     // Fill grid with aliens
     for (size_t x = 0; x < constants::alien_grid::COLUMNS; x++)

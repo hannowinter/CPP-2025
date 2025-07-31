@@ -1,10 +1,27 @@
 #include "Controls.hpp"
 
+void Control::spawn_children(ControlList& controls) {}
+
 // Initialize list by moving all controllers to list and calling init()
 void ControlList::init()
 {
+	m_controls.erase(std::remove_if(m_controls.begin(), m_controls.end(), [&](const auto& elem)
+		{
+			return std::find(
+				m_controls_to_remove.begin(),
+				m_controls_to_remove.end(),
+				elem.get()
+			) != m_controls_to_remove.end();
+		}), m_controls.end());
+	m_controls_to_remove.clear();
+
 	// Add new controllers to list
-	std::swap(m_controls, m_controls_to_add);
+	m_controls.insert(
+		m_controls.end(),
+		std::make_move_iterator(m_controls_to_add.begin()),
+		std::make_move_iterator(m_controls_to_add.end())
+	);
+	m_controls_to_add.clear();
 
 	for (const auto& control : m_controls)
 		control->init(*this);
@@ -55,6 +72,12 @@ void ControlList::draw(LayerManager& layers)
 void ControlList::remove(const Control* control)
 {
 	m_controls_to_remove.push_back(control);
+}
+
+void ControlList::clear()
+{
+	for (const auto& control : m_controls)
+		remove(control.get());
 }
 
 // Create iterator starting at first controller in list

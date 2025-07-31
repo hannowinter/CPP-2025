@@ -15,15 +15,15 @@ class GameControl : public Control
 {
 public:
 	// Create GameController with controllers
-	GameControl(ControlList& controls);
+	GameControl();
 
 	// Abstract methods of parent class
+	void spawn_children(ControlList& controls) override;
 	void init(const ControlList& controls) override;
 	void update(const UpdateState& state) override;
 	void draw(LayerManager& layers) override;
 
-	// Reset game
-	void reset(ControlList& controls);
+	void increment_level();
 
 	// Get pseudo-random number generator
 	std::mt19937& random();

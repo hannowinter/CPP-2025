@@ -5,16 +5,22 @@
 #include "../model/Constants.hpp"
 
 // Create GameController
-GameControl::GameControl(ControlList& controls) :
+GameControl::GameControl() :
     m_random{ static_cast<unsigned int>(
         std::chrono::high_resolution_clock::now().time_since_epoch().count() 
     ) }
 {
-    reset(controls);
+
 }
 
-// Reset game
-void GameControl::reset(ControlList& controls)
+void GameControl::increment_level()
+{
+    m_state.level++;
+    // m_state.lives = 5;   // ?
+    m_state.over = false;
+}
+
+void GameControl::spawn_children(ControlList& controls)
 {
     // Add PlayerController to list of controllers
     controls.add<PlayerControl>(sf::Vector2f{
@@ -23,12 +29,7 @@ void GameControl::reset(ControlList& controls)
         });
 
     // Add AlienGridController to list of controllers
-    controls.add<AlienGridControl>(controls);
-
-    m_state.score = 0;
-    m_state.level = 1;
-    m_state.lives = 5;
-    m_state.over = false;
+    controls.add<AlienGridControl>();
 }
 
 

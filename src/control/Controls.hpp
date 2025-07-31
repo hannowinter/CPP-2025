@@ -23,6 +23,7 @@ public:
 	// Methods for all controllers
 	virtual ~Control() = default;
 
+	virtual void spawn_children(ControlList& controls);
 	virtual void init(const ControlList& controls) = 0;
 	virtual void update(const UpdateState& state) = 0;
 	virtual void draw(LayerManager& layers) = 0;
@@ -59,14 +60,20 @@ public:
 		std::is_constructible_v<C, ArgTs...>
 	C& add(ArgTs&&... args)
 	{
-		return dynamic_cast<C&>(
+		C& result = dynamic_cast<C&>(
 			*m_controls_to_add.emplace_back(std::make_unique<C>(std::forward<ArgTs>(args)...))
 		);
+		result.spawn_children(*this);
+		return result;
 	}
 
 	// Removes the specified control from the list.
 	// The control is only removed after the call to "update" has finished.
 	void remove(const Control* control);
+
+	// Removes all controls from the list.
+	// The control is only removed after the call to "update" has finished.
+	void clear();
 
 	// Gets the count of all controls of type "C".
 	template <std::derived_from<Control> C>
