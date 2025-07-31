@@ -10,7 +10,7 @@ INCLUDES := -I./SFML/include -I/opt/homebrew/include $(GTEST_INCLUDES)
 
 # Contains libraries we need to (-L is directory search path, -l is lib)
 LDFLAGS := -L/usr/local/lib -L./SFML/lib -L/opt/homebrew/lib
-LDLIBS := -lsfml-system -lsfml-window -lsfml-graphics
+LDLIBS := -lsfml-system -lsfml-window -lsfml-graphics -lsfml-audio
 
 SRCDIR := ./src
 TESTDIR := ./test

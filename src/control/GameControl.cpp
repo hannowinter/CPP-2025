@@ -2,6 +2,7 @@
 
 #include "PlayerControl.hpp"
 #include "AlienGridControl.hpp"
+#include "AudioPlayer.hpp"
 #include "../model/Constants.hpp"
 
 // Create GameController
@@ -45,6 +46,9 @@ void GameControl::update(const UpdateState& state)
     // Check if game is over (no lives left or aliens reached bottom)
     AlienGridControl* grid = state.controls.get<AlienGridControl>();
     if (m_state.lives == 0 || grid->get_bottom() <= 100.0f)
+        // Play sound
+        //AudioPlayer::get().game_over.play();
+
         m_state.over = true;
 }
 

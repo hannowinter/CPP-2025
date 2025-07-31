@@ -1,6 +1,7 @@
 #include "AlienControl.hpp"
 #include "AlienGridControl.hpp"
 #include "AlienBulletControl.hpp"
+#include "AudioPlayer.hpp"
 #include "PlayerBulletControl.hpp"
 #include "GameControl.hpp"
 #include "PlayerControl.hpp"
@@ -53,6 +54,9 @@ void AlienControl::update(const UpdateState& state)
 			{ // collision detected, despawn alien and bullet
 				state.controls.remove(this);
 				state.controls.remove(bullet);
+
+				// Play hit sound
+				AudioPlayer::get().alien_hit.play();
 
 				// Increment score
 				game_control.state().score += 50;

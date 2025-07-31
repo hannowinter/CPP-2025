@@ -2,6 +2,7 @@
 
 #include "AlienBulletControl.hpp"
 #include "AlienControl.hpp"
+#include "AudioPlayer.hpp"
 #include "Game.hpp"
 #include "GameControl.hpp"
 #include "../model/Constants.hpp"
@@ -47,6 +48,9 @@ void PlayerControl::update(const UpdateState& state)
 
 				// Decrement lives
 				game_control.state().lives -= 1;
+
+				// Play sound
+				AudioPlayer::get().player_hit_bullet.play();
 			}
 		}
 	}
@@ -65,6 +69,9 @@ void PlayerControl::update(const UpdateState& state)
 				m_player_view.hit_animation();
 				game_control.state().lives -= 1;
 				alien->get().has_hit_player = true;
+
+				// Play sound
+				AudioPlayer::get().player_hit_swerve.play();
 			}
 		}
 	}
