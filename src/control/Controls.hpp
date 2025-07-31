@@ -23,7 +23,7 @@ public:
 	// Methods for all controllers
 	virtual ~Control() = default;
 
-	virtual void spawn_children(ControlList& controls);
+	virtual void add_children(ControlList& controls);
 	virtual void init(const ControlList& controls) = 0;
 	virtual void update(const UpdateState& state) = 0;
 	virtual void draw(LayerManager& layers) = 0;
@@ -50,12 +50,15 @@ class ControlList
 
 public:
 	// Used to call method on all controllers in list
-	void init();
 	void update(float delta, const Inputs& inputs);
 	void draw(LayerManager& layers);
 
-	// Constructs a new control of type "C" and adds it to the list.
-	// The control is only added after the call to "update" has finished.
+	// Carries out all changes requested via "add" and "remove".
+	void execute_requests();
+
+	// Constructs a new control of type "C" and adds a request to add it to the list and to initialize it.
+	// This will also call "add_children" afterwards.
+	// The control is only added when calling "execute_requests".
 	template <std::derived_from<Control> C, typename... ArgTs> requires
 		std::is_constructible_v<C, ArgTs...>
 	C& add(ArgTs&&... args)
@@ -63,17 +66,14 @@ public:
 		C& result = dynamic_cast<C&>(
 			*m_controls_to_add.emplace_back(std::make_unique<C>(std::forward<ArgTs>(args)...))
 		);
-		result.spawn_children(*this);
+		result.add_children(*this);
+		m_controls_to_init.push_back(&result);
 		return result;
 	}
 
-	// Removes the specified control from the list.
-	// The control is only removed after the call to "update" has finished.
+	// Adds a request to remove the specified control from the list.
+	// The control is only removed when calling "execute_requests".
 	void remove(const Control* control);
-
-	// Removes all controls from the list.
-	// The control is only removed after the call to "update" has finished.
-	void clear();
 
 	// Gets the count of all controls of type "C".
 	template <std::derived_from<Control> C>
@@ -112,8 +112,10 @@ public:
 private:
 	control_list_t m_controls; // currently active controls
 
+	// All requests
 	std::vector<std::unique_ptr<Control>> m_controls_to_add; // controls to be added
 	std::vector<const Control*> m_controls_to_remove; // controls to be removed
+	std::vector<Control*> m_controls_to_init; // controls to be initialized
 
 	// The "update" method iterates through "m_controls" in order to update each control.
 	// During this process, we need to prevent any insertion or erasure of elements to or from "m_controls",
@@ -121,7 +123,8 @@ private:
 	// The "add" and "remove" methods may be called during this iteration process.
 	// Instead of immediately inserting or erasing the specified control, we first put them into
 	// separate lists "m_controls_to_add" and "m_controls_to_remove" to remember them,
-	// and only after the iteration process is done, we insert or erase them to or from "m_controls".
+	// and only after the iteration process is done, we insert or erase them to or from "m_controls"
+	// using the "push_changes" function.
 };
 
 #endif

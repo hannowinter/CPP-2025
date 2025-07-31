@@ -8,26 +8,27 @@
 #include "Controls.hpp"
 #include "Inputs.hpp"
 
-// Class modelling the Game
-class Game 
+// Class modelling the Game's engine
+// Responsible for managing the game window, layers, inputs and holding all controls
+class Engine 
 {
 
 public:
-    // Create new game instance
-    Game();
+    // Create new `Engine` instance
+    Engine();
 
     // Start game
     void start();
 
 private:
-    // Possible game states
+    // Possible event poll results
     enum class PollResult_t
     {
         running,
         closed
     };
 
-    // Upate game state and read inputs
+    // Poll inputs and other events (window closed, etc.)
     PollResult_t poll_events();
 
     // Update game

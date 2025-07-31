@@ -1,4 +1,4 @@
-#include "Game.hpp"
+#include "Engine.hpp"
 
 #include <SFML/Window/Keyboard.hpp>
 
@@ -6,7 +6,7 @@
 #include "../model/Constants.hpp"
 
 // Create new game instance with defined parameters and initialize GameController
-Game::Game() :
+Engine::Engine() :
     m_window{
         sf::VideoMode{ { constants::VIEW_WIDTH, constants::VIEW_HEIGHT } }, 
         "Space Invaders"
@@ -15,26 +15,24 @@ Game::Game() :
     m_layer_manager{ m_window }
 {
     m_window.setFramerateLimit(constants::FRAME_RATE);
-    m_control_list.add<GameControl>();
 }
 
 // Start game
-void Game::start() 
+void Engine::start() 
 {
     // Game clock
     sf::Clock clock;
 
-    // Initialize controllers
-    m_control_list.init();
+    // Add the main `GameControl`
+    const GameControl& game_control = m_control_list.add<GameControl>();
 
-    // Get GameControl
-    const GameControl* game_control = m_control_list.get<GameControl>();
+    m_control_list.execute_requests();
 
     // While game is running, read new state und update view
     while (m_window.isOpen())
     {
         sf::Time elapsed_time = clock.restart();
-        if (game_control->state().over)
+        if (game_control.state().over)
             elapsed_time = sf::Time::Zero;
 
         PollResult_t poll_result = poll_events();
@@ -49,8 +47,8 @@ void Game::start()
     m_window.close();
 }
 
-// Read inputs and check game state
-Game::PollResult_t Game::poll_events()
+// Poll inputs and other events (window closed, etc.)
+Engine::PollResult_t Engine::poll_events()
 {
     m_inputs.update();
 
@@ -65,40 +63,21 @@ Game::PollResult_t Game::poll_events()
 }
 
 // Update all controllers and set current view
-void Game::update(float delta) 
+void Engine::update(float delta)
 {
-    // Get GameController
-    GameControl* game_control = m_control_list.get<GameControl>();
-
-    // Check if game should be restarted
-    if (game_control->state().over && m_inputs.held_keys.contains(sf::Keyboard::Key::Space))
-    {
-        // Remove all controllers from list
-        for (const auto& control : m_control_list)
-        {
-            if (!control->is<GameControl>())
-                m_control_list.remove(control.get());
-        }
-
-        game_control->increment_level();
-        game_control->spawn_children(m_control_list);
-        m_control_list.init();
-    }
-
     m_control_list.update(delta, m_inputs);
+    m_control_list.execute_requests();
 
     m_layer_manager.set_view(m_view);
 }
 
 // Clear window and layers and draw new state
-void Game::draw() 
+void Engine::draw()
 {
     m_window.clear();
 
     m_layer_manager.clear();
 
-    // TODO:
-    // don't just pass the actors layer
     m_control_list.draw(m_layer_manager);
     
     m_layer_manager.draw();

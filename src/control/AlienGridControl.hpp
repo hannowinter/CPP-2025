@@ -25,7 +25,7 @@ public:
 	AlienGridControl();
 
 	// Abstract methods inherited from parent
-	void spawn_children(ControlList& controls) override;
+	void add_children(ControlList& controls) override;
 	void init(const ControlList& controls) override;
 	void update(const UpdateState& state) override;
 	void draw(LayerManager& layers) override;

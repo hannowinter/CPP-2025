@@ -13,12 +13,12 @@ AlienGridControl::AlienGridControl() :
     m_origin{ constants::PADDING, 5 * constants::PADDING },
     m_descend_timer{},
     m_swerve_timer{},
-    m_bottom{ INFINITY }
+    m_bottom{ 0.0f }
 {
     
 }
 
-void AlienGridControl::spawn_children(ControlList& controls)
+void AlienGridControl::add_children(ControlList& controls)
 {
     // Fill grid with aliens
     for (size_t x = 0; x < constants::alien_grid::COLUMNS; x++)
@@ -80,7 +80,7 @@ void AlienGridControl::update(const UpdateState& state)
             alien_max_row = std::max(alien->get().row(), alien_max_row);
     }
 
-    m_bottom = m_origin.y + alien_max_row * (constants::alien::SIZE.y + constants::alien_grid::SPACING.y);
+    m_bottom = m_origin.y + alien_max_row * (constants::alien::SIZE.y + constants::alien_grid::SPACING.y) + constants::alien::SIZE.x;
 
     // calculate the grid's leftmost and rightmost points, 
     // used to determine when the grid reaches the screen's left or right side
