@@ -48,7 +48,7 @@ void GameControl::update(const UpdateState& state)
     if (m_state.lives == 0 || grid->get_bottom() >= constants::VIEW_HEIGHT - 100.0f)
     if (m_state.lives == 0 || grid->get_bottom() <= 100.0f)
         // Play sound
-        //AudioPlayer::get().game_over.play();
+        // AudioPlayer::get().game_over.play(); For some reason this line causes the game to be in GameOver permanently
 
         m_state.over = true;
 
