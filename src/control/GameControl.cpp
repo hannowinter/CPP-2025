@@ -20,7 +20,7 @@ void GameControl::increment_level()
     m_state.over = false;
 }
 
-void GameControl::spawn_children(ControlList& controls)
+void GameControl::add_children(ControlList& controls)
 {
     // Add PlayerController to list of controllers
     controls.add<PlayerControl>(sf::Vector2f{
@@ -58,7 +58,7 @@ void GameControl::update(const UpdateState& state)
         }
 
         increment_level();
-        spawn_children(state.controls);
+        add_children(state.controls);
     }
 }
 

@@ -23,7 +23,7 @@ public:
 	// Methods for all controllers
 	virtual ~Control() = default;
 
-	virtual void spawn_children(ControlList& controls);
+	virtual void add_children(ControlList& controls);
 	virtual void init(const ControlList& controls) = 0;
 	virtual void update(const UpdateState& state) = 0;
 	virtual void draw(LayerManager& layers) = 0;
@@ -57,7 +57,7 @@ public:
 	void execute_requests();
 
 	// Constructs a new control of type "C" and adds a request to add it to the list and to initialize it.
-	// This will also call "spawn_children" afterwards.
+	// This will also call "add_children" afterwards.
 	// The control is only added when calling "execute_requests".
 	template <std::derived_from<Control> C, typename... ArgTs> requires
 		std::is_constructible_v<C, ArgTs...>
@@ -66,7 +66,7 @@ public:
 		C& result = dynamic_cast<C&>(
 			*m_controls_to_add.emplace_back(std::make_unique<C>(std::forward<ArgTs>(args)...))
 		);
-		result.spawn_children(*this);
+		result.add_children(*this);
 		m_controls_to_init.push_back(&result);
 		return result;
 	}

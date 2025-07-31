@@ -1,6 +1,6 @@
 #include "Controls.hpp"
 
-void Control::spawn_children(ControlList& controls) {}
+void Control::add_children(ControlList& controls) {}
 
 // Call update on all controllers in list
 void ControlList::update(float delta, const Inputs& inputs)

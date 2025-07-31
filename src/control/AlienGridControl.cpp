@@ -18,7 +18,7 @@ AlienGridControl::AlienGridControl() :
     
 }
 
-void AlienGridControl::spawn_children(ControlList& controls)
+void AlienGridControl::add_children(ControlList& controls)
 {
     // Fill grid with aliens
     for (size_t x = 0; x < constants::alien_grid::COLUMNS; x++)
