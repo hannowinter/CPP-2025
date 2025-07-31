@@ -14,6 +14,6 @@ HUDView::HUDView() :
 void HUDView::draw(Layer& layer, const GameState& state)
 {
 	// Show game information as text and add to layer
-	m_text.setString(std::format("Score: {}", state.score));
+	m_text.setString(std::format("Score: {}               Level: {}               Lives: {}", state.score, state.level, state.lives));
 	layer.add_to_layer(m_text);
 }

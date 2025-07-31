@@ -4,9 +4,9 @@
 // Store state of game (score, level, number of lives left)
 struct GameState
 {
-	size_t score = 2000;
-	size_t level = 5;
-	size_t lives = 3;
+	size_t score = 0;
+	size_t level = 1;
+	size_t lives = 5;
 };
 
 #endif

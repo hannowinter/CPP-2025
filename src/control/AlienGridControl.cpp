@@ -10,7 +10,7 @@ AlienGridControl::AlienGridControl(ControlList& controls) :
     m_intensity{ constants::alien_grid::MIN_INTENSITY },
     m_mode{ SHIFT_RIGHT },
     m_prev_mode{ m_mode },
-    m_origin{ constants::PADDING, constants::PADDING },
+    m_origin{ constants::PADDING, 5 * constants::PADDING },
     m_descend_timer{},
     m_swerve_timer{}
 {
