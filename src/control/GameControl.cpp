@@ -16,7 +16,7 @@ GameControl::GameControl() :
 void GameControl::increment_level()
 {
     m_state.level++;
-    // m_state.lives = 5;   // ?
+    m_state.lives = 5;   // ?
     m_state.over = false;
 }
 
@@ -44,8 +44,22 @@ void GameControl::update(const UpdateState& state)
 {
     // Check if game is over (no lives left or aliens reached bottom)
     AlienGridControl* grid = state.controls.get<AlienGridControl>();
-    if (m_state.lives == 0 || grid->get_bottom() <= 100.0f)
+    if (m_state.lives == 0 || grid->get_bottom() >= constants::VIEW_HEIGHT - 100.0f)
         m_state.over = true;
+
+    // Check if game should be restarted
+    if (m_state.over && state.inputs.held_keys.contains(sf::Keyboard::Key::Space))
+    {
+        // Remove all controllers from list
+        for (const auto& control : state.controls)
+        {
+            if (!control->is<GameControl>())
+                state.controls.remove(control.get());
+        }
+
+        increment_level();
+        spawn_children(state.controls);
+    }
 }
 
 // Draw HUD

@@ -2,7 +2,6 @@
 
 #include "AlienBulletControl.hpp"
 #include "AlienControl.hpp"
-#include "Game.hpp"
 #include "GameControl.hpp"
 #include "../model/Constants.hpp"
 #include "PlayerBulletControl.hpp"
@@ -22,7 +21,6 @@ void PlayerControl::init(const ControlList& controls)
 {
 	// nothing to do here
 }
-
 
 // Execute relevant updates
 void PlayerControl::update(const UpdateState& state) 

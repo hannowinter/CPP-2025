@@ -1,8 +1,8 @@
-#include "control/Game.hpp"
+#include "control/Engine.hpp"
 
 int main() 
 {
     // Start game
-    Game game;
-    game.start();
+    Engine engine;
+    engine.start();
 }
