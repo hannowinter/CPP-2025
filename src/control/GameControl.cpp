@@ -10,6 +10,12 @@ GameControl::GameControl(ControlList& controls) :
         std::chrono::high_resolution_clock::now().time_since_epoch().count() 
     ) }
 {
+    reset(controls);
+}
+
+// Reset game
+void GameControl::reset(ControlList& controls)
+{
     // Add PlayerController to list of controllers
     controls.add<PlayerControl>(sf::Vector2f{
        (constants::VIEW_WIDTH - constants::player::SIZE.x) / 2.0f,
@@ -18,7 +24,13 @@ GameControl::GameControl(ControlList& controls) :
 
     // Add AlienGridController to list of controllers
     controls.add<AlienGridControl>(controls);
+
+    m_state.score = 0;
+    m_state.level = 1;
+    m_state.lives = 5;
+    m_state.over = false;
 }
+
 
 // Initialize this controller
 void GameControl::init(const ControlList& controls)
@@ -29,7 +41,10 @@ void GameControl::init(const ControlList& controls)
 // Execute relevant updates
 void GameControl::update(const UpdateState& state)
 {
-    // nothing to do here
+    // Check if game is over (no lives left or aliens reached bottom)
+    AlienGridControl* grid = state.controls.get<AlienGridControl>();
+    if (m_state.lives == 0 || grid->get_bottom() <= 100.0f)
+        m_state.over = true;
 }
 
 // Draw HUD

@@ -27,11 +27,14 @@ void Game::start()
     // Initialize controllers
     m_control_list.init();
 
+    // Get GameControl
+    const GameControl* game_control = m_control_list.get<GameControl>();
+
     // While game is running, read new state und update view
     while (m_window.isOpen())
     {
-        sf::Time elapsed_time = clock.restart();
- 
+        sf::Time elapsed_time = game_control->state().over ? sf::Time::Zero : clock.restart();
+
         PollResult_t poll_result = poll_events();
         if (poll_result == PollResult_t::closed)
             break;
@@ -62,6 +65,23 @@ Game::PollResult_t Game::poll_events()
 // Update all controllers and set current view
 void Game::update(float delta) 
 {
+    // Get GameController
+    GameControl* game_control = m_control_list.get<GameControl>();
+
+    // Check if game should be restarted
+    if (game_control->state().over && m_inputs.held_keys.contains(sf::Keyboard::Key::Space))
+    {
+        // Remove all controllers from list
+        for (const auto& control : m_control_list)
+        {
+            if (!control->is<GameControl>())
+                m_control_list.remove(control.get());
+        }
+
+        game_control->reset(m_control_list);
+        m_control_list.init();
+    }
+
     m_control_list.update(delta, m_inputs);
 
     m_layer_manager.set_view(m_view);

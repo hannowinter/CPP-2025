@@ -8,7 +8,9 @@ HUDView::HUDView() :
 	m_font{ "assets/fonts/DejaVuSansMono.ttf" },
 	m_score{ m_font },
 	m_level{ m_font },
-	m_lives{ m_font }
+	m_lives{ m_font },
+	m_gameover{ m_font },
+	m_restart{ m_font }
 {
 
 }
@@ -32,4 +34,21 @@ void HUDView::draw(Layer& layer, const GameState& state)
 	m_lives.setString(std::format("Lives: {}", state.lives));
 	m_lives.setPosition({constants::VIEW_WIDTH - m_lives.getLocalBounds().size.x - constants::PADDING, 0.0f});
 	layer.add_to_layer(m_lives);
+
+	// Show GameOver if game has ended
+	if (state.over)
+	{
+		m_gameover.setString("Game Over!");
+		m_gameover.setCharacterSize(100);
+		m_gameover.setStyle(sf::Text::Bold);
+		m_gameover.setPosition({(constants::VIEW_WIDTH - m_gameover.getLocalBounds().size.x) / 2.0f,
+								(constants::VIEW_HEIGHT - m_gameover.getLocalBounds().size.y) / 2.0f - 20 * constants::PADDING});
+		layer.add_to_layer(m_gameover);
+
+		m_restart.setString("Press SPACE to restart.");
+		m_restart.setCharacterSize(70);
+		m_restart.setPosition({(constants::VIEW_WIDTH - m_restart.getLocalBounds().size.x) / 2.0f,
+								(constants::VIEW_HEIGHT - m_restart.getLocalBounds().size.y) / 2.0f});
+		layer.add_to_layer(m_restart);
+	}
 }

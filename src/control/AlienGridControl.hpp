@@ -38,7 +38,10 @@ public:
 
 	// Sets the mode.
 	void set_mode(Mode new_mode);
-	
+
+	// Get y-coordinate of bottommost alien
+	float get_bottom();
+
 	// Resets the wait time until picking a new pair of aliens to swerve.
 	void reset_swerve_timer(std::mt19937& random);
 
@@ -58,6 +61,9 @@ private:
 
 	// Cooldown until next swerve
 	float m_swerve_timer = 0.0f;
+
+	// Bottommost pixel
+	float m_bottom;
 };
 
 #endif

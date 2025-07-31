@@ -20,6 +20,10 @@ private:
 	sf::Text m_score;
 	sf::Text m_level;
 	sf::Text m_lives;
+
+	// GameOver texts
+	sf::Text m_gameover;
+	sf::Text m_restart;
 };
 
 #endif

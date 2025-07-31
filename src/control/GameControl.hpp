@@ -22,12 +22,18 @@ public:
 	void update(const UpdateState& state) override;
 	void draw(LayerManager& layers) override;
 
+	// Reset game
+	void reset(ControlList& controls);
+
 	// Get pseudo-random number generator
 	std::mt19937& random();
 
 	// Get current game state
 	GameState& state();
 	const GameState& state() const;
+
+	// Boolean to check if game is over
+	bool is_over = false;
 
 private:
 	// Current state of the game

@@ -66,6 +66,16 @@ void AlienGridControl::update(const UpdateState& state)
         ratio
     );
 
+    // Determine bottomost point in grid
+    size_t alien_max_row = 0;
+    for (const auto& control : state.controls)
+    {
+        if (AlienControl* alien = control->is<AlienControl>())
+            alien_max_row = std::max(alien->get().row(), alien_max_row);
+    }
+
+    m_bottom = m_origin.y + alien_max_row * (constants::alien::SIZE.y + constants::alien_grid::SPACING.y);
+
     // calculate the grid's leftmost and rightmost points, 
     // used to determine when the grid reaches the screen's left or right side
     size_t alien_min_col = SIZE_MAX;
@@ -188,4 +198,9 @@ void AlienGridControl::reset_swerve_timer(std::mt19937& random)
 void AlienGridControl::draw(LayerManager& layers)
 {
     // nothing to do here
+}
+
+float AlienGridControl::get_bottom()
+{
+    return m_bottom;
 }
