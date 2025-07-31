@@ -17,7 +17,9 @@ public:
 private:
 	// Font and text to be shown
 	sf::Font m_font;
-	sf::Text m_text;
+	sf::Text m_score;
+	sf::Text m_level;
+	sf::Text m_lives;
 };
 
 #endif

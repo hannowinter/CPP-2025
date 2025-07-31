@@ -53,6 +53,9 @@ void AlienControl::update(const UpdateState& state)
 			{ // collision detected, despawn alien and bullet
 				state.controls.remove(this);
 				state.controls.remove(bullet);
+
+				// Increment score
+				game_control.state().score += 50;
 			}
 		}
 	}

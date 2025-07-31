@@ -1,6 +1,11 @@
 #include "PlayerControl.hpp"
+
+#include "AlienBulletControl.hpp"
+#include "Game.hpp"
+#include "GameControl.hpp"
 #include "../model/Constants.hpp"
 #include "PlayerBulletControl.hpp"
+#include "../Util.hpp"
 
 // Create PlayerController for Player at position
 PlayerControl::PlayerControl(sf::Vector2f position) :
@@ -23,6 +28,30 @@ void PlayerControl::update(const UpdateState& state)
 {
 	// Decrement remaining cooldown
 	m_shoot_cooldown -= state.delta;
+
+	// Check if player has been hit
+	GameControl& game_control = *state.controls.get<GameControl>();
+
+	for (const auto& control : state.controls)
+	{
+		if (const AlienBulletControl* bullet = control->is<AlienBulletControl>())
+		{
+			if (overlaps(bullet->get().hitbox(), m_player.hitbox()))
+			{
+				// Delete bullet
+				state.controls.remove(bullet);
+
+				// Start hit animation
+				m_player_view.hit_animation();
+
+				// Decrement lives
+				game_control.state().lives -= 1;
+			}
+		}
+	}
+
+	// Update view
+	m_player_view.update(state.delta);
 
 	// Move player to the left if left arrow key pressed
 	if (state.inputs.held_keys.contains(sf::Keyboard::Key::Left))

@@ -8,6 +8,7 @@
 struct AssetLoader
 {
 	const sf::Texture player;
+	const sf::Texture player_hit;
 	const std::array<sf::Texture, 2> yellow;
 	const std::array<sf::Texture, 2> green;
 	const std::array<sf::Texture, 2> red;
