@@ -1,15 +1,8 @@
 enable_testing()
 
-set(ControlSources
-    ${CMAKE_SOURCE_DIR}/src/control/Game.cpp
-    )
-
-set(ModelSources
-    )
-
-set(ViewSources
-    ${CMAKE_SOURCE_DIR}/src/view/Layer.cpp
-    )
+file(GLOB ModelSources "${CMAKE_CURRENT_SOURCE_DIR}/model/*.cpp")
+file(GLOB ControlSources "${CMAKE_CURRENT_SOURCE_DIR}/control/*.cpp")
+file(GLOB ViewSources "${CMAKE_CURRENT_SOURCE_DIR}/view/*.cpp")
 
 set(TestSources
     ${CMAKE_CURRENT_SOURCE_DIR}/GameTest.cpp

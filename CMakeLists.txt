@@ -37,7 +37,7 @@ target_compile_features(SpaceInvaders PRIVATE cxx_std_20)
 target_compile_features(Test PRIVATE cxx_std_20)
 
 # link SFML
-target_link_libraries(SpaceInvaders PRIVATE SFML::Graphics)
+target_link_libraries(SpaceInvaders PRIVATE SFML::Graphics SFML::Audio)
 target_link_libraries(Test gtest gtest_main gmock pthread SFML::Graphics)
 
 # add assets (fonts and images) to bin folder
