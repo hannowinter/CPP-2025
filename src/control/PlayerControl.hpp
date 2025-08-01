@@ -20,6 +20,9 @@ public:
 	void update(const UpdateState& state) override;
 	void draw(LayerManager& layers) override;
 
+	// Make player invisible
+	void hide();
+
 	// Get controlled Player
 	const Player& get() const;
 	Player& get();
@@ -33,6 +36,9 @@ private:
 
 	// Remaining cooldown until next shot
 	float m_shoot_cooldown;
+
+	// Indicating whether player is hidden
+	bool m_hidden = false;
 };
 
 #endif

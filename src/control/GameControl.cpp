@@ -68,11 +68,11 @@ void GameControl::update(const UpdateState& state)
         AudioPlayer::get().game_over.play();
 
         // Get PlayerController
-        const PlayerControl* player_control = state.controls.get<PlayerControl>();
+        PlayerControl* player_control = state.controls.get<PlayerControl>();
 
         // Create smoke at player position
-        state.controls.remove(player_control);
         state.controls.add<SmokeControl>(player_control->get().hitbox().position);
+        player_control->hide();
 
         m_state.over = true;
         m_gameover_shown = true;

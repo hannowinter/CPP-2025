@@ -114,7 +114,8 @@ void PlayerControl::update(const UpdateState& state)
 // Draw player
 void PlayerControl::draw(LayerManager& layers)
 {
-	m_player_view.draw(layers.get(LayerID::ACTORS), m_player);
+	if (!m_hidden)
+		m_player_view.draw(layers.get(LayerID::ACTORS), m_player);
 }
 
 // Get reference to Player
@@ -127,4 +128,9 @@ const Player& PlayerControl::get() const
 Player& PlayerControl::get()
 {
 	return m_player;
+}
+
+void PlayerControl::hide()
+{
+	m_hidden = true;
 }
