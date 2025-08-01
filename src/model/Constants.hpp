@@ -75,5 +75,7 @@ namespace constants
 
         constexpr float RETREAT_ACCELERATION = 3000.0f;
         constexpr float RETREAT_MIN_SPEED = 250.0f;
+
+        constexpr float SMOKE_LIFETIME = 1.5f;
     }
 }

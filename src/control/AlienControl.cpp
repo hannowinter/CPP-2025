@@ -5,6 +5,7 @@
 #include "PlayerBulletControl.hpp"
 #include "GameControl.hpp"
 #include "PlayerControl.hpp"
+#include "SmokeControl.hpp"
 #include "../model/Constants.hpp"
 #include "../Util.hpp"
 
@@ -51,7 +52,11 @@ void AlienControl::update(const UpdateState& state)
 		if (const PlayerBulletControl* bullet = control->is<PlayerBulletControl>())
 		{
 			if (overlaps(bullet->get().hitbox(), m_alien.hitbox()))
-			{ // collision detected, despawn alien and bullet
+			{
+				// Show smoke texture
+				state.controls.add<SmokeControl>(m_alien.hitbox().position);
+
+				// Despawn alien and bullet
 				state.controls.remove(this);
 				state.controls.remove(bullet);
 

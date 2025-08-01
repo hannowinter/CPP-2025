@@ -4,6 +4,7 @@
 #include "PlayerControl.hpp"
 #include "AlienGridControl.hpp"
 #include "AudioPlayer.hpp"
+#include "SmokeControl.hpp"
 #include "../model/Constants.hpp"
 
 // Create GameController
@@ -65,6 +66,13 @@ void GameControl::update(const UpdateState& state)
     {
         // Play sound
         AudioPlayer::get().game_over.play();
+
+        // Get PlayerController
+        const PlayerControl* player_control = state.controls.get<PlayerControl>();
+
+        // Create smoke at player position
+        state.controls.remove(player_control);
+        state.controls.add<SmokeControl>(player_control->get().hitbox().position);
 
         m_state.over = true;
         m_gameover_shown = true;

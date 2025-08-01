@@ -3,8 +3,8 @@
 - Spieler kann Level aufsteigen                         // Hanno / Henri (fertig)
 - Sounds                                                // Henri (fertig)
 - Intensity von Level abhängig machen, nicht Alienzahl  // Henri (fertig)
-- smoke.png auf Aliens anwenden
-- smoke.png bei Niederlage auf Spieler anwenden
+- smoke.png auf Aliens anwenden                         // Henri (fertig)
+- smoke.png bei Niederlage auf Spieler anwenden         // Henri (fertig)
 - Items (Bomben, Laser)
 
 - Kommentare verbessern                                 // Henri (fertig)

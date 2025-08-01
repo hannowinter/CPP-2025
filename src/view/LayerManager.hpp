@@ -3,10 +3,11 @@
 
 #include "Layer.hpp"
 
-// Types of layeres
+// Types of layers
 enum class LayerID
 {
 	// reorder these in order to change draw order
+	EFFECTS,
 	ACTORS,
 	HUD,
 	COUNT
