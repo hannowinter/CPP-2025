@@ -14,6 +14,9 @@ struct AssetLoader
 	const std::array<sf::Texture, 2> red;
 	const sf::Texture alien_bullet;
 	const sf::Texture smoke;
+	const sf::Texture bomb;
+	const sf::Texture laser;
+	const sf::Texture explosion;
 
 	AssetLoader();
 

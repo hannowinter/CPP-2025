@@ -8,7 +8,10 @@ AssetLoader::AssetLoader() :
 	green{ sf::Texture{ "assets/green_0.png" }, sf::Texture{ "assets/green_1.png" } },
 	red{ sf::Texture{ "assets/red_0.png" }, sf::Texture{ "assets/red_1.png" } },
 	alien_bullet{ "assets/bullet_alien.png" },
-	smoke{ "assets/smoke.png" }
+	smoke{ "assets/smoke.png" },
+	bomb{ "assets/bomb.png" },
+	laser{ "assets/laser.png" },
+	explosion{ "assets/explosion.png" }
 {
 
 }
