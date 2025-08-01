@@ -32,7 +32,7 @@ void Engine::start()
     while (m_window.isOpen())
     {
         sf::Time elapsed_time = clock.restart();
-        if (game_control.state().over)
+        if (game_control.state().over || game_control.state().level_won)
             elapsed_time = sf::Time::Zero;
 
         PollResult_t poll_result = poll_events();

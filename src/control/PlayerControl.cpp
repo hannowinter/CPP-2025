@@ -26,10 +26,15 @@ void PlayerControl::init(const ControlList& controls)
 // Execute relevant updates
 void PlayerControl::update(const UpdateState& state) 
 {
+	// Get GameController
+	GameControl& game_control = *state.controls.get<GameControl>();
+
+	// Prevent automatic shooting if GameOver- or Win-Screen is shown
+	if (game_control.state().over || game_control.state().level_won)
+		m_shoot_cooldown = INFINITY;
+
 	// Decrement remaining cooldown
 	m_shoot_cooldown -= state.delta;
-
-	GameControl& game_control = *state.controls.get<GameControl>();
 
 	// Check if player has been hit
 	for (const auto& control : state.controls)
@@ -61,7 +66,7 @@ void PlayerControl::update(const UpdateState& state)
 			// Check if alien is swerving, close to player and may hit player
 			if (alien->get_mode() == AlienControl::SWERVE &&
 				!alien->get().has_hit_player &&
-				(m_player.hitbox().position - alien->get().hitbox().position).length() <= 100.0f)
+				(m_player.hitbox().position - alien->get().hitbox().position).length() <= 90.0f)
 			{
 				// Decrement lives and start hit animation
 				m_player_view.hit_animation();

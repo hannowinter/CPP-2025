@@ -15,22 +15,28 @@ GameControl::GameControl() :
 
 }
 
+// Move to next level
 void GameControl::increment_level()
 {
     m_state.level++;
-    m_state.lives = 5;   // ?
+    m_state.lives = 5;
     m_state.over = false;
+    m_state.level_won = false;
+
+
 }
 
+// Reset game to beginning
 void GameControl::reset_game()
 {
     m_state.level = 1;
     m_state.lives = 5;
     m_state.score = 0;
     m_state.over = false;
+    m_state.level_won = false;
 }
 
-
+// Add child controllers
 void GameControl::add_children(ControlList& controls)
 {
     // Add PlayerController to list of controllers
@@ -76,6 +82,8 @@ void GameControl::update(const UpdateState& state)
 
         reset_game();
         add_children(state.controls);
+
+        m_gameover_shown = false;
     }
 
     // Check if all alien have been shot and player can advance to next level
@@ -100,6 +108,8 @@ void GameControl::update(const UpdateState& state)
 
         increment_level();
         add_children(state.controls);
+
+        m_victory_shown = false;
     }
     else if (m_state.level_won && state.inputs.held_keys.contains(sf::Keyboard::Key::Space) && m_state.level == 10)
     {
@@ -112,6 +122,8 @@ void GameControl::update(const UpdateState& state)
 
         reset_game();
         add_children(state.controls);
+
+        m_victory_shown = false;
     }
 }
 

@@ -34,9 +34,6 @@ public:
 	GameState& state();
 	const GameState& state() const;
 
-	// Boolean to check if game is over
-	bool is_over = false;
-
 private:
 	// Current state of the game
 	GameState m_state;
