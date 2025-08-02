@@ -16,6 +16,9 @@ public:
     void update(const UpdateState& state) override;
     void draw(LayerManager& layers) override;
 
+    // Reset controller to spawn next upgrade
+    void reset(const UpdateState& state);
+
     // Get position of upgrade
     sf::Vector2f get_position() const;
 

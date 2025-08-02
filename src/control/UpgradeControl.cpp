@@ -126,3 +126,21 @@ sf::Vector2f UpgradeControl::get_position() const
     else
         return m_position;
 }
+
+// Reset controller to spawn next upgrade
+void UpgradeControl::reset(const UpdateState& state)
+{
+    // Reset spawned
+    m_spawned = false;
+
+    // Get GameController
+    GameControl* game_control = state.controls.get<GameControl>();
+
+    // Calculate new timer
+    m_timer =
+        std::uniform_real_distribution<float>{constants::upgrades::MIN_SPAWN_TIME,constants::upgrades::MAX_SPAWN_TIME}
+                                            (game_control->random());
+
+    // Determine next upgrade
+    m_upgrade = (game_control->random().operator()() % 2) == 0 ? constants::player::Weapon::LASER : constants::player::Weapon::BOMB;
+}
