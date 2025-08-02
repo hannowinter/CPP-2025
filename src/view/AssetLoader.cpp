@@ -10,8 +10,10 @@ AssetLoader::AssetLoader() :
 	alien_bullet{ "assets/bullet_alien.png" },
 	smoke{ "assets/smoke.png" },
 	bomb{ "assets/bomb.png" },
-	laser{ "assets/laser.png" },
-	explosion{ "assets/explosion.png" }
+	laser_upgrade{ "assets/laser_upgrade.png" },
+	explosion{ "assets/explosion.png" },
+	player_bullet{ "assets/bullet_player.png" },
+	laser_bullet { "assets/bullet_laser.png" }
 {
 
 }

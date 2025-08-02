@@ -3,22 +3,17 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "PlayerProjectile.hpp"
+
 // Class modelling a bullet shot by the player
-class PlayerBullet
+class PlayerBullet : public PlayerProjectile
 {
 public:
 	// Create player bullet
 	PlayerBullet(sf::Vector2f position);
 
 	// Get hitbox of bullet
-	sf::FloatRect hitbox() const;
-
-	// Move bullet
-	void move_up(float delta);
-
-private:
-	// Position of bullet
-	sf::Vector2f m_position;
+	sf::FloatRect hitbox() const override;
 };
 
 #endif

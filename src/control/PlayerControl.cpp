@@ -3,7 +3,9 @@
 #include "AlienBulletControl.hpp"
 #include "AlienControl.hpp"
 #include "AudioPlayer.hpp"
+#include "BombControl.hpp"
 #include "GameControl.hpp"
+#include "LaserControl.hpp"
 #include "../model/Constants.hpp"
 #include "PlayerBulletControl.hpp"
 #include "../Util.hpp"
@@ -94,22 +96,60 @@ void PlayerControl::update(const UpdateState& state)
 		m_player.move(Player::RIGHT, state.delta);
 	}
 
-	// Shoot bullet if cooldown is over and space button is pressed
+	// Shoot weapon if cooldown is over and space button is pressed
 	if (
 		m_shoot_cooldown <= 0.0f &&
 		state.inputs.pressed_keys.contains(sf::Keyboard::Key::Space)
 	)
 	{
-		// Create Controller for new bullet at position of player
-		state.controls.add<PlayerBulletControl>(sf::Vector2f{
-			m_player.hitbox().getCenter().x - constants::player_bullet::SIZE.x / 2.0f,
-			m_player.hitbox().position.y - constants::player_bullet::SIZE.y
-		});
+		if (m_weapon == Weapon::DEFAULT)
+		{
+			// Create Controller for new bullet at position of player
+			state.controls.add<PlayerBulletControl>(sf::Vector2f{
+				m_player.hitbox().getCenter().x - constants::player_bullet::BULLET_SIZE.x / 2.0f,
+				m_player.hitbox().position.y - constants::player_bullet::BULLET_SIZE.y
+			});
 
-		// Reset cooldown period
-		m_shoot_cooldown = constants::player::SHOOT_COOLDOWN;
+			// Reset cooldown period
+			m_shoot_cooldown = constants::player::SHOOT_COOLDOWN;
+		}
+		else if (m_weapon == Weapon::LASER)
+		{
+			// Create Controller for new bullet at position of player
+			state.controls.add<LaserControl>(sf::Vector2f{
+				m_player.hitbox().getCenter().x - constants::player_bullet::LASER_SIZE.x / 2.0f,
+				m_player.hitbox().position.y - constants::player_bullet::LASER_SIZE.y
+			});
+
+			// Reset cooldown period
+			m_shoot_cooldown = constants::player::SHOOT_COOLDOWN;
+
+			// Reset weapon
+			m_weapon = Weapon::DEFAULT;
+		}
+		else // m_weapon == Weapon::BOMB
+		{
+			// Create Controller for new bullet at position of player
+			state.controls.add<BombControl>(sf::Vector2f{
+				m_player.hitbox().getCenter().x - constants::player_bullet::BOMB_SIZE.x / 2.0f,
+				m_player.hitbox().position.y - constants::player_bullet::BOMB_SIZE.y
+			});
+
+			// Reset cooldown period
+			m_shoot_cooldown = constants::player::SHOOT_COOLDOWN;
+
+			// Reset weapon
+			m_weapon = Weapon::DEFAULT;
+		}
 	}
 }
+
+// Set weapon for next shot
+void PlayerControl::set_weapon(Weapon weapon)
+{
+	m_weapon = weapon;
+}
+
 
 // Draw player
 void PlayerControl::draw(LayerManager& layers)

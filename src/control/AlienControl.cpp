@@ -2,8 +2,10 @@
 #include "AlienGridControl.hpp"
 #include "AlienBulletControl.hpp"
 #include "AudioPlayer.hpp"
+#include "BombControl.hpp"
 #include "PlayerBulletControl.hpp"
 #include "GameControl.hpp"
+#include "LaserControl.hpp"
 #include "PlayerControl.hpp"
 #include "SmokeControl.hpp"
 #include "../model/Constants.hpp"
@@ -46,9 +48,10 @@ void AlienControl::update(const UpdateState& state)
 	const AlienGridControl& alien_grid_control = *state.controls.get<AlienGridControl>();
 	GameControl& game_control = *state.controls.get<GameControl>();
 
-	// Check for collisions with bullets
+	// Check for collisions
 	for (const auto& control : state.controls)
 	{
+		// Collisions with bullets
 		if (const PlayerBulletControl* bullet = control->is<PlayerBulletControl>())
 		{
 			if (overlaps(bullet->get().hitbox(), m_alien.hitbox()))
@@ -66,6 +69,18 @@ void AlienControl::update(const UpdateState& state)
 				// Increment score
 				game_control.state().score += 50;
 			}
+		}
+
+		// Collisions with lasers
+		if (const LaserControl* laser = control->is<LaserControl>())
+		{
+
+		}
+
+		// Collisions with bombs
+		if (const BombControl* bomb = control->is<BombControl>())
+		{
+
 		}
 	}
 

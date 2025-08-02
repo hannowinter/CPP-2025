@@ -12,6 +12,15 @@
 class PlayerControl : public Control
 {
 public:
+
+	// Possible weapons
+	enum Weapon
+	{
+		DEFAULT,
+		BOMB,
+		LASER
+	};
+
 	// Create PlayerControl for Player at position
 	PlayerControl(sf::Vector2f position);
 
@@ -22,6 +31,9 @@ public:
 
 	// Make player invisible
 	void hide();
+
+	// Set weapon for next shot
+	void set_weapon(Weapon weapon);
 
 	// Get controlled Player
 	const Player& get() const;
@@ -39,6 +51,9 @@ private:
 
 	// Indicating whether player is hidden
 	bool m_hidden = false;
+
+	// Current weapon
+	Weapon m_weapon = Weapon::DEFAULT;
 };
 
 #endif

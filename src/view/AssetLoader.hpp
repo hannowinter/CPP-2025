@@ -15,8 +15,10 @@ struct AssetLoader
 	const sf::Texture alien_bullet;
 	const sf::Texture smoke;
 	const sf::Texture bomb;
-	const sf::Texture laser;
+	const sf::Texture laser_upgrade;
 	const sf::Texture explosion;
+	const sf::Texture player_bullet;
+	const sf::Texture laser_bullet;
 
 	AssetLoader();
 

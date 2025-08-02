@@ -23,7 +23,9 @@ namespace constants
     namespace player_bullet
     {
         constexpr float MOVE_SPEED = 1000.0f;
-        constexpr sf::Vector2f SIZE = { 6.0f, 12.0f };
+        constexpr sf::Vector2f BULLET_SIZE = { 6.0f, 12.0f };
+        constexpr sf::Vector2f BOMB_SIZE = {40.0f, 32.0f };
+        constexpr sf::Vector2f LASER_SIZE = { 15.0f, 36.0f };
     }
 
     // Constants for alien bullet
@@ -76,6 +78,6 @@ namespace constants
         constexpr float RETREAT_ACCELERATION = 3000.0f;
         constexpr float RETREAT_MIN_SPEED = 250.0f;
 
-        constexpr float SMOKE_LIFETIME = 1.5f;
+        constexpr float EFFECT_DURATION = 1.5f;
     }
 }

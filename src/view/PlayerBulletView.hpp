@@ -4,21 +4,16 @@
 #include <SFML/Graphics.hpp>
 
 #include "Layer.hpp"
+#include "PlayerProjectileView.hpp"
 #include "../model/PlayerBullet.hpp"
 
 // View for bullets of player
-class PlayerBulletView
+class PlayerBulletView : public PlayerProjectileView
 {
 public:
+
 	// Create bullet view
 	PlayerBulletView();
-
-	// Draw bullet view
-	void draw(Layer& layer, const PlayerBullet& bullet);
-
-private:
-	// Non-animated texture
-	sf::RectangleShape m_sprite;
 };
 
 #endif

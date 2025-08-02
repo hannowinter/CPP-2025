@@ -11,13 +11,15 @@ AudioPlayer::AudioPlayer() :
     player_hit_bullet_buffer(),
     player_hit_swerve_buffer(),
     level_won_buffer(),
+    upgrade_buffer(),
     alien_hit(alien_hit_buffer),
     explosion(explosion_buffer),
     game_over(game_over_buffer),
     laser(laser_buffer),
     player_hit_bullet(player_hit_bullet_buffer),
     player_hit_swerve(player_hit_swerve_buffer),
-    level_won(level_won_buffer)
+    level_won(level_won_buffer),
+    upgrade(upgrade_buffer)
 {
     alien_hit_buffer.loadFromFile("assets/audio/alien_hit.wav");
     explosion_buffer.loadFromFile("assets/audio/explosion.wav");
@@ -26,6 +28,7 @@ AudioPlayer::AudioPlayer() :
     player_hit_bullet_buffer.loadFromFile("assets/audio/player_hit_bullet.wav");
     player_hit_swerve_buffer.loadFromFile("assets/audio/player_hit_swerve.wav");
     level_won_buffer.loadFromFile("assets/audio/level_won.wav");
+    upgrade_buffer.loadFromFile("assets/audio/upgrade.wav");
 
     alien_hit.setBuffer(alien_hit_buffer);
     explosion.setBuffer(explosion_buffer);
@@ -34,6 +37,7 @@ AudioPlayer::AudioPlayer() :
     player_hit_bullet.setBuffer(player_hit_bullet_buffer);
     player_hit_swerve.setBuffer(player_hit_swerve_buffer);
     level_won.setBuffer(level_won_buffer);
+    upgrade.setBuffer(upgrade_buffer);
 }
 
 AudioPlayer& AudioPlayer::get()

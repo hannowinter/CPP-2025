@@ -6,7 +6,7 @@
 SmokeControl::SmokeControl(sf::Vector2f position) :
     m_smoke_view {},
     m_position { position },
-    m_lifetime { constants::alien::SMOKE_LIFETIME }
+    m_lifetime { constants::alien::EFFECT_DURATION }
 {
 
 }

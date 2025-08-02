@@ -15,6 +15,7 @@ private:
     sf::SoundBuffer player_hit_bullet_buffer;
     sf::SoundBuffer player_hit_swerve_buffer;
     sf::SoundBuffer level_won_buffer;
+    sf::SoundBuffer upgrade_buffer;
 
     static std::unique_ptr<AudioPlayer> inst;
 
@@ -26,6 +27,7 @@ public:
     sf::Sound player_hit_bullet;
     sf::Sound player_hit_swerve;
     sf::Sound level_won;
+    sf::Sound upgrade;
 
     AudioPlayer();
 
