@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "Controls.hpp"
+#include "../model/Constants.hpp"
 #include "../model/Player.hpp"
 #include "../view/Layer.hpp"
 #include "../view/PlayerView.hpp"
@@ -12,14 +13,6 @@
 class PlayerControl : public Control
 {
 public:
-
-	// Possible weapons
-	enum Weapon
-	{
-		DEFAULT,
-		BOMB,
-		LASER
-	};
 
 	// Create PlayerControl for Player at position
 	PlayerControl(sf::Vector2f position);
@@ -33,7 +26,7 @@ public:
 	void hide();
 
 	// Set weapon for next shot
-	void set_weapon(Weapon weapon);
+	void set_weapon(constants::player::Weapon weapon);
 
 	// Get controlled Player
 	const Player& get() const;
@@ -53,7 +46,7 @@ private:
 	bool m_hidden = false;
 
 	// Current weapon
-	Weapon m_weapon = Weapon::DEFAULT;
+	constants::player::Weapon m_weapon = constants::player::Weapon::DEFAULT;
 };
 
 #endif

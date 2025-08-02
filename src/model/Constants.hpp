@@ -1,3 +1,6 @@
+#ifndef CONSTANTS_HPP
+#define CONSTANTS_HPP
+
 #include <SFML/Graphics.hpp>
 
 // Important globally used constants
@@ -17,6 +20,14 @@ namespace constants
         constexpr float MOVE_SPEED = 400.0f;
         constexpr sf::Vector2f SIZE = { 60.0f, 30.0f };
         constexpr float SHOOT_COOLDOWN = 0.4f;
+
+        // Possible weapons
+        enum class Weapon
+        {
+            DEFAULT,
+            BOMB,
+            LASER
+        };
     }
 
     // Constants for player bullet
@@ -24,8 +35,16 @@ namespace constants
     {
         constexpr float MOVE_SPEED = 1000.0f;
         constexpr sf::Vector2f BULLET_SIZE = { 6.0f, 12.0f };
-        constexpr sf::Vector2f BOMB_SIZE = {40.0f, 32.0f };
+        constexpr sf::Vector2f BOMB_SIZE = {36.0f, 52.0f };
         constexpr sf::Vector2f LASER_SIZE = { 15.0f, 36.0f };
+        constexpr sf::Vector2f LASER_ITEM_SIZE = { 62.0f, 62.0f };
+    }
+
+    // Constants for upgrade spawn times
+    namespace upgrades
+    {
+        constexpr float MIN_SPAWN_TIME = 5.0f;
+        constexpr float MAX_SPAWN_TIME = 10.0f;
     }
 
     // Constants for alien bullet
@@ -81,3 +100,5 @@ namespace constants
         constexpr float EFFECT_DURATION = 1.5f;
     }
 }
+
+#endif

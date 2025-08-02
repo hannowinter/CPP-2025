@@ -5,6 +5,7 @@
 #include "AlienGridControl.hpp"
 #include "AudioPlayer.hpp"
 #include "SmokeControl.hpp"
+#include "UpgradeControl.hpp"
 #include "../model/Constants.hpp"
 
 // Create GameController
@@ -48,6 +49,9 @@ void GameControl::add_children(ControlList& controls)
 
     // Add AlienGridController to list of controllers
     controls.add<AlienGridControl>();
+
+    // Add UpgradeControl to list of controllers
+    controls.add<UpgradeControl>();
 }
 
 

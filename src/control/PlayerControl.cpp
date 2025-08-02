@@ -102,7 +102,7 @@ void PlayerControl::update(const UpdateState& state)
 		state.inputs.pressed_keys.contains(sf::Keyboard::Key::Space)
 	)
 	{
-		if (m_weapon == Weapon::DEFAULT)
+		if (m_weapon == constants::player::Weapon::DEFAULT)
 		{
 			// Create Controller for new bullet at position of player
 			state.controls.add<PlayerBulletControl>(sf::Vector2f{
@@ -113,7 +113,7 @@ void PlayerControl::update(const UpdateState& state)
 			// Reset cooldown period
 			m_shoot_cooldown = constants::player::SHOOT_COOLDOWN;
 		}
-		else if (m_weapon == Weapon::LASER)
+		else if (m_weapon == constants::player::Weapon::LASER)
 		{
 			// Create Controller for new bullet at position of player
 			state.controls.add<LaserControl>(sf::Vector2f{
@@ -125,7 +125,7 @@ void PlayerControl::update(const UpdateState& state)
 			m_shoot_cooldown = constants::player::SHOOT_COOLDOWN;
 
 			// Reset weapon
-			m_weapon = Weapon::DEFAULT;
+			m_weapon = constants::player::Weapon::DEFAULT;
 		}
 		else // m_weapon == Weapon::BOMB
 		{
@@ -139,13 +139,13 @@ void PlayerControl::update(const UpdateState& state)
 			m_shoot_cooldown = constants::player::SHOOT_COOLDOWN;
 
 			// Reset weapon
-			m_weapon = Weapon::DEFAULT;
+			m_weapon = constants::player::Weapon::DEFAULT;
 		}
 	}
 }
 
 // Set weapon for next shot
-void PlayerControl::set_weapon(Weapon weapon)
+void PlayerControl::set_weapon(constants::player::Weapon weapon)
 {
 	m_weapon = weapon;
 }
