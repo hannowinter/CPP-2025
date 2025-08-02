@@ -22,7 +22,7 @@ public:
     const PlayerProjectile& get() const;
     PlayerProjectile& get();
 
-private:
+protected:
 
     // Controlled PlayerProjectile
     std::unique_ptr<PlayerProjectile> m_projectile;

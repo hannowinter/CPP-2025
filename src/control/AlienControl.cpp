@@ -74,13 +74,57 @@ void AlienControl::update(const UpdateState& state)
 		// Collisions with lasers
 		if (const LaserControl* laser = control->is<LaserControl>())
 		{
+			if (overlaps(laser->get().hitbox(), m_alien.hitbox()))
+			{
+				// Show smoke texture
+				state.controls.add<SmokeControl>(m_alien.hitbox().position);
 
+				// Despawn alien
+				state.controls.remove(this);
+
+				// Play hit sound
+				AudioPlayer::get().alien_hit.play();
+
+				// Increment score
+				game_control.state().score += 100;
+			}
 		}
 
 		// Collisions with bombs
-		if (const BombControl* bomb = control->is<BombControl>())
+		if (BombControl* bomb = control->is<BombControl>())
 		{
+			// Check if bomb explodes on contact with this alien
+			if (overlaps(bomb->get().hitbox(), m_alien.hitbox()) && !bomb->has_exploded())
+			{
+				// Show smoke texture
+				state.controls.add<SmokeControl>(m_alien.hitbox().position);
 
+				// Despawn alien
+				state.controls.remove(this);
+
+				// Play hit and explosion sound, make bomb explode
+				AudioPlayer::get().alien_hit.play();
+				AudioPlayer::get().explosion.play();
+				bomb->explode();
+
+				// Increment score
+				game_control.state().score += 150;
+			}
+			// Check if alien is within explosion
+			else if (overlaps(bomb->get().hitbox(), m_alien.hitbox()) && bomb->has_exploded())
+			{
+				// Show smoke texture
+				state.controls.add<SmokeControl>(m_alien.hitbox().position);
+
+				// Despawn alien
+				state.controls.remove(this);
+
+				// Play hit sound
+				AudioPlayer::get().alien_hit.play();
+
+				// Increment score
+				game_control.state().score += 150;
+			}
 		}
 	}
 

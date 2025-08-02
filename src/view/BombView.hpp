@@ -7,6 +7,9 @@ public:
 
     // Create BombView
     BombView();
+
+    // Make bomb explode
+    void explode();
 };
 
 #endif //BOMBVIEW_HPP

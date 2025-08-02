@@ -10,8 +10,16 @@ public:
     // Create bomb projectile
     PlayerBomb(sf::Vector2f position);
 
+    // Make bomb explode
+    void explode();
+
     // Get hitbox
     sf::FloatRect hitbox() const override;
+
+private:
+
+    // Remember if bomb has exploded
+    bool m_has_exploded = false;
 };
 
 #endif //PLAYERBOMB_HPP

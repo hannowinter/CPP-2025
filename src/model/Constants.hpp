@@ -29,6 +29,7 @@ namespace constants
         constexpr sf::Vector2f BULLET_SIZE = { 6.0f, 12.0f };
         constexpr sf::Vector2f BOMB_SIZE = {36.0f, 52.0f };
         constexpr sf::Vector2f LASER_SIZE = { 15.0f, 36.0f };
+        constexpr sf::Vector2f EXPLOSION_SIZE = { 90.0f * 2.0f, 82.0f * 2.0f}; // Upscaled texture
     }
 
     // Constants for upgrade spawn times
@@ -38,6 +39,7 @@ namespace constants
         constexpr float MAX_SPAWN_TIME = 10.0f;
         constexpr sf::Vector2f BOMB_ITEM_SIZE = {36.0f, 52.0f };
         constexpr sf::Vector2f LASER_ITEM_SIZE = { 62.0f, 62.0f };
+        constexpr float EXPLOSION_TIME = 2.5f;
 
         // Possible weapons
         enum class Weapon

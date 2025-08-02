@@ -14,7 +14,7 @@ public:
     // Draw projectile
     virtual void draw(Layer& layer, const PlayerProjectile& bullet);
 
-private:
+protected:
 
     // Projectile texture
     sf::Sprite m_sprite;
