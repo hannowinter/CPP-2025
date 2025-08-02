@@ -90,6 +90,9 @@ void PlayerControl::update(const UpdateState& state)
 
 				// Play upgrade sound
 				AudioPlayer::get().upgrade.play();
+
+				// Reset UpgradeControl
+				upgrade->reset(state);
 			}
 		}
 	}
@@ -131,6 +134,9 @@ void PlayerControl::update(const UpdateState& state)
 				m_player.hitbox().getCenter().x - constants::player_bullet::LASER_SIZE.x / 2.0f,
 				m_player.hitbox().position.y - constants::player_bullet::LASER_SIZE.y
 			});
+
+			// Play laser sound effect
+			AudioPlayer::get().laser.play();
 		}
 		else // m_weapon == Weapon::BOMB
 		{
