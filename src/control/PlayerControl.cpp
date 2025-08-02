@@ -8,6 +8,7 @@
 #include "LaserControl.hpp"
 #include "../model/Constants.hpp"
 #include "PlayerBulletControl.hpp"
+#include "UpgradeControl.hpp"
 #include "../Util.hpp"
 
 // Create PlayerController for Player at position
@@ -41,6 +42,7 @@ void PlayerControl::update(const UpdateState& state)
 	// Check if player has been hit
 	for (const auto& control : state.controls)
 	{
+		// Check if player has been hit by alien bullet
 		if (const AlienBulletControl* bullet = control->is<AlienBulletControl>())
 		{
 			if (overlaps(bullet->get().hitbox(), m_player.hitbox()))
@@ -58,11 +60,8 @@ void PlayerControl::update(const UpdateState& state)
 				AudioPlayer::get().player_hit_bullet.play();
 			}
 		}
-	}
 
-	// Check if swerving alien has hit player
-	for (const auto& control : state.controls)
-	{
+		// Check if player has been hit by swerving alien
 		if (AlienControl* alien = control->is<AlienControl>())
 		{
 			// Check if alien is swerving, close to player and may hit player
@@ -79,7 +78,22 @@ void PlayerControl::update(const UpdateState& state)
 				AudioPlayer::get().player_hit_swerve.play();
 			}
 		}
+
+		// Check if player has picked up an upgrade
+		if (UpgradeControl* upgrade = control->is<UpgradeControl>())
+		{
+			if (overlaps(upgrade->hitbox(), m_player.hitbox()) && !upgrade->is_picked_up())
+			{
+				// Change weapon of player and indicate that upgrade has been picked up
+				m_weapon = upgrade->type();
+				upgrade->pick_up();
+
+				// Play upgrade sound
+				AudioPlayer::get().upgrade.play();
+			}
+		}
 	}
+
 
 	// Update view
 	m_player_view.update(state.delta);
@@ -102,30 +116,21 @@ void PlayerControl::update(const UpdateState& state)
 		state.inputs.pressed_keys.contains(sf::Keyboard::Key::Space)
 	)
 	{
-		if (m_weapon == constants::player::Weapon::DEFAULT)
+		if (m_weapon == constants::upgrades::Weapon::DEFAULT)
 		{
 			// Create Controller for new bullet at position of player
 			state.controls.add<PlayerBulletControl>(sf::Vector2f{
 				m_player.hitbox().getCenter().x - constants::player_bullet::BULLET_SIZE.x / 2.0f,
 				m_player.hitbox().position.y - constants::player_bullet::BULLET_SIZE.y
 			});
-
-			// Reset cooldown period
-			m_shoot_cooldown = constants::player::SHOOT_COOLDOWN;
 		}
-		else if (m_weapon == constants::player::Weapon::LASER)
+		else if (m_weapon == constants::upgrades::Weapon::LASER)
 		{
 			// Create Controller for new bullet at position of player
 			state.controls.add<LaserControl>(sf::Vector2f{
 				m_player.hitbox().getCenter().x - constants::player_bullet::LASER_SIZE.x / 2.0f,
 				m_player.hitbox().position.y - constants::player_bullet::LASER_SIZE.y
 			});
-
-			// Reset cooldown period
-			m_shoot_cooldown = constants::player::SHOOT_COOLDOWN;
-
-			// Reset weapon
-			m_weapon = constants::player::Weapon::DEFAULT;
 		}
 		else // m_weapon == Weapon::BOMB
 		{
@@ -134,18 +139,18 @@ void PlayerControl::update(const UpdateState& state)
 				m_player.hitbox().getCenter().x - constants::player_bullet::BOMB_SIZE.x / 2.0f,
 				m_player.hitbox().position.y - constants::player_bullet::BOMB_SIZE.y
 			});
-
-			// Reset cooldown period
-			m_shoot_cooldown = constants::player::SHOOT_COOLDOWN;
-
-			// Reset weapon
-			m_weapon = constants::player::Weapon::DEFAULT;
 		}
+
+		// Reset cooldown period
+		m_shoot_cooldown = constants::player::SHOOT_COOLDOWN;
+
+		// Reset weapon
+		m_weapon = constants::upgrades::Weapon::DEFAULT;
 	}
 }
 
 // Set weapon for next shot
-void PlayerControl::set_weapon(constants::player::Weapon weapon)
+void PlayerControl::set_weapon(constants::upgrades::Weapon weapon)
 {
 	m_weapon = weapon;
 }

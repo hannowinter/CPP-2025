@@ -20,7 +20,7 @@ void UpgradeControl::init(const ControlList& controls)
         std::uniform_real_distribution<float>{constants::upgrades::MIN_SPAWN_TIME,constants::upgrades::MAX_SPAWN_TIME}
                                             (game_control->random());
 
-    m_upgrade = (game_control->random().operator()() % 2) == 0 ? constants::player::Weapon::LASER : constants::player::Weapon::BOMB;
+    m_upgrade = (game_control->random().operator()() % 2) == 0 ? constants::upgrades::Weapon::LASER : constants::upgrades::Weapon::BOMB;
 }
 
 // Execute all relevant updates
@@ -32,15 +32,15 @@ void UpgradeControl::update(const UpdateState& state)
     // Determine item size for coordinates
     float item_x_size;
     float item_y;
-    if (m_upgrade == constants::player::Weapon::LASER)
+    if (m_upgrade == constants::upgrades::Weapon::LASER)
     {
-        item_x_size = constants::player_bullet::LASER_ITEM_SIZE.x;
-        item_y = constants::VIEW_HEIGHT - constants::player_bullet::LASER_ITEM_SIZE.y - constants::PADDING;
+        item_x_size = constants::upgrades::LASER_ITEM_SIZE.x;
+        item_y = constants::VIEW_HEIGHT - constants::upgrades::LASER_ITEM_SIZE.y - constants::PADDING;
     }
-    else // m_upgrade == constants::player::Weapon::BOMB
+    else // m_upgrade == constants::upgrades::Weapon::BOMB
     {
-        item_x_size = constants::player_bullet::BOMB_SIZE.x;
-        item_y = constants::VIEW_HEIGHT - constants::player_bullet::BOMB_SIZE.y - constants::PADDING;
+        item_x_size = constants::upgrades::BOMB_ITEM_SIZE.x;
+        item_y = constants::VIEW_HEIGHT - constants::upgrades::BOMB_ITEM_SIZE.y - constants::PADDING;
     }
 
     // Select position to spawn item where player is not located if upgrade has not been spawned yet
@@ -109,29 +109,33 @@ void UpgradeControl::update(const UpdateState& state)
 // Draw Upgrade to screen
 void UpgradeControl::draw(LayerManager& layers)
 {
-    // If no upgrade has been spawned and the timer has finished, spawn the upgrade
-    if (m_timer <= 0.0f)
+    // If upgrade has not been picked up yet and the timer has finished, show the upgrade
+    if (!m_picked_up && m_timer <= 0.0f)
     {
         m_view.draw(layers.get(LayerID::ACTORS), m_upgrade, m_position);
         m_spawned = true;
     }
 }
 
-// Get position of upgrade if it has been spawned
-sf::Vector2f UpgradeControl::get_position() const
+// Get hitbox of upgrade if it has been spawned
+sf::FloatRect UpgradeControl::hitbox() const
 {
-    // If no upgrade has been spawned, return unreachable position
+    // If no upgrade has been spawned, return unreachable hitbox
     if (!m_spawned)
-        return { 0.0f, 0.0f };
-    else
-        return m_position;
+        return {{0.0f, 0.0f}, {0.0f, 0.0f}};
+
+    if (m_upgrade == constants::upgrades::Weapon::LASER)
+            return {m_position, constants::upgrades::LASER_ITEM_SIZE};
+    else // m_upgrade == constants::upgrades::Weapon::BOMB
+            return {m_position, constants::upgrades::BOMB_ITEM_SIZE};
 }
 
 // Reset controller to spawn next upgrade
 void UpgradeControl::reset(const UpdateState& state)
 {
-    // Reset spawned
+    // Reset state
     m_spawned = false;
+    m_picked_up = false;
 
     // Get GameController
     GameControl* game_control = state.controls.get<GameControl>();
@@ -142,5 +146,24 @@ void UpgradeControl::reset(const UpdateState& state)
                                             (game_control->random());
 
     // Determine next upgrade
-    m_upgrade = (game_control->random().operator()() % 2) == 0 ? constants::player::Weapon::LASER : constants::player::Weapon::BOMB;
+    m_upgrade = (game_control->random().operator()() % 2) == 0 ? constants::upgrades::Weapon::LASER : constants::upgrades::Weapon::BOMB;
+}
+
+// Indicate that the upgrade has been picked up
+void UpgradeControl::pick_up()
+{
+    m_picked_up = true;
+}
+
+// Check if upgrade has been picked up
+bool UpgradeControl::is_picked_up()
+{
+    return m_picked_up;
+}
+
+
+// Get type of upgrade
+constants::upgrades::Weapon UpgradeControl::type()
+{
+    return m_upgrade;
 }

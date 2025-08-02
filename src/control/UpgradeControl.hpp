@@ -19,8 +19,17 @@ public:
     // Reset controller to spawn next upgrade
     void reset(const UpdateState& state);
 
-    // Get position of upgrade
-    sf::Vector2f get_position() const;
+    // Indicate that the upgrade has been picked up
+    void pick_up();
+
+    // Check if upgrade has been picked up
+    bool is_picked_up();
+
+    // Get type of upgrade
+    constants::upgrades::Weapon type();
+
+    // Get hitbox of upgrade
+    sf::FloatRect hitbox() const;
 
 private:
 
@@ -30,8 +39,11 @@ private:
     // Boolean indicating whether an upgrade has already been spawned
     bool m_spawned = false;
 
+    // Boolean indicating whether the upgrade has been picked up
+    bool m_picked_up = false;
+
     // Upgrade to be spawned
-    constants::player::Weapon m_upgrade;
+    constants::upgrades::Weapon m_upgrade;
 
     // Location for upgrade to be spawned
     sf::Vector2f m_position;

@@ -26,7 +26,7 @@ public:
 	void hide();
 
 	// Set weapon for next shot
-	void set_weapon(constants::player::Weapon weapon);
+	void set_weapon(constants::upgrades::Weapon weapon);
 
 	// Get controlled Player
 	const Player& get() const;
@@ -46,7 +46,7 @@ private:
 	bool m_hidden = false;
 
 	// Current weapon
-	constants::player::Weapon m_weapon = constants::player::Weapon::DEFAULT;
+	constants::upgrades::Weapon m_weapon = constants::upgrades::Weapon::DEFAULT;
 };
 
 #endif

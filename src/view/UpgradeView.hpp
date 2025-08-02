@@ -11,7 +11,7 @@ public:
     UpgradeView();
 
     // Draw upgrade to screen
-    void draw(Layer& layer, constants::player::Weapon weapon, sf::Vector2f position);
+    void draw(Layer& layer, constants::upgrades::Weapon weapon, sf::Vector2f position);
 
 private:
 
