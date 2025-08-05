@@ -5,4 +5,6 @@ int main()
     // Start game
     Engine engine;
     engine.start();
+
+    return 0;
 }
