@@ -98,7 +98,5 @@ TEST_F(ControlListTest, controlList)
 int main2(int argc, char** argv)
 {
 	testing::InitGoogleTest(&argc, argv);
-	RUN_ALL_TESTS();
-
-	return 0;
+	return RUN_ALL_TESTS();
 }

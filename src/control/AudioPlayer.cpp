@@ -3,6 +3,8 @@
 #include "../view/AssetLoader.hpp"
 #include "SFML/Audio/SoundBuffer.hpp"
 
+#include <iostream>
+
 AudioPlayer::AudioPlayer() :
     alien_hit_buffer(),
     explosion_buffer(),
@@ -21,14 +23,18 @@ AudioPlayer::AudioPlayer() :
     level_won(level_won_buffer),
     upgrade(upgrade_buffer)
 {
-    alien_hit_buffer.loadFromFile("assets/audio/alien_hit.wav");
-    explosion_buffer.loadFromFile("assets/audio/explosion.wav");
-    game_over_buffer.loadFromFile("assets/audio/game_over.wav");
-    laser_buffer.loadFromFile("assets/audio/laser.wav");
-    player_hit_bullet_buffer.loadFromFile("assets/audio/player_hit_bullet.wav");
-    player_hit_swerve_buffer.loadFromFile("assets/audio/player_hit_swerve.wav");
-    level_won_buffer.loadFromFile("assets/audio/level_won.wav");
-    upgrade_buffer.loadFromFile("assets/audio/upgrade.wav");
+    bool success = true;
+    success |= alien_hit_buffer.loadFromFile("assets/audio/alien_hit.wav");
+    success |= explosion_buffer.loadFromFile("assets/audio/explosion.wav");
+    success |= game_over_buffer.loadFromFile("assets/audio/game_over.wav");
+    success |= laser_buffer.loadFromFile("assets/audio/laser.wav");
+    success |= player_hit_bullet_buffer.loadFromFile("assets/audio/player_hit_bullet.wav");
+    success |= player_hit_swerve_buffer.loadFromFile("assets/audio/player_hit_swerve.wav");
+    success |= level_won_buffer.loadFromFile("assets/audio/level_won.wav");
+    success |= upgrade_buffer.loadFromFile("assets/audio/upgrade.wav");
+
+    if (!success)
+        std::cerr << "Warning: One or multiple audio files failed to load!\n";
 
     alien_hit.setBuffer(alien_hit_buffer);
     explosion.setBuffer(explosion_buffer);
