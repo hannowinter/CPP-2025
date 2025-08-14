@@ -150,11 +150,17 @@ void AlienGridControl::update(const UpdateState& state)
         size_t count = state.controls.count<AlienControl>();
 
         // Choose aliens to swerve
-        size_t alien1_to_swerve = 
-            std::uniform_int_distribution<size_t>{ 0, count - 1 }(game_control.random());
-        size_t alien2_to_swerve =
-            std::uniform_int_distribution<size_t>{ 0, count - 1 }(game_control.random());
-        // we will allow "alien1_to_swerve == alien2_to_swerve"
+        size_t alien1_to_swerve = SIZE_MAX;
+        size_t alien2_to_swerve = SIZE_MAX;
+
+        do
+        {
+            alien1_to_swerve =
+                std::uniform_int_distribution<size_t>{ 0, count - 1 }(game_control.random());
+            alien2_to_swerve =
+                std::uniform_int_distribution<size_t>{ 0, count - 1 }(game_control.random());
+        } 
+        while (alien1_to_swerve == alien2_to_swerve && count >= 2); // prevent "alien1_to_swerve == alien2_to_swerve" if possible
 
         // Make chosen aliens swerve
         AlienControl& alien1_control = *state.controls.get<AlienControl>(alien1_to_swerve);

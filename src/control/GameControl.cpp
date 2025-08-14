@@ -24,8 +24,6 @@ void GameControl::increment_level()
     m_state.lives = 5;
     m_state.over = false;
     m_state.level_won = false;
-
-
 }
 
 // Reset game to beginning
@@ -43,9 +41,9 @@ void GameControl::add_children(ControlList& controls)
 {
     // Add PlayerController to list of controllers
     controls.add<PlayerControl>(sf::Vector2f{
-       (constants::VIEW_WIDTH - constants::player::SIZE.x) / 2.0f,
-       constants::VIEW_HEIGHT - constants::player::SIZE.y - constants::PADDING
-        });
+        (constants::VIEW_WIDTH - constants::player::SIZE.x) / 2.0f,
+        constants::VIEW_HEIGHT - constants::player::SIZE.y - constants::PADDING
+    });
 
     // Add AlienGridController to list of controllers
     controls.add<AlienGridControl>();
@@ -66,7 +64,7 @@ void GameControl::update(const UpdateState& state)
 {
     // Check if game is over (no lives left or aliens reached bottom)
     AlienGridControl* grid = state.controls.get<AlienGridControl>();
-    if ((m_state.lives == 0 || grid->get_bottom() >= constants::VIEW_HEIGHT - 100.0f) && !m_gameover_shown)
+    if (grid != nullptr && (m_state.lives == 0 || grid->get_bottom() >= constants::VIEW_HEIGHT - 100.0f) && !m_gameover_shown)
     {
         // Play sound
         AudioPlayer::get().game_over.play();
