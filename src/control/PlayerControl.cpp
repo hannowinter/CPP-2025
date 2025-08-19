@@ -113,6 +113,9 @@ void PlayerControl::update(const UpdateState& state)
 		m_player.move(Player::RIGHT, state.delta);
 	}
 
+	// Ensure the player is always at least "constants::PADDING" away from the view's border
+	m_player.clamp_position();
+
 	// Shoot weapon if cooldown is over and space button is pressed
 	if (
 		m_shoot_cooldown <= 0.0f &&

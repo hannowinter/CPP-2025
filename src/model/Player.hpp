@@ -22,6 +22,9 @@ public:
 	// Move player
 	void move(Direction direction, float delta);
 
+	// Ensure the player is always at least "constants::PADDING" away from the view's border
+	void clamp_position();
+
 private:
 	// Position of player
 	sf::Vector2f m_position;

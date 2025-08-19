@@ -50,8 +50,6 @@ sf::Vector2f Alien::grid_offset() const
 	// Offset ist calculated from column / row of alien and alien size / spacing in grid
 	sf::Vector2f offset = sf::Vector2f{ (float)m_column, (float)m_row }.
 		componentWiseMul(constants::alien::SIZE + constants::alien_grid::SPACING);
-	//if (m_row % 2 == 1)
-		//offset.x = constants::VIEW_WIDTH - offset.x;
 	return offset;
 }
 
