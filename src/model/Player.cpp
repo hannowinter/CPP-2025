@@ -30,10 +30,13 @@ void Player::move(Direction direction, float delta)
 		m_position.x += constants::player::MOVE_SPEED * delta;
 		break;
 	}
+}
 
+void Player::clamp_position()
+{
 	// Ensure player is still within boundaries
 	m_position.x = std::clamp(
-		m_position.x, 
+		m_position.x,
 		constants::PADDING,
 		constants::VIEW_WIDTH - constants::player::SIZE.x - constants::PADDING
 	);

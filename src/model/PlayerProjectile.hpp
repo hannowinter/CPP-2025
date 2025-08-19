@@ -19,20 +19,6 @@ public:
     // Make projectile move up
     virtual void move_up(float delta);
 
-    // Check if constant PlayerProjectile is of specified type and cast
-    template <std::derived_from<PlayerProjectile> C>
-    const C* is() const
-    {
-        return dynamic_cast<const C*>(this);
-    }
-
-    // Check if non-constant PlayerProjectile is of specified type and cast
-    template <std::derived_from<PlayerProjectile> C>
-    C* is()
-    {
-        return dynamic_cast<C*>(this);
-    }
-
 protected:
 
     // Position of ammunition
