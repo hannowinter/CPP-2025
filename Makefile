@@ -9,7 +9,7 @@ GTEST_INCLUDES := -IGoogleTest/googletest/include -IGoogleTest/googletest \
 INCLUDES := -I./SFML/include -I/opt/homebrew/include $(GTEST_INCLUDES)
 
 # Contains libraries we need to (-L is directory search path, -l is lib)
-LDFLAGS := -L/usr/local/lib -L./SFML/lib -L/opt/homebrew/lib
+LDFLAGS := -L/usr/local/lib -L./SFML/lib -L/opt/homebrew/lib -Wl,-rpath,'$$ORIGIN/libFLAC'
 LDLIBS := -lsfml-system -lsfml-window -lsfml-graphics -lsfml-audio
 
 SRCDIR := ./src
@@ -72,7 +72,18 @@ getSFML:
 	@echo "Renaming folder"
 	mv SFML-3.0.0 SFML
 	@echo "Finished!"
-    
+
+# For audio support on JupyterHub
+getFLAC:
+	@echo "Downloading libFLAC12"
+	curl -L http://archive.ubuntu.com/ubuntu/pool/main/f/flac/libflac12t64_1.4.3+ds-2.1ubuntu2_amd64.deb --output libflac12.deb
+	@echo "Extracting .deb"
+	mkdir -p libFLAC
+	dpkg-deb -x libflac12.deb libFLAC_tmp
+	cp libFLAC_tmp/usr/lib/x86_64-linux-gnu/libFLAC.so.12.* libFLAC/libFLAC.so.12
+	rm -rf libFLAC_tmp libflac12.deb
+	@echo "libFLAC ready in ./libFLAC"
+
 $(BUILDDIR)/%.o: %.cpp
 	@mkdir -p $(@D)
 	$(CXX) $(INCLUDES) $(CXXFLAGS) -MMD -MP -c $< -o $@
