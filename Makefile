@@ -9,7 +9,17 @@ GTEST_INCLUDES := -IGoogleTest/googletest/include -IGoogleTest/googletest \
 INCLUDES := -I./SFML/include -I/opt/homebrew/include $(GTEST_INCLUDES)
 
 # Contains libraries we need to (-L is directory search path, -l is lib)
-LDFLAGS := -L/usr/local/lib -L./SFML/lib -L/opt/homebrew/lib -L./libFLAC -Wl,-rpath,'$$ORIGIN/libFLAC' -Wl,-rpath-link,./libFLAC
+UNAME_S := $(shell uname -s)
+
+# The flags are different depending on OS
+ifeq ($(UNAME_S),Linux)
+    LDFLAGS = -L/usr/local/lib -L./SFML/lib -L/opt/homebrew/lib -L./libFLAC -Wl,-rpath,'$$ORIGIN/libFLAC' -Wl,-rpath-link,./libFLAC
+else ifeq ($(UNAME_S),Darwin)
+    LDFLAGS = -L/usr/local/lib -L./SFML/lib -L/opt/homebrew/lib -L./libFLAC -Wl,-rpath,'@loader_path/libFLAC'
+else
+    # Assume Windows or other
+    LDFLAGS = -L./SFML/lib -L./libFLAC
+endif
 LDLIBS := -lsfml-system -lsfml-window -lsfml-graphics -lsfml-audio
 
 SRCDIR := ./src
