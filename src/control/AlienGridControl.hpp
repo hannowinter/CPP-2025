@@ -33,10 +33,6 @@ public:
 	// Returns the position of the grid's top-leftmost point
 	sf::Vector2f origin() const;
 
-	// Returns the current intensity, which depends on the current amount of aliens left (fewer aliens -> more intense).
-	// The intensity controls the difficulty by influencing move speed, timers and shoot frequency.
-	float intensity() const;
-
 	// Sets the mode.
 	void set_mode(Mode new_mode);
 

@@ -54,16 +54,6 @@ void AlienGridControl::update(const UpdateState& state)
 {
     // Get game controller
     GameControl& game_control = *state.controls.get<GameControl>();
-    
-    // Calculate intensity
-    // "ratio == 0.1" initially, "ratio == 1.0" in level 10
-    float ratio = (float) game_control.state().level / 10.0f;
-    ratio = std::pow(ratio, 3.0f); // make the intensity increase more gentle initially and steeper towards the end
-    m_intensity = std::lerp(
-        constants::alien_grid::MIN_INTENSITY,
-        constants::alien_grid::MAX_INTENSITY,
-        ratio
-    );
 
     // Determine bottomost point in grid
     size_t alien_max_row = 0;
@@ -100,7 +90,7 @@ void AlienGridControl::update(const UpdateState& state)
     case SHIFT_RIGHT:
         // Determine velocity and move origin
         velocity = { constants::alien_grid::SHIFT_SPEED, 0.0f };
-        m_origin += velocity * state.delta * intensity();
+        m_origin += velocity * state.delta * game_control.intensity();
 
         // Check if border has been reached
         if (m_origin.x + alien_grid_rightmost > constants::VIEW_WIDTH - constants::PADDING)
@@ -113,7 +103,7 @@ void AlienGridControl::update(const UpdateState& state)
     case SHIFT_LEFT:
         // Determine velocity and move origin
         velocity = { -constants::alien_grid::SHIFT_SPEED, 0.0f };
-        m_origin += velocity * state.delta * intensity();
+        m_origin += velocity * state.delta * game_control.intensity();
 
         // Check if border has been reached
         if (m_origin.x + alien_grid_leftmost < constants::PADDING)
@@ -126,11 +116,11 @@ void AlienGridControl::update(const UpdateState& state)
     case DESCEND:
         // Determine velocity and move origin
         velocity = { 0.0f, constants::alien_grid::DESCEND_SPEED };
-        m_origin += velocity * state.delta * intensity();
+        m_origin += velocity * state.delta * game_control.intensity();
 
         // Check if descend phase is over
         m_descend_timer += state.delta;
-        if (m_descend_timer >= constants::alien_grid::DESCEND_DURATION / intensity())
+        if (m_descend_timer >= constants::alien_grid::DESCEND_DURATION / game_control.intensity())
         {
             m_descend_timer = 0.0f;
             if (m_prev_mode == SHIFT_LEFT)
@@ -175,12 +165,6 @@ void AlienGridControl::update(const UpdateState& state)
 sf::Vector2f AlienGridControl::origin() const
 {
     return m_origin;
-}
-
-// Get current intensity
-float AlienGridControl::intensity() const
-{
-    return m_intensity;
 }
 
 // Set mode of grid

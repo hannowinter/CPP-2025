@@ -27,6 +27,10 @@ public:
 	void increment_level();
 	void reset_game();
 
+	// Returns the current intensity, which depends on the current level.
+	// The intensity controls the difficulty by influencing move speed, timers and shoot frequency.
+	float intensity() const;
+
 	// Get pseudo-random number generator
 	std::mt19937& random();
 

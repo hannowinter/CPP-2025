@@ -14,6 +14,12 @@ namespace constants
 
     constexpr float PADDING = 10.0f; // minimum distance of actors to the view's border
 
+    namespace game
+    {
+        constexpr size_t INITIAL_LIVES = 5;
+        constexpr size_t MAX_LEVEL = 10;
+    }
+
     // Constants for player character
     namespace player
     {

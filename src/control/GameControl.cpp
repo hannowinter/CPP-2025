@@ -21,7 +21,7 @@ GameControl::GameControl() :
 void GameControl::increment_level()
 {
     m_state.level++;
-    m_state.lives = 5;
+    m_state.lives = constants::game::INITIAL_LIVES;
     m_state.over = false;
     m_state.level_won = false;
 }
@@ -30,7 +30,7 @@ void GameControl::increment_level()
 void GameControl::reset_game()
 {
     m_state.level = 1;
-    m_state.lives = 5;
+    m_state.lives = constants::game::INITIAL_LIVES;
     m_state.score = 0;
     m_state.over = false;
     m_state.level_won = false;
@@ -107,7 +107,7 @@ void GameControl::update(const UpdateState& state)
     }
 
     // Check if game should continue
-    if (m_state.level_won && state.inputs.held_keys.contains(sf::Keyboard::Key::Space) && m_state.level < 10)
+    if (m_state.level_won && state.inputs.held_keys.contains(sf::Keyboard::Key::Space) && m_state.level < constants::game::MAX_LEVEL)
     {
         // Remove all controllers from list
         for (const auto& control : state.controls)
@@ -121,7 +121,7 @@ void GameControl::update(const UpdateState& state)
 
         m_victory_shown = false;
     }
-    else if (m_state.level_won && state.inputs.held_keys.contains(sf::Keyboard::Key::Space) && m_state.level == 10)
+    else if (m_state.level_won && state.inputs.held_keys.contains(sf::Keyboard::Key::Space) && m_state.level == constants::game::MAX_LEVEL)
     {
         // Remove all controllers from list
         for (const auto& control : state.controls)
@@ -141,6 +141,19 @@ void GameControl::update(const UpdateState& state)
 void GameControl::draw(LayerManager& layers)
 {
     m_hud.draw(layers.get(LayerID::HUD), m_state);
+}
+
+float GameControl::intensity() const
+{
+    // Calculate intensity
+    // "ratio == 0.0" initially, "ratio == 1.0" in level 10
+    float ratio = (float)(m_state.level - 1) / (constants::game::MAX_LEVEL - 1);
+    ratio = std::pow(ratio, 3.0f); // make the intensity increase more gentle initially and steeper towards the end
+    return std::lerp(
+        constants::alien_grid::MIN_INTENSITY,
+        constants::alien_grid::MAX_INTENSITY,
+        ratio
+    );
 }
 
 // Get pseudo-random number generator

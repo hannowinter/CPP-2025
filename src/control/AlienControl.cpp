@@ -174,6 +174,7 @@ void AlienControl::update(const UpdateState& state)
 	// Get AlienGridControl and GameControl
 	const AlienGridControl& alien_grid_control = *state.controls.get<AlienGridControl>();
 	GameControl& game_control = *state.controls.get<GameControl>();
+	float intensity = game_control.intensity();
 
 	// Check for collisions
 	for (const auto& control : state.controls)
@@ -256,7 +257,7 @@ void AlienControl::update(const UpdateState& state)
 	}
 
 	// Update view (animations are sped up by a factor of intensity())
-	m_alien_view.update(state.delta * alien_grid_control.intensity());
+	m_alien_view.update(state.delta * intensity);
 
 	// Check if alien needs to shoot
 	m_shoot_timer -= state.delta;
@@ -269,7 +270,7 @@ void AlienControl::update(const UpdateState& state)
 		});
 
 		// Reset cooldown
-		reset_shoot_timer(alien_grid_control.intensity(), game_control.random());
+		reset_shoot_timer(intensity, game_control.random());
 	}
 
 	// update the shake state
@@ -284,14 +285,12 @@ void AlienControl::update(const UpdateState& state)
 	{
 		// check if new cycle needs to be initiated
 		if (m_shake_state.finished_cycle())
-		{
-			float intensity = alien_grid_control.intensity();
-			
+		{			
 			// weaken the intensity a bit to make the shaking not scale as strongly
-			intensity = std::pow(intensity, constants::alien::SHAKE_INTENSITY_EXPONENT);
+			float intensity_weakened = std::pow(intensity, constants::alien::SHAKE_INTENSITY_EXPONENT);
 			
 			m_shake_state.new_cycle(
-				alien_grid_control.intensity(),
+				intensity_weakened,
 				game_control.random()
 			);
 		}
@@ -322,7 +321,7 @@ void AlienControl::update(const UpdateState& state)
 
 		m_alien.has_hit_player = false;
 
-		bool finished = m_swerve_state.update_retreat(state.delta, alien_grid_control.intensity(), target);
+		bool finished = m_swerve_state.update_retreat(state.delta, intensity, target);
 		if (finished)
 			m_mode = GRID_ALIGNED;
 
