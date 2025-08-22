@@ -29,6 +29,33 @@ struct ShakeState
 	sf::Vector2f get_offset() const;
 };
 
+// handles the aliens' swerving maneuver
+struct SwerveState
+{
+	// Position and velocity during swerving
+	sf::Vector2f position{};
+	sf::Vector2f velocity{};
+
+	// Position in grid to return to after swerving
+	size_t target_column{};
+	size_t target_row{};
+
+	void start(
+		size_t target_column, 
+		size_t target_row, 
+		sf::Vector2f init_position, 
+		sf::Vector2f init_velocity
+	);
+
+	// update the process of swerving towards the player
+	// returns "true" if the retreat threshold has been reached and the alien should start to retreat
+	bool update_swerve(float delta, sf::Vector2f player_position);
+
+	// update the process of retreating to the target destination
+	// returns "true" if the retreating process has finished
+	bool update_retreat(float delta, float intensity, sf::Vector2f target);
+};
+
 // Controls an individual alien.
 class AlienControl : public Control
 {
@@ -75,13 +102,7 @@ private:
 
 	ShakeState m_shake_state;
 
-	// Position and velocity during swerving
-	sf::Vector2f m_swerve_position;
-	sf::Vector2f m_swerve_velocity;
-
-	// Position in grid to return to after swerving
-	size_t m_swerve_target_column;
-	size_t m_swerve_target_row;
+	SwerveState m_swerve_state;
 };
 
 #endif

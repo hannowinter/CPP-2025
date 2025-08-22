@@ -60,6 +60,90 @@ sf::Vector2f ShakeState::get_offset() const
 	return lerp(start, target, ratio);
 }
 
+void SwerveState::start(
+	size_t target_column,
+	size_t target_row,
+	sf::Vector2f init_position,
+	sf::Vector2f init_velocity
+) 
+{
+	position = init_position;
+	velocity = init_velocity;
+	this->target_column = target_column;
+	this->target_row = target_row;
+}
+
+bool SwerveState::update_swerve(float delta, sf::Vector2f player_position)
+{
+	constexpr float MAX_SPEED = constants::alien::SWERVE_MAX_SPEED;
+
+	// Calculate acceleration vector
+	sf::Vector2f acceleration =
+		(player_position - position).normalized() *
+		constants::alien::SWERVE_ACCELERATION;
+
+	// Apply acceleration to velocity
+	velocity += acceleration * delta;
+
+	// Limit velocity to MAX_SPEED
+	if (velocity.length() > MAX_SPEED)
+		velocity = velocity.normalized() * MAX_SPEED;
+
+	// Apply velocity to position
+	position += velocity * delta;
+
+	// Check if alien should retreat
+	return position.y >= constants::VIEW_HEIGHT - constants::alien::RETREAT_THRESHOLD;
+}
+
+bool SwerveState::update_retreat(float delta, float intensity, sf::Vector2f target)
+{
+	// Calculate distance to target
+	sf::Vector2 dist = target - position;
+
+	// Calculate max speed
+	const float MAX_SPEED = std::max(
+		constants::alien_grid::SHIFT_SPEED * intensity * 1.5f, // we want
+		// the alien to move a bit faster than the grid to allow it to re-align more easily
+
+		constants::alien::RETREAT_MIN_SPEED
+	);
+
+	// If the remaining distance is short, switch from acceleration-based movement to
+	// fixed-speed movement (prevents overshooting the target)
+	if (dist.length() <= 100.0f)
+	{
+		if (MAX_SPEED * delta < dist.length())
+		{
+			velocity = dist.normalized() * MAX_SPEED;
+		}
+		else // the next step of movement would overshoot, so we finish the retreat
+		{
+			position = target;
+			return true;
+		}
+	}
+
+	// Otherwise continue with acceleration-based movement
+	else
+	{
+		sf::Vector2f acceleration =
+			(target - position).normalized() *
+			constants::alien::RETREAT_ACCELERATION;
+
+		// Apply acceleration to velocity
+		velocity += acceleration * delta;
+
+		// Limit velocity to MAX_SPEED
+		if (velocity.length() > MAX_SPEED)
+			velocity = velocity.normalized() * MAX_SPEED;
+	}
+
+	// Apply velocity to position
+	position += velocity * delta;
+	return false;
+}
+
 // Create new AlienController
 AlienControl::AlienControl(Alien::Variant variant, sf::Vector2f grid_origin, size_t column, size_t row) :
 	m_alien{ variant, grid_origin, column, row },
@@ -67,10 +151,7 @@ AlienControl::AlienControl(Alien::Variant variant, sf::Vector2f grid_origin, siz
 	m_mode{ GRID_ALIGNED },
 	m_shoot_timer{},
 	m_shake_state{},
-	m_swerve_position{},
-	m_swerve_velocity{},
-	m_swerve_target_column{},
-	m_swerve_target_row{}
+	m_swerve_state{}
 {
 
 }
@@ -224,86 +305,28 @@ void AlienControl::update(const UpdateState& state)
 		const PlayerControl& player = *state.controls.get<PlayerControl>();
 		sf::Vector2f player_position = player.get().hitbox().position;
 
-		const float MAX_SPEED = constants::alien::SWERVE_MAX_SPEED;
-
-		// Calculate acceleration vector
-		sf::Vector2f acceleration = 
-			(player_position - m_swerve_position).normalized() * 
-			constants::alien::SWERVE_ACCELERATION;
-
-		// Apply acceleration to velocity
-		m_swerve_velocity += acceleration * state.delta;
-
-		// Limit velocity to MAX_SPEED
-		if (m_swerve_velocity.length() > MAX_SPEED)
-			m_swerve_velocity = m_swerve_velocity.normalized() * MAX_SPEED;
-
-		// Apply velocity to position
-		m_swerve_position += m_swerve_velocity * state.delta;
-
-		// Make alien retreat if below threshold height
-		if (m_swerve_position.y >= constants::VIEW_HEIGHT - constants::alien::RETREAT_THRESHOLD)
+		bool should_retreat = m_swerve_state.update_swerve(state.delta, player_position);
+		if (should_retreat)
 			m_mode = RETREAT;
 
-		// Set alien position to swerving position
-		new_position = m_swerve_position;
+		new_position = m_swerve_state.position;
 		break;
 	}
 	case RETREAT:
 	{
 		// Set new row and column of alien within grid
-		m_alien.set_column_row(m_swerve_target_column, m_swerve_target_row);
+		m_alien.set_column_row(m_swerve_state.target_column, m_swerve_state.target_row);
 
 		// Get the retreat target position
 		sf::Vector2f target = alien_grid_control.origin() + m_alien.grid_offset();
 
 		m_alien.has_hit_player = false;
 
-		// Calculate distance to target
-		sf::Vector2 dist = target - m_swerve_position;
+		bool finished = m_swerve_state.update_retreat(state.delta, alien_grid_control.intensity(), target);
+		if (finished)
+			m_mode = GRID_ALIGNED;
 
-		// Calculate max speed
-		const float MAX_SPEED = std::max(
-			constants::alien_grid::SHIFT_SPEED * alien_grid_control.intensity() * 1.5f, // we want
-			// the alien to move a bit faster than the grid to allow it to re-align more easily
-
-			constants::alien::RETREAT_MIN_SPEED
-		);
-
-		// If the remaining distance is short, switch from acceleration-based movement to
-		// fixed-speed movement (prevents overshooting the target)
-		if (dist.length() <= 100.0f)
-		{
-			if (MAX_SPEED * state.delta < dist.length())
-			{
-				m_swerve_velocity = dist.normalized() * MAX_SPEED;
-			}
-			else // the next step of movement would overshoot, so we finish the retreat
-			{
-				m_alien.set_position(target);
-				m_mode = GRID_ALIGNED;
-				break;
-			}
-		}
-
-		// Otherwise continue with acceleration-based movement
-		else
-		{
-			sf::Vector2f acceleration =
-				(target - m_swerve_position).normalized() *
-				constants::alien::RETREAT_ACCELERATION;
-
-			// Apply acceleration to velocity
-			m_swerve_velocity += acceleration * state.delta;
-
-			// Limit velocity to MAX_SPEED
-			if (m_swerve_velocity.length() > MAX_SPEED)
-				m_swerve_velocity = m_swerve_velocity.normalized() * MAX_SPEED;
-		}
-
-		// Apply velocity to position
-		m_swerve_position += m_swerve_velocity * state.delta;
-		new_position = m_swerve_position;
+		new_position = m_swerve_state.position;
 		break;
 	}
 	}
@@ -351,9 +374,6 @@ void AlienControl::reset_shoot_timer(float intensity, std::mt19937& random)
 void AlienControl::start_swerve(sf::Vector2f init_velocity, size_t target_column, size_t target_row)
 {
 	m_mode = SWERVE;
-	m_swerve_position = m_alien.hitbox().position;
-	m_swerve_velocity = init_velocity;
 	m_shake_state.reset();
-	m_swerve_target_column = target_column;
-	m_swerve_target_row = target_row;
+	m_swerve_state.start(target_column, target_row, m_alien.hitbox().position, init_velocity);
 }
