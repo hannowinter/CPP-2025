@@ -145,3 +145,76 @@ TEST_F(ShakeTest, offsetTest)
 	shake_state.update(0.75f);
 	EXPECT_EQ(shake_state.get_offset(), shake_state.target);
 }
+
+// test fixure for SwerveState
+struct SwerveTest : testing::Test
+{
+protected:
+	SwerveState swerve_state;
+};
+
+// test if the swerving behaves correctly
+// start a new swerve and continuously update
+// check if the retreat threshold is reached after some time
+TEST_F(SwerveTest, swervingTest)
+{
+	swerve_state.start(
+		0, 0,
+		{ 0.0f, 0.0f }, // let's start at the top-left corner
+		{ 100.0f, 0.0f } // have some initial velocity
+	);
+
+	constexpr sf::Vector2f PLAYER_POSITION = { 500.0f, constants::VIEW_HEIGHT - constants::PADDING - constants::player::SIZE.y };
+
+	constexpr float MAX_TIME_FOR_RETREAT = 10.0f; // a swerve should not take this long
+	constexpr size_t MAX_ITERATIONS_FOR_RETREAT =
+		MAX_TIME_FOR_RETREAT / FIXED_DELTA_60;
+
+	// check if aliens retreat after some time
+	for (size_t i = 0; i < MAX_ITERATIONS_FOR_RETREAT; i++)
+	{
+		bool should_retreat = swerve_state.update_swerve(FIXED_DELTA_60, PLAYER_POSITION);
+
+		if (should_retreat)
+		{
+			// check if alien is below threshold
+			EXPECT_GE(swerve_state.position.y, constants::VIEW_HEIGHT - constants::alien::RETREAT_THRESHOLD);
+			return;
+		}
+	}
+
+	FAIL();
+}
+
+// test if the retreating behaves correctly
+// start a new retreat and continuously update
+// check if a quickly moving target can be reached after some time
+TEST_F(SwerveTest, retreatingTest)
+{
+	swerve_state.position = { 100.0f, constants::alien::RETREAT_THRESHOLD };
+
+	sf::Vector2f moving_target = { 0.0f, 0.0f };
+	float MOVING_TARGET_SPEED = constants::alien_grid::SHIFT_SPEED;
+	float INTENSITY = 5.0f;
+
+	constexpr float MAX_TIME_FOR_RETREAT_FINISH = 10.0f; // a retreat should not take this long
+	constexpr size_t MAX_ITERATIONS_FOR_RETREAT_FINISH =
+		MAX_TIME_FOR_RETREAT_FINISH / FIXED_DELTA_60;
+
+	// check if aliens finish retreating after some time
+	for (size_t i = 0; i < MAX_ITERATIONS_FOR_RETREAT_FINISH; i++)
+	{
+		moving_target.x += MOVING_TARGET_SPEED * INTENSITY * FIXED_DELTA_60;
+		bool finished = swerve_state.update_retreat(FIXED_DELTA_60, INTENSITY, moving_target);
+
+		if (finished)
+		{
+			// target has been reached
+			EXPECT_EQ(swerve_state.position, moving_target);
+
+			return;
+		}
+	}
+
+	FAIL();
+}
