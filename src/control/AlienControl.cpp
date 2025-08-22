@@ -11,16 +11,62 @@
 #include "../model/Constants.hpp"
 #include "../Util.hpp"
 
+void ShakeState::update(float delta)
+{
+	timer += delta;
+	if (timer > duration)
+		timer = duration;
+}
+
+bool ShakeState::finished_cycle() const
+{
+	return timer >= duration;
+}
+
+void ShakeState::reset()
+{
+	start = get_offset();
+	target = { 0.0f, 0.0f };
+	timer = 0.0f;
+	duration = constants::alien::SHAKE_MIN_DURATION;
+}
+
+void ShakeState::new_cycle(float intensity, std::mt19937& random)
+{
+	std::uniform_real_distribution<float> target_dist{
+		constants::alien::SHAKE_MIN_TARGET_OFFSET,
+		constants::alien::SHAKE_MAX_TARGET_OFFSET * intensity
+	};
+
+	std::uniform_real_distribution<float> duration_dist{
+		constants::alien::SHAKE_MIN_DURATION / intensity,
+		constants::alien::SHAKE_MAX_DURATION / intensity
+	};
+
+	// Set starting position to what the previous target position was
+	start = target;
+
+	// Calculate new target positon for shaking animation
+	target = { target_dist(random), target_dist(random) };
+
+	// Determine duration and reset timer
+	duration = duration_dist(random);
+	timer = 0.0f;
+}
+
+sf::Vector2f ShakeState::get_offset() const
+{
+	float ratio = timer / duration;
+	return lerp(start, target, ratio);
+}
+
 // Create new AlienController
 AlienControl::AlienControl(Alien::Variant variant, sf::Vector2f grid_origin, size_t column, size_t row) :
 	m_alien{ variant, grid_origin, column, row },
 	m_alien_view{ variant },
 	m_mode{ GRID_ALIGNED },
 	m_shoot_timer{},
-	m_shake_start{},
-	m_shake_target{},
-	m_shake_timer{},
-	m_shake_duration{},
+	m_shake_state{},
 	m_swerve_position{},
 	m_swerve_velocity{},
 	m_swerve_target_column{},
@@ -38,7 +84,7 @@ void AlienControl::init(const ControlList& controls)
 	// Randomize alien animation, shooting cooldown and shaking animation
 	m_alien_view.randomize_animation(game_control.random());
 	reset_shoot_timer(constants::alien_grid::MIN_INTENSITY, game_control.random());
-	refresh_shake(constants::alien_grid::MIN_INTENSITY, game_control.random());
+	m_shake_state.new_cycle(constants::alien_grid::MIN_INTENSITY, game_control.random());
 }
 
 // Execute all relevant updates
@@ -145,31 +191,31 @@ void AlienControl::update(const UpdateState& state)
 		reset_shoot_timer(alien_grid_control.intensity(), game_control.random());
 	}
 
+	// update the shake state
+	m_shake_state.update(state.delta);
+
+	sf::Vector2f new_position;
+
 	// update alien depending on current mode
 	switch (m_mode)
 	{
 	case GRID_ALIGNED:
 	{
-		// check if alien needs to initiate a new shake iteration
-		m_shake_timer += state.delta;
-		if (m_shake_timer >= m_shake_duration)
+		// check if new cycle needs to be initiated
+		if (m_shake_state.finished_cycle())
 		{
-			refresh_shake(
+			float intensity = alien_grid_control.intensity();
+			
+			// weaken the intensity a bit to make the shaking not scale as strongly
+			intensity = std::pow(intensity, constants::alien::SHAKE_INTENSITY_EXPONENT);
+			
+			m_shake_state.new_cycle(
 				alien_grid_control.intensity(),
 				game_control.random()
 			);
 		}
 
-		// calculate the shake offset
-		constexpr static auto lerp = []<typename T, typename R>(const T& v1, const T& v2, const R& r)
-		{ // std::lerp does not work with sf::Vector2f unfortunately
-			return v1 * (R{ 1 } - r) + v2 * r;
-		};
-
-		float shake_ratio = m_shake_timer / m_shake_duration;
-		sf::Vector2f shake_offset = lerp(m_shake_start, m_shake_target, shake_ratio);
-		
-		m_alien.set_position(alien_grid_control.origin() + m_alien.grid_offset() + shake_offset);
+		new_position = alien_grid_control.origin() + m_alien.grid_offset();
 		break;
 	}
 	case SWERVE:
@@ -200,7 +246,7 @@ void AlienControl::update(const UpdateState& state)
 			m_mode = RETREAT;
 
 		// Set alien position to swerving position
-		m_alien.set_position(m_swerve_position);
+		new_position = m_swerve_position;
 		break;
 	}
 	case RETREAT:
@@ -257,10 +303,13 @@ void AlienControl::update(const UpdateState& state)
 
 		// Apply velocity to position
 		m_swerve_position += m_swerve_velocity * state.delta;
-		m_alien.set_position(m_swerve_position);
+		new_position = m_swerve_position;
 		break;
 	}
 	}
+
+	sf::Vector2f shake_offset = m_shake_state.get_offset();
+	m_alien.set_position(new_position + shake_offset);
 }
 
 // Draw alien on scene
@@ -298,47 +347,13 @@ void AlienControl::reset_shoot_timer(float intensity, std::mt19937& random)
 	m_shoot_timer = dist(random);
 }
 
-// Make alien shake
-void AlienControl::refresh_shake(float intensity, std::mt19937& random)
-{
-	intensity = std::pow(intensity, constants::alien::SHAKE_INTENSITY_EXPONENT);
-
-	std::uniform_real_distribution<float> target_dist{
-		constants::alien::SHAKE_MIN_TARGET_OFFSET,
-		constants::alien::SHAKE_MAX_TARGET_OFFSET * intensity
-	};
-
-	std::uniform_real_distribution<float> duration_dist{
-		constants::alien::SHAKE_MIN_DURATION,
-		constants::alien::SHAKE_MAX_DURATION
-	};
-
-	// Set starting position to current position after finishing shaking
-	m_shake_start = m_shake_target;
-
-	// Calculate new target positon for shaking animation
-	m_shake_target = { target_dist(random), target_dist(random) };
-
-	// Determine duration and reset timer
-	m_shake_duration = duration_dist(random) / intensity;
-	m_shake_timer = 0.0f;
-}
-
-// Stop shaking animation
-void AlienControl::reset_shake()
-{
-	m_shake_start = { 0.0f, 0.0f };
-	m_shake_target = { 0.0f, 0.0f };
-	m_shake_timer = 0.0f;
-}
-
 // Make alien swerve
 void AlienControl::start_swerve(sf::Vector2f init_velocity, size_t target_column, size_t target_row)
 {
 	m_mode = SWERVE;
 	m_swerve_position = m_alien.hitbox().position;
 	m_swerve_velocity = init_velocity;
-	reset_shake();
+	m_shake_state.reset();
 	m_swerve_target_column = target_column;
 	m_swerve_target_row = target_row;
 }

@@ -16,6 +16,9 @@ public:
 	// Make bullet move further down
 	void move_down(float delta);
 
+	// Check if alien bullet is outside of view
+	bool outside_view() const;
+
 private:
 	// Bullet position
 	sf::Vector2f m_position;

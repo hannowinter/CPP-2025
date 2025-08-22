@@ -8,6 +8,27 @@
 #include "../view/LayerManager.hpp"
 #include "../view/AlienView.hpp"
 
+// handles the aliens shaking smoothly
+struct ShakeState
+{
+	sf::Vector2f start{}; // shake start position
+	sf::Vector2f target{}; // shake target position
+	float timer{}; // elapsed time for the current shake cycle (in seconds), counts up to "duration" and then a new cycle begins
+	float duration{}; // total duration for the current shake cycle (in seconds)
+
+	// update the shake state
+	void update(float delta);
+	// check if the current shake cycle finished
+	bool finished_cycle() const;
+	// start a new randomized shake cycle
+	void new_cycle(float intensity, std::mt19937& random);
+	// start a new shake cycle that moves towards { 0.0f, 0.0f }
+	void reset();
+
+	// calculate the alien's offset produced by the shake
+	sf::Vector2f get_offset() const;
+};
+
 // Controls an individual alien.
 class AlienControl : public Control
 {
@@ -38,12 +59,6 @@ public:
 	// Resets cooldown for next shot
 	void reset_shoot_timer(float intensity, std::mt19937& random);
 
-	// Make alien shake
-	void refresh_shake(float intensity, std::mt19937& random);
-
-	// Stop shaking animation
-	void reset_shake();
-
 	// Initiates a swerve, putting the alien into "SWERVE" mode
 	void start_swerve(sf::Vector2f init_velocity, size_t target_column, size_t target_row);
 
@@ -58,15 +73,7 @@ private:
 	// Cooldown time remaining until next shot
 	float m_shoot_timer;
 
-	// Starting and ending position of shake animation
-	sf::Vector2f m_shake_start;
-	sf::Vector2f m_shake_target;
-
-	// Timer to check if old animation is complete and new one must begin
-	float m_shake_timer;
-
-	// Duration of shake animation
-	float m_shake_duration;
+	ShakeState m_shake_state;
 
 	// Position and velocity during swerving
 	sf::Vector2f m_swerve_position;

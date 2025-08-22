@@ -1,6 +1,5 @@
 #include "AlienBulletControl.hpp"
 #include "../model/Constants.hpp"
-#include "../Util.hpp"
 
 // Create BulletController with Bullet at position
 AlienBulletControl::AlienBulletControl(sf::Vector2f position) :
@@ -22,7 +21,7 @@ void AlienBulletControl::update(const UpdateState& state)
 	m_bullet.move_down(state.delta);
 
 	// Delete the bullet if it has left the scene
-	if (!overlaps(constants::VIEW_RECT, m_bullet.hitbox())) // bullet is outside of view
+	if (m_bullet.outside_view())
 		state.controls.remove(this);
 
 	// Update BulletView (the AlienBullet is animated)

@@ -1,5 +1,6 @@
 #include "AlienBullet.hpp"
 #include "Constants.hpp"
+#include "../Util.hpp"
 
 // Initialize new bullet at shooting position
 AlienBullet::AlienBullet(sf::Vector2f position) :
@@ -22,4 +23,9 @@ void AlienBullet::move_down(float delta)
 {
 	// Calculate offset from speed and amount of time that has passed
 	m_position.y += constants::alien_bullet::MOVE_SPEED * delta;
+}
+
+bool AlienBullet::outside_view() const
+{
+	return !overlaps(constants::VIEW_RECT, hitbox());
 }
