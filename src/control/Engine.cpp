@@ -24,7 +24,7 @@ void Engine::start()
     sf::Clock clock;
 
     // Add the main `GameControl`
-    const GameControl& game_control = m_control_list.add<GameControl>();
+    const GameControl& game_control = m_control_list.request_add<GameControl>();
 
     m_control_list.execute_requests();
 

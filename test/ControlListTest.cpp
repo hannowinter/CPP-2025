@@ -21,7 +21,7 @@ struct MockControl : public Control
 	{
 		if constexpr (AddChildren && I + 10 <= 50)
 		{
-			controls.add<MockControl<I + 10, true>>(data);
+			controls.request_add<MockControl<I + 10, true>>(data);
 		}
 	}
 
@@ -61,15 +61,15 @@ protected:
 };
 
 // testing whether querying list information using "count" and "get" gives the expected results
-// in conjunction with list modifications by "add" and "remove"
+// in conjunction with list modifications by "add" and "request_remove"
 TEST_F(ControlListTest, controlListAddRemoveCountGet)
 {
 	// contains no controls initially
 	EXPECT_EQ(std::ranges::size(controls), 0);
 
-	MockControl<0>& control41 = controls.add<MockControl<0>>(41);
-	MockControl<0>& control17 = controls.add<MockControl<0>>(17);
-	MockControl<1>& control67 = controls.add<MockControl<1>>(67);
+	MockControl<0>& control41 = controls.request_add<MockControl<0>>(41);
+	MockControl<0>& control17 = controls.request_add<MockControl<0>>(17);
+	MockControl<1>& control67 = controls.request_add<MockControl<1>>(67);
 
 	// still no elements because we haven't called "execute_requests" yet
 	EXPECT_EQ(std::ranges::size(controls), 0);
@@ -93,8 +93,8 @@ TEST_F(ControlListTest, controlListAddRemoveCountGet)
 	EXPECT_EQ(controls.get<MockControl<0>>(3), nullptr);
 	EXPECT_EQ(controls.get<MockControl<2>>(0), nullptr);
 
-	controls.remove(&control41);
-	controls.remove(&control67);
+	controls.request_remove(&control41);
+	controls.request_remove(&control67);
 
 	// no change because we haven't called "execute_requests" yet
 	EXPECT_EQ(std::ranges::size(controls), 3);
@@ -114,7 +114,7 @@ TEST_F(ControlListTest, controlListAddRemoveCountGet)
 	EXPECT_EQ(controls.get<MockControl<1>>(0), nullptr);
 
 	// remove the last one and check if it's now empty
-	controls.remove(controls.get<MockControl<0>>(0));
+	controls.request_remove(controls.get<MockControl<0>>(0));
 	controls.execute_requests();
 	EXPECT_EQ(std::ranges::size(controls), 0);
 }
@@ -124,8 +124,8 @@ TEST_F(ControlListTest, controlListAddRemoveCountGet)
 // of its elements
 TEST_F(ControlListTest, controlListInitUpdateDraw)
 {
-	MockControl<0>& control0 = controls.add<MockControl<0>>(0);
-	MockControl<1>& control1 = controls.add<MockControl<1>>(0);
+	MockControl<0>& control0 = controls.request_add<MockControl<0>>(0);
+	MockControl<1>& control1 = controls.request_add<MockControl<1>>(0);
 
 	// should not be initialized yet
 	EXPECT_FALSE(control0.initialized);
@@ -163,9 +163,9 @@ TEST_F(ControlListTest, controlListAddChildren)
 {
 	// By passing "true" to the template, each MockControl will now recursively spawn a child of index I+10,
 	// as long as I+10 <= 50.
-	MockControl<0, true>& control0 = controls.add<MockControl<0, true>>(0);
-	MockControl<15, true>& control15 = controls.add<MockControl<15, true>>(0);
-	MockControl<40, true>& control40 = controls.add<MockControl<40, true>>(0);
+	MockControl<0, true>& control0 = controls.request_add<MockControl<0, true>>(0);
+	MockControl<15, true>& control15 = controls.request_add<MockControl<15, true>>(0);
+	MockControl<40, true>& control40 = controls.request_add<MockControl<40, true>>(0);
 
 	controls.execute_requests();
 

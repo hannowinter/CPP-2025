@@ -36,11 +36,20 @@ public:
 	// Sets the mode.
 	void set_mode(Mode new_mode);
 
+	// Determine topmost and bottommost row in the grid of all aliens still alive.
+	static std::pair<size_t, size_t> get_min_max_row(const ControlList& controls);
+	// Determine leftmost and rightmost column in the grid of all aliens still alive.
+	static std::pair<size_t, size_t> get_min_max_column(const ControlList& controls);
+
 	// Get y-coordinate of bottommost alien
 	float get_bottom();
 
 	// Resets the wait time until picking a new pair of aliens to swerve.
 	void reset_swerve_timer(std::mt19937& random);
+
+	// Picks two random distinct aliens and initiates a swerve.
+	// If only one alien exists, only that one will swerve.
+	static void start_random_swerve(std::mt19937& random, const ControlList& controls, sf::Vector2f velocity);
 
 private:
 	// Surrogate for difficulty

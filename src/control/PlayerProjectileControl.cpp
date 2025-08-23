@@ -28,7 +28,7 @@ void PlayerProjectileControl::update(const UpdateState& state)
 
     // Delete projectile if it has left the scene
     if (!overlaps(constants::VIEW_RECT, m_projectile->hitbox())) // projectile is outside of view
-        state.controls.remove(this);
+        state.controls.request_remove(this);
 }
 
 // Draw PlayerProjectile

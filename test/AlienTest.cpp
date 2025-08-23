@@ -26,7 +26,7 @@ protected:
 // test whether "Alien::grid_offset" is implemented properly
 // it should return the alien's offset to the grid's top-left corner
 // the alien's size and spacing should be taken into account
-TEST_F(AlienTest, alienGridOffset)
+TEST_F(AlienTest, alienGridOffsetTest)
 {
 	constexpr sf::Vector2f SIZE = constants::alien::SIZE;
 	constexpr sf::Vector2f SPACING = constants::alien_grid::SPACING;
@@ -43,7 +43,7 @@ TEST_F(AlienTest, alienGridOffset)
 
 // test whether the Alien constructor properly calculates its position based on the
 // grid's origin point and the column and row number
-TEST_F(AlienTest, alienPosition)
+TEST_F(AlienTest, alienPositionTest)
 {
 	constexpr sf::Vector2f SIZE = constants::alien::SIZE;
 	constexpr sf::Vector2f SPACING = constants::alien_grid::SPACING;

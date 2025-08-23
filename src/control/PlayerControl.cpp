@@ -48,7 +48,7 @@ void PlayerControl::update(const UpdateState& state)
 			if (overlaps(bullet->get().hitbox(), m_player.hitbox()))
 			{
 				// Delete bullet
-				state.controls.remove(bullet);
+				state.controls.request_remove(bullet);
 
 				// Start hit animation
 				m_player_view.hit_animation();
@@ -125,7 +125,7 @@ void PlayerControl::update(const UpdateState& state)
 		if (m_weapon == constants::upgrades::Weapon::DEFAULT)
 		{
 			// Create Controller for new bullet at position of player
-			state.controls.add<PlayerBulletControl>(sf::Vector2f{
+			state.controls.request_add<PlayerBulletControl>(sf::Vector2f{
 				m_player.hitbox().getCenter().x - constants::player_bullet::BULLET_SIZE.x / 2.0f,
 				m_player.hitbox().position.y - constants::player_bullet::BULLET_SIZE.y
 			});
@@ -133,7 +133,7 @@ void PlayerControl::update(const UpdateState& state)
 		else if (m_weapon == constants::upgrades::Weapon::LASER)
 		{
 			// Create Controller for new bullet at position of player
-			state.controls.add<LaserControl>(sf::Vector2f{
+			state.controls.request_add<LaserControl>(sf::Vector2f{
 				m_player.hitbox().getCenter().x - constants::player_bullet::LASER_SIZE.x / 2.0f,
 				m_player.hitbox().position.y - constants::player_bullet::LASER_SIZE.y
 			});
@@ -144,7 +144,7 @@ void PlayerControl::update(const UpdateState& state)
 		else // m_weapon == Weapon::BOMB
 		{
 			// Create Controller for new bullet at position of player
-			state.controls.add<BombControl>(sf::Vector2f{
+			state.controls.request_add<BombControl>(sf::Vector2f{
 				m_player.hitbox().getCenter().x - constants::player_bullet::BOMB_SIZE.x / 2.0f,
 				m_player.hitbox().position.y - constants::player_bullet::BOMB_SIZE.y
 			});

@@ -22,7 +22,7 @@ void AlienBulletControl::update(const UpdateState& state)
 
 	// Delete the bullet if it has left the scene
 	if (m_bullet.outside_view())
-		state.controls.remove(this);
+		state.controls.request_remove(this);
 
 	// Update BulletView (the AlienBullet is animated)
 	m_bullet_view.update(state.delta);

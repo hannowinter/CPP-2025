@@ -83,6 +83,9 @@ public:
 	Alien& get();
 	const Alien& get() const;
 
+	// Gets the swerve state
+	const SwerveState& get_swerve_state() const;
+
 	// Resets cooldown for next shot
 	void reset_shoot_timer(float intensity, std::mt19937& random);
 

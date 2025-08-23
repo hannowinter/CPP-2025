@@ -40,16 +40,16 @@ void GameControl::reset_game()
 void GameControl::add_children(ControlList& controls)
 {
     // Add PlayerController to list of controllers
-    controls.add<PlayerControl>(sf::Vector2f{
+    controls.request_add<PlayerControl>(sf::Vector2f{
         (constants::VIEW_WIDTH - constants::player::SIZE.x) / 2.0f,
         constants::VIEW_HEIGHT - constants::player::SIZE.y - constants::PADDING
     });
 
     // Add AlienGridController to list of controllers
-    controls.add<AlienGridControl>();
+    controls.request_add<AlienGridControl>();
 
     // Add UpgradeControl to list of controllers
-    controls.add<UpgradeControl>();
+    controls.request_add<UpgradeControl>();
 }
 
 
@@ -73,7 +73,7 @@ void GameControl::update(const UpdateState& state)
         PlayerControl* player_control = state.controls.get<PlayerControl>();
 
         // Create smoke at player position
-        state.controls.add<SmokeControl>(player_control->get().hitbox().position);
+        state.controls.request_add<SmokeControl>(player_control->get().hitbox().position);
         player_control->hide();
 
         m_state.over = true;
@@ -87,7 +87,7 @@ void GameControl::update(const UpdateState& state)
         for (const auto& control : state.controls)
         {
             if (!control->is<GameControl>())
-                state.controls.remove(control.get());
+                state.controls.request_remove(control.get());
         }
 
         reset_game();
@@ -113,7 +113,7 @@ void GameControl::update(const UpdateState& state)
         for (const auto& control : state.controls)
         {
             if (!control->is<GameControl>())
-                state.controls.remove(control.get());
+                state.controls.request_remove(control.get());
         }
 
         increment_level();
@@ -127,7 +127,7 @@ void GameControl::update(const UpdateState& state)
         for (const auto& control : state.controls)
         {
             if (!control->is<GameControl>())
-                state.controls.remove(control.get());
+                state.controls.request_remove(control.get());
         }
 
         reset_game();

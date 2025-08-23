@@ -22,7 +22,7 @@ void BombControl::update(const UpdateState& state)
 
     // Delete bomb if it has left the scene
     if (!overlaps(constants::VIEW_RECT, m_projectile->hitbox())) // projectile is outside of view
-        state.controls.remove(this);
+        state.controls.request_remove(this);
 
     // Decrement lifetime if bomb has exploded
     if (m_has_exploded)
@@ -30,7 +30,7 @@ void BombControl::update(const UpdateState& state)
 
     // Delete explosion if timer is over
     if (m_lifetime <= 0.0f)
-        state.controls.remove(this);
+        state.controls.request_remove(this);
 }
 
 

@@ -5,14 +5,14 @@
 protected:
 	ControlTest()
 	{
-		GameControl& control = controls.add<GameControl>();
+		GameControl& control = controls.request_add<GameControl>();
 		controls.execute_requests();
 
 		// remove any other controls that GameControl has added
 		for (const auto& control : controls)
 		{
 			if (!control->is<GameControl>())
-				controls.remove(&*control);
+				controls.request_remove(&*control);
 		}
 		controls.execute_requests();
 
@@ -22,21 +22,21 @@ protected:
 
 	void add_proxy_alien_grid_control()
 	{
-		controls.add<AlienGridControl>();
+		controls.request_add<AlienGridControl>();
 		controls.execute_requests();
 
 		// remove alien controls that AlienGridControl has added
 		for (const auto& control : controls)
 		{
 			if (control->is<AlienControl>())
-				controls.remove(&*control);
+				controls.request_remove(&*control);
 		}
 		controls.execute_requests();
 	}
 
 	void add_proxy_player_control()
 	{
-		controls.add<PlayerControl>(sf::Vector2f{
+		controls.request_add<PlayerControl>(sf::Vector2f{
 			(constants::VIEW_WIDTH - constants::player::SIZE.x) / 2.0f,
 			constants::VIEW_HEIGHT - constants::player::SIZE.y - constants::PADDING
 		});
@@ -54,7 +54,7 @@ TEST_F(ControlTest, alienBulletOutsideView)
 		TIME_FOR_OUTSIDE_VIEW / FIXED_DELTA +
 		1; // add a bit of leniency
 
-	AlienBulletControl& alien_bullet = controls.add<AlienBulletControl>(sf::Vector2f{});
+	AlienBulletControl& alien_bullet = controls.request_add<AlienBulletControl>(sf::Vector2f{});
 	controls.execute_requests();
 
 	for (size_t i = 0; i < ITERATIONS_FOR_OUTSIDE_VIEW; i++)
@@ -78,7 +78,7 @@ TEST_F(ControlTest, alienShooting)
 	
 	add_proxy_alien_grid_control(); // necessary to prevent crashing
 	add_proxy_player_control(); // necessary to prevent crashing
-	controls.add<AlienControl>(Alien::RED, sf::Vector2f{}, 0, 0);
+	controls.request_add<AlienControl>(Alien::RED, sf::Vector2f{}, 0, 0);
 	controls.execute_requests();
 
 	for (size_t i = 0; i < 2 * MAX_ITERATIONS_FOR_SHOOT; i++)

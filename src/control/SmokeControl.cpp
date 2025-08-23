@@ -25,7 +25,7 @@ void SmokeControl::update(const UpdateState& state)
 
     // Delete smoke if lifetime is over
     if (m_lifetime <= 0.0f)
-        state.controls.remove(this);
+        state.controls.request_remove(this);
 }
 
 // Draw Smoke to screen

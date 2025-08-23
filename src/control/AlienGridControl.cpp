@@ -26,15 +26,15 @@ void AlienGridControl::add_children(ControlList& controls)
         size_t y = 0;
         for (size_t i = 0; i < constants::alien_grid::GREEN_ROWS; i++, y++)
         {
-            controls.add<AlienControl>(Alien::GREEN, m_origin, x, y);
+            controls.request_add<AlienControl>(Alien::GREEN, m_origin, x, y);
         }
         for (size_t i = 0; i < constants::alien_grid::YELLOW_ROWS; i++, y++)
         {
-            controls.add<AlienControl>(Alien::YELLOW, m_origin, x, y);
+            controls.request_add<AlienControl>(Alien::YELLOW, m_origin, x, y);
         }
         for (size_t i = 0; i < constants::alien_grid::RED_ROWS; i++, y++)
         {
-            controls.add<AlienControl>(Alien::RED, m_origin, x, y);
+            controls.request_add<AlienControl>(Alien::RED, m_origin, x, y);
         }
     }
 }
@@ -56,32 +56,17 @@ void AlienGridControl::update(const UpdateState& state)
     GameControl& game_control = *state.controls.get<GameControl>();
 
     // Determine bottomost point in grid
-    size_t alien_max_row = 0;
-    for (const auto& control : state.controls)
-    {
-        if (AlienControl* alien = control->is<AlienControl>())
-            alien_max_row = std::max(alien->get().row(), alien_max_row);
-    }
-
-    m_bottom = m_origin.y + alien_max_row * (constants::alien::SIZE.y + constants::alien_grid::SPACING.y) + constants::alien::SIZE.x;
+    auto [min_row, max_row] = get_min_max_row(state.controls);
+    m_bottom = m_origin.y + max_row * (constants::alien::SIZE.y + constants::alien_grid::SPACING.y) + constants::alien::SIZE.x;
 
     // calculate the grid's leftmost and rightmost points, 
     // used to determine when the grid reaches the screen's left or right side
-    size_t alien_min_col = SIZE_MAX;
-    size_t alien_max_col = 0;
-    for (const auto& control : state.controls)
-    {
-        if (AlienControl* alien = control->is<AlienControl>())
-        {
-            alien_min_col = std::min(alien->get().column(), alien_min_col);
-            alien_max_col = std::max(alien->get().column(), alien_max_col);
-        }
-    }
+    auto [min_col, max_col] = get_min_max_column(state.controls);
 
     float alien_grid_leftmost = 
-        alien_min_col * (constants::alien::SIZE.x + constants::alien_grid::SPACING.x);
+        min_col * (constants::alien::SIZE.x + constants::alien_grid::SPACING.x);
     float alien_grid_rightmost = 
-        alien_max_col * (constants::alien::SIZE.x + constants::alien_grid::SPACING.x) + constants::alien::SIZE.x;
+        max_col * (constants::alien::SIZE.x + constants::alien_grid::SPACING.x) + constants::alien::SIZE.x;
 
     // move the grid's origin depending on the current mode
     sf::Vector2f velocity{};
@@ -137,27 +122,7 @@ void AlienGridControl::update(const UpdateState& state)
     if (m_swerve_timer <= 0.0f)
     {
         reset_swerve_timer(game_control.random());
-        size_t count = state.controls.count<AlienControl>();
-
-        // Choose aliens to swerve
-        size_t alien1_to_swerve = SIZE_MAX;
-        size_t alien2_to_swerve = SIZE_MAX;
-
-        do
-        {
-            alien1_to_swerve =
-                std::uniform_int_distribution<size_t>{ 0, count - 1 }(game_control.random());
-            alien2_to_swerve =
-                std::uniform_int_distribution<size_t>{ 0, count - 1 }(game_control.random());
-        } 
-        while (alien1_to_swerve == alien2_to_swerve && count >= 2); // prevent "alien1_to_swerve == alien2_to_swerve" if possible
-
-        // Make chosen aliens swerve
-        AlienControl& alien1_control = *state.controls.get<AlienControl>(alien1_to_swerve);
-        AlienControl& alien2_control = *state.controls.get<AlienControl>(alien2_to_swerve);
-
-        alien1_control.start_swerve(velocity, alien2_control.get().column(), alien2_control.get().row());
-        alien2_control.start_swerve(velocity, alien1_control.get().column(), alien1_control.get().row());
+        start_random_swerve(game_control.random(), state.controls, velocity);
     }
 }
 
@@ -189,7 +154,61 @@ void AlienGridControl::draw(LayerManager& layers)
     // nothing to do here
 }
 
+std::pair<size_t, size_t> AlienGridControl::get_min_max_row(const ControlList& controls)
+{
+    size_t min_row = SIZE_MAX;
+    size_t max_row = 0;
+    for (const auto& control : controls)
+    {
+        if (AlienControl* alien = control->is<AlienControl>())
+        {
+            min_row = std::min(alien->get().row(), min_row);
+            max_row = std::max(alien->get().row(), max_row);
+        }
+    }
+    return { min_row, max_row };
+}
+
+std::pair<size_t, size_t> AlienGridControl::get_min_max_column(const ControlList& controls)
+{
+    size_t min_col = SIZE_MAX;
+    size_t max_col = 0;
+    for (const auto& control : controls)
+    {
+        if (AlienControl* alien = control->is<AlienControl>())
+        {
+            min_col = std::min(alien->get().column(), min_col);
+            max_col = std::max(alien->get().column(), max_col);
+        }
+    }
+    return { min_col, max_col };
+}
+
 float AlienGridControl::get_bottom()
 {
     return m_bottom;
+}
+
+void AlienGridControl::start_random_swerve(std::mt19937& random, const ControlList& controls, sf::Vector2f velocity)
+{
+    size_t count = controls.count<AlienControl>();
+
+    // Choose aliens to swerve
+    size_t alien1_to_swerve = SIZE_MAX;
+    size_t alien2_to_swerve = SIZE_MAX;
+
+    do
+    {
+        alien1_to_swerve =
+            std::uniform_int_distribution<size_t>{ 0, count - 1 }(random);
+        alien2_to_swerve =
+            std::uniform_int_distribution<size_t>{ 0, count - 1 }(random);
+    } while (alien1_to_swerve == alien2_to_swerve && count >= 2); // prevent "alien1_to_swerve == alien2_to_swerve" if possible
+
+    // Make chosen aliens swerve
+    AlienControl& alien1_control = *controls.get<AlienControl>(alien1_to_swerve);
+    AlienControl& alien2_control = *controls.get<AlienControl>(alien2_to_swerve);
+
+    alien1_control.start_swerve(velocity, alien2_control.get().column(), alien2_control.get().row());
+    alien2_control.start_swerve(velocity, alien1_control.get().column(), alien1_control.get().row());
 }

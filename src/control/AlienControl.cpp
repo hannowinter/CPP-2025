@@ -185,11 +185,11 @@ void AlienControl::update(const UpdateState& state)
 			if (overlaps(bullet->get().hitbox(), m_alien.hitbox()))
 			{
 				// Show smoke texture
-				state.controls.add<SmokeControl>(m_alien.hitbox().position);
+				state.controls.request_add<SmokeControl>(m_alien.hitbox().position);
 
 				// Despawn alien and bullet
-				state.controls.remove(this);
-				state.controls.remove(bullet);
+				state.controls.request_remove(this);
+				state.controls.request_remove(bullet);
 
 				// Play hit sound
 				AudioPlayer::get().alien_hit.play();
@@ -205,10 +205,10 @@ void AlienControl::update(const UpdateState& state)
 			if (overlaps(laser->get().hitbox(), m_alien.hitbox()))
 			{
 				// Show smoke texture
-				state.controls.add<SmokeControl>(m_alien.hitbox().position);
+				state.controls.request_add<SmokeControl>(m_alien.hitbox().position);
 
 				// Despawn alien
-				state.controls.remove(this);
+				state.controls.request_remove(this);
 
 				// Play hit sound
 				AudioPlayer::get().alien_hit.play();
@@ -225,10 +225,10 @@ void AlienControl::update(const UpdateState& state)
 			if (overlaps(bomb->get().hitbox(), m_alien.hitbox()) && !bomb->has_exploded())
 			{
 				// Show smoke texture
-				state.controls.add<SmokeControl>(m_alien.hitbox().position);
+				state.controls.request_add<SmokeControl>(m_alien.hitbox().position);
 
 				// Despawn alien
-				state.controls.remove(this);
+				state.controls.request_remove(this);
 
 				// Play hit and explosion sound, make bomb explode
 				AudioPlayer::get().alien_hit.play();
@@ -242,10 +242,10 @@ void AlienControl::update(const UpdateState& state)
 			else if (overlaps(bomb->get().hitbox(), m_alien.hitbox()) && bomb->has_exploded())
 			{
 				// Show smoke texture
-				state.controls.add<SmokeControl>(m_alien.hitbox().position);
+				state.controls.request_add<SmokeControl>(m_alien.hitbox().position);
 
 				// Despawn alien
-				state.controls.remove(this);
+				state.controls.request_remove(this);
 
 				// Play hit sound
 				AudioPlayer::get().alien_hit.play();
@@ -264,7 +264,7 @@ void AlienControl::update(const UpdateState& state)
 	if (m_shoot_timer < 0.0f)
 	{
 		// Create Bullet at position of alien
-		state.controls.add<AlienBulletControl>(sf::Vector2f{
+		state.controls.request_add<AlienBulletControl>(sf::Vector2f{
 			m_alien.hitbox().getCenter().x - constants::alien_bullet::SIZE.x / 2.0f,
 			m_alien.hitbox().position.y + constants::alien::SIZE.y
 		});
@@ -356,6 +356,11 @@ Alien& AlienControl::get()
 const Alien& AlienControl::get() const
 {
 	return m_alien;
+}
+
+const SwerveState& AlienControl::get_swerve_state() const
+{
+	return m_swerve_state;
 }
 
 // Rest cooldown for next shot

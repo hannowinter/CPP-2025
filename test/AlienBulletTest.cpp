@@ -22,7 +22,7 @@ protected:
 };
 
 // test whether "AlienBullet::move_down" behaves properly, also in conjunction with different framerates
-TEST_F(AlienBulletTest, alienBulletMoveDown)
+TEST_F(AlienBulletTest, alienBulletMoveDownTest)
 {
 	constexpr float MOVE_SPEED = constants::alien_bullet::MOVE_SPEED;
 
@@ -52,7 +52,7 @@ TEST_F(AlienBulletTest, alienBulletMoveDown)
 	EXPECT_EQ(alien_bullet3.hitbox().position.x, POSITION_3.x);
 }
 
-TEST_F(AlienBulletTest, alienBulletOutsideView)
+TEST_F(AlienBulletTest, alienBulletOutsideViewTest)
 {
 	EXPECT_FALSE(alien_bullet_almost_outside.outside_view());
 	EXPECT_TRUE(alien_bullet_outside.outside_view());

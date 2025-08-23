@@ -51,9 +51,14 @@ void ControlList::execute_requests()
 	m_controls_to_init.clear();
 }
 
-void ControlList::remove(const Control* control)
+void ControlList::request_remove(const Control* control)
 {
 	m_controls_to_remove.push_back(control);
+}
+
+void ControlList::clear_init_requests()
+{
+	m_controls_to_init.clear();
 }
 
 // Create iterator starting at first controller in list

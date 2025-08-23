@@ -53,7 +53,7 @@ public:
 	void update(float delta, const Inputs& inputs);
 	void draw(LayerManager& layers);
 
-	// Carries out all changes requested via "add" and "remove".
+	// Carries out all changes requested via "request_add" and "request_remove".
 	void execute_requests();
 
 	// Constructs a new control of type "C" and adds a request to add it to the list and to initialize it.
@@ -61,7 +61,7 @@ public:
 	// The control is only added when calling "execute_requests".
 	template <std::derived_from<Control> C, typename... ArgTs> requires
 		std::is_constructible_v<C, ArgTs...>
-	C& add(ArgTs&&... args)
+	C& request_add(ArgTs&&... args)
 	{
 		C& result = dynamic_cast<C&>(
 			*m_controls_to_add.emplace_back(std::make_unique<C>(std::forward<ArgTs>(args)...))
@@ -73,7 +73,7 @@ public:
 
 	// Adds a request to remove the specified control from the list.
 	// The control is only removed when calling "execute_requests".
-	void remove(const Control* control);
+	void request_remove(const Control* control);
 
 	// Gets the count of all controls of type "C".
 	template <std::derived_from<Control> C>
@@ -103,6 +103,9 @@ public:
 		return nullptr;
 	}
 
+	// Clears all initialize requests.
+	void clear_init_requests();
+
 	// Provide iterators in order to allow for using range-based for loops.
 	typename control_list_t::iterator begin();
 	typename control_list_t::iterator end();
@@ -120,7 +123,7 @@ private:
 	// The "update" method iterates through "m_controls" in order to update each control.
 	// During this process, we need to prevent any insertion or erasure of elements to or from "m_controls",
 	// otherwise its iterators may be invalidated, leading to undefined behavior.
-	// The "add" and "remove" methods may be called during this iteration process.
+	// The "request_add" and "request_remove" methods may be called during this iteration process.
 	// Instead of immediately inserting or erasing the specified control, we first put them into
 	// separate lists "m_controls_to_add" and "m_controls_to_remove" to remember them,
 	// and only after the iteration process is done, we insert or erase them to or from "m_controls"
