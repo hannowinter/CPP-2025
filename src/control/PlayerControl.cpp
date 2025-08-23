@@ -3,11 +3,9 @@
 #include "AlienBulletControl.hpp"
 #include "AlienControl.hpp"
 #include "AudioPlayer.hpp"
-#include "BombControl.hpp"
 #include "GameControl.hpp"
-#include "LaserControl.hpp"
+#include "PlayerProjectileControl.hpp"
 #include "../model/Constants.hpp"
-#include "PlayerBulletControl.hpp"
 #include "UpgradeControl.hpp"
 #include "../Util.hpp"
 

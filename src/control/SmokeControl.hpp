@@ -1,7 +1,7 @@
 #ifndef SMOKECONTROL_HPP
 #define SMOKECONTROL_HPP
 
-#include "Controls.hpp"
+#include "Control.hpp"
 #include "../view/SmokeView.hpp"
 
 class SmokeControl : public Control {

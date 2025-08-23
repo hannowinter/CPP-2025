@@ -3,7 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "Controls.hpp"
+#include "Control.hpp"
 #include "../model/AlienBullet.hpp"
 #include "../view/LayerManager.hpp"
 #include "../view/AlienBulletView.hpp"

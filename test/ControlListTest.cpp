@@ -1,5 +1,5 @@
 #include "TestCommon.hpp"
-#include "../src/control/Controls.hpp"
+#include "../src/control/Control.hpp"
 
 // mock control class used for testing
 // if "AddChildren" is true, then it will add a child of index I + 10, 

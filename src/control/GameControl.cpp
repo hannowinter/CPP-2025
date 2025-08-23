@@ -2,7 +2,6 @@
 
 #include "AlienControl.hpp"
 #include "PlayerControl.hpp"
-#include "AlienGridControl.hpp"
 #include "AudioPlayer.hpp"
 #include "SmokeControl.hpp"
 #include "UpgradeControl.hpp"
@@ -24,16 +23,20 @@ void GameControl::increment_level()
     m_state.lives = constants::game::INITIAL_LIVES;
     m_state.over = false;
     m_state.level_won = false;
+
+    m_background.reset_direction(random());
 }
 
 // Reset game to beginning
 void GameControl::reset_game()
 {
-    m_state.level = 1;
+    m_state.level = 10;
     m_state.lives = constants::game::INITIAL_LIVES;
     m_state.score = 0;
     m_state.over = false;
     m_state.level_won = false;
+
+    m_background.reset_direction(random());
 }
 
 // Add child controllers
@@ -56,12 +59,14 @@ void GameControl::add_children(ControlList& controls)
 // Initialize this controller
 void GameControl::init(const ControlList& controls)
 {
-    // nothing to do here
+    m_background.reset_direction(random());
 }
 
 // Execute relevant updates
 void GameControl::update(const UpdateState& state)
 {
+    m_background.update(state.delta, intensity());
+
     // Check if game is over (no lives left or aliens reached bottom)
     AlienGridControl* grid = state.controls.get<AlienGridControl>();
     if (grid != nullptr && (m_state.lives == 0 || grid->get_bottom() >= constants::VIEW_HEIGHT - 100.0f) && !m_gameover_shown)
@@ -141,6 +146,7 @@ void GameControl::update(const UpdateState& state)
 void GameControl::draw(LayerManager& layers)
 {
     m_hud.draw(layers.get(LayerID::HUD), m_state);
+    m_background.draw(layers.get(LayerID::BACKGROUND));
 }
 
 float GameControl::intensity() const
@@ -148,7 +154,7 @@ float GameControl::intensity() const
     // Calculate intensity
     // "ratio == 0.0" initially, "ratio == 1.0" in level 10
     float ratio = (float)(m_state.level - 1) / (constants::game::MAX_LEVEL - 1);
-    ratio = std::pow(ratio, 3.0f); // make the intensity increase more gentle initially and steeper towards the end
+    ratio = std::pow(ratio, 2.0f); // make the intensity increase more gentle initially and steeper towards the end
     return std::lerp(
         constants::alien_grid::MIN_INTENSITY,
         constants::alien_grid::MAX_INTENSITY,

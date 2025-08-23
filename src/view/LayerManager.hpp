@@ -7,9 +7,11 @@
 enum class LayerID
 {
 	// reorder these in order to change draw order
+	BACKGROUND,
 	EFFECTS,
 	ACTORS,
 	HUD,
+
 	COUNT
 };
 

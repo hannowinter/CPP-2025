@@ -3,7 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "Controls.hpp"
+#include "Control.hpp"
 #include "../model/Constants.hpp"
 #include "../model/Player.hpp"
 #include "../view/Layer.hpp"

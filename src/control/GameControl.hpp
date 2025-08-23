@@ -3,12 +3,13 @@
 
 #include <random>
 
-#include "Controls.hpp"
+#include "Control.hpp"
 #include "Inputs.hpp"
 #include "../model/Alien.hpp"
 #include "../view/LayerManager.hpp"
 #include "../model/GameState.hpp"
 #include "../view/HUDView.hpp"
+#include "../view/BackgroundView.hpp"
 
 // Controller for state of game
 class GameControl : public Control
@@ -44,6 +45,9 @@ private:
 
 	// HUD for score, lives, level, ...
 	HUDView m_hud;
+
+	// Starry background
+	BackgroundView m_background;
 
 	// Pseudo-random number generator
 	std::mt19937 m_random;

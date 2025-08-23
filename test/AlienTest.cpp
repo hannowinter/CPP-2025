@@ -168,7 +168,7 @@ TEST_F(SwerveTest, swervingTest)
 
 	constexpr float MAX_TIME_FOR_RETREAT = 10.0f; // a swerve should not take this long
 	constexpr size_t MAX_ITERATIONS_FOR_RETREAT =
-		MAX_TIME_FOR_RETREAT / FIXED_DELTA_60;
+		(size_t)(MAX_TIME_FOR_RETREAT / FIXED_DELTA_60);
 
 	// check if aliens retreat after some time
 	for (size_t i = 0; i < MAX_ITERATIONS_FOR_RETREAT; i++)
@@ -199,7 +199,7 @@ TEST_F(SwerveTest, retreatingTest)
 
 	constexpr float MAX_TIME_FOR_RETREAT_FINISH = 10.0f; // a retreat should not take this long
 	constexpr size_t MAX_ITERATIONS_FOR_RETREAT_FINISH =
-		MAX_TIME_FOR_RETREAT_FINISH / FIXED_DELTA_60;
+		(size_t)(MAX_TIME_FOR_RETREAT_FINISH / FIXED_DELTA_60);
 
 	// check if aliens finish retreating after some time
 	for (size_t i = 0; i < MAX_ITERATIONS_FOR_RETREAT_FINISH; i++)

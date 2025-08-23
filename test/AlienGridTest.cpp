@@ -1,5 +1,4 @@
 #include "TestCommon.hpp"
-#include "../src/control/AlienGridControl.hpp"
 #include "../src/control/AlienControl.hpp"
 
 // Spawns a new alien of specified column and row without initializing it.
@@ -134,7 +133,7 @@ TEST(AlienGridControlTest, startRandomSwerveTest)
 
 	constexpr size_t ALIEN3_COLUMN = 5;
 	constexpr size_t ALIEN3_ROW = 6;
-	
+
 	AlienControl& alien1 = spawn_mock_alien(controls, ALIEN1_COLUMN, ALIEN1_ROW);
 
 	// only alien1 can be picked now

@@ -1,7 +1,7 @@
 #ifndef UPGRADECONTROL_HPP
 #define UPGRADECONTROL_HPP
 
-#include "Controls.hpp"
+#include "Control.hpp"
 #include "../view/UpgradeView.hpp"
 #include "../model/Constants.hpp"
 

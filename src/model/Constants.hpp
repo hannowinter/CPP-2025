@@ -68,7 +68,7 @@ namespace constants
     {
         // Intensity is used as a measure of game difficulty
         constexpr float MIN_INTENSITY = 1.0f;
-        constexpr float MAX_INTENSITY = 10.0f;
+        constexpr float MAX_INTENSITY = 5.0f;
 
         // constants controlling the positioning and movement of the alien grid
         constexpr sf::Vector2f SPACING = { 20.0f, 20.0f }; // distance of neighboring aliens from each other

@@ -5,7 +5,7 @@
 
 #include "../view/AssetLoader.hpp"
 #include "../view/LayerManager.hpp"
-#include "Controls.hpp"
+#include "Control.hpp"
 #include "Inputs.hpp"
 
 // Class modelling the Game's engine
