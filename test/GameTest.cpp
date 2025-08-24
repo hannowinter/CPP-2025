@@ -1,6 +1,11 @@
 #include "TestCommon.hpp"
+#include "../src/control/GameControl.hpp"
+#include "../src/control/AlienControl.hpp"
+#include "../src/control/PlayerControl.hpp"
+#include "../src/control/AlienBulletControl.hpp"
+#include "gtest/gtest.h"
 
-/*struct ControlTest : public testing::Test
+struct ControlTest : public testing::Test
 {
 protected:
 	ControlTest()
@@ -51,7 +56,7 @@ TEST_F(ControlTest, alienBulletOutsideView)
 {
 	constexpr float TIME_FOR_OUTSIDE_VIEW = constants::VIEW_HEIGHT / constants::alien_bullet::MOVE_SPEED;
 	constexpr size_t ITERATIONS_FOR_OUTSIDE_VIEW = 
-		TIME_FOR_OUTSIDE_VIEW / FIXED_DELTA +
+		TIME_FOR_OUTSIDE_VIEW / FIXED_DELTA_30 +
 		1; // add a bit of leniency
 
 	AlienBulletControl& alien_bullet = controls.request_add<AlienBulletControl>(sf::Vector2f{});
@@ -59,7 +64,7 @@ TEST_F(ControlTest, alienBulletOutsideView)
 
 	for (size_t i = 0; i < ITERATIONS_FOR_OUTSIDE_VIEW; i++)
 	{
-		controls.update(FIXED_DELTA, mock_inputs);
+		controls.update(FIXED_DELTA_30, mock_inputs);
 	}
 
 	// check if bullet is below view
@@ -73,7 +78,7 @@ TEST_F(ControlTest, alienBulletOutsideView)
 TEST_F(ControlTest, alienShooting)
 {
 	constexpr float MAX_ITERATIONS_FOR_SHOOT = 
-		constants::alien::MAX_SHOOT_TIME / FIXED_DELTA +
+		constants::alien::MAX_SHOOT_TIME / FIXED_DELTA_30 +
 		1; // add a bit of leniency
 	
 	add_proxy_alien_grid_control(); // necessary to prevent crashing
@@ -83,14 +88,14 @@ TEST_F(ControlTest, alienShooting)
 
 	for (size_t i = 0; i < 2 * MAX_ITERATIONS_FOR_SHOOT; i++)
 	{
-		controls.update(FIXED_DELTA, mock_inputs);
+		controls.update(FIXED_DELTA_30, mock_inputs);
 	}
 
 	controls.execute_requests();
 
 	// at least 2 bullets should have been shot by now
 	EXPECT_GE(controls.count<AlienBulletControl>(), 2);
-}*/
+}
 
 int main2(int argc, char** argv)
 {

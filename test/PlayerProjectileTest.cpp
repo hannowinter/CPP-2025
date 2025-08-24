@@ -1,11 +1,9 @@
 #include "TestCommon.hpp"
 #include "../src/control/PlayerProjectileControl.hpp"
-#include "../src/model/PlayerBullet.hpp"
-#include "../src/model/PlayerLaser.hpp"
-#include "../src/model/PlayerBomb.hpp"
+#include "../src/model/PlayerProjectile.hpp"
 
 // fixture for PlayerProjectile model and its child model
-struct PlayerProjectiveTest : public testing::Test
+struct PlayerProjectileTest : public testing::Test
 {
 	constexpr static sf::Vector2f POSITION_BULLET{ 0.0f, 200.0f };
 	constexpr static sf::Vector2f POSITION_LASER{ 20.0f, 200.0f };
@@ -17,7 +15,7 @@ struct PlayerProjectiveTest : public testing::Test
 };
 
 // test whether "PlayerProjectile::move_up" behaves properly, also in conjunction with different framerates
-TEST_F(PlayerProjectiveTest, playerProjectileMoveUp)
+TEST_F(PlayerProjectileTest, playerProjectileMoveUp)
 {
 	constexpr float MOVE_SPEED = constants::player_bullet::MOVE_SPEED;
 
@@ -48,7 +46,7 @@ TEST_F(PlayerProjectiveTest, playerProjectileMoveUp)
 }
 
 // test whether "PlayerBomb" gives the correct hitbox before and after exploding
-TEST_F(PlayerProjectiveTest, bombExplodeHitbox)
+TEST_F(PlayerProjectileTest, bombExplodeHitbox)
 {
 	// not yet exploded
 	EXPECT_EQ(player_bomb.hitbox().size, constants::player_bullet::BOMB_SIZE);
