@@ -1,6 +1,6 @@
 #include "control/Engine.hpp"
 
-int main2() 
+int main() 
 {
     // Start game
     Engine engine;
