@@ -1,7 +1,7 @@
 #include "Alien.hpp"
 #include "Constants.hpp"
 
-// Create a new alien wihthin a grid
+// Creates a new alien.
 Alien::Alien(Variant variant, sf::Vector2f grid_origin, size_t column, size_t row) :
 	m_variant{ variant },
 	m_column{ column },
@@ -10,7 +10,7 @@ Alien::Alien(Variant variant, sf::Vector2f grid_origin, size_t column, size_t ro
 	m_position = grid_origin + grid_offset();
 }
 
-// Get hitbox of alien
+// Gets the alien's hitbox.
 sf::FloatRect Alien::hitbox() const
 {
 	return {
@@ -19,32 +19,32 @@ sf::FloatRect Alien::hitbox() const
 	};
 }
 
-// Get variant of alien
+// Gets the alien's variant.
 Alien::Variant Alien::variant() const
 {
 	return m_variant;
 }
 
-// Get column of alien within grid
+// Gets column of alien within grid.
 size_t Alien::column() const
 {
 	return m_column;
 }
 
-// Get row of alien wihtin grid
+// Gets row of alien wihtin grid.
 size_t Alien::row() const
 {
 	return m_row;
 }
 
-// Set column and row of alien
+// Sets column and row of alien.
 void Alien::set_column_row(size_t column, size_t row)
 {
 	m_column = column;
 	m_row = row;
 }
 
-// Get offset of alien wihtin grid
+// Gets offset of alien within grid.
 sf::Vector2f Alien::grid_offset() const
 {
 	// Offset ist calculated from column / row of alien and alien size / spacing in grid
@@ -53,7 +53,7 @@ sf::Vector2f Alien::grid_offset() const
 	return offset;
 }
 
-// Set position of alien
+// Sets the alien's absolute position.
 void Alien::set_position(sf::Vector2f position)
 {
 	m_position = position;

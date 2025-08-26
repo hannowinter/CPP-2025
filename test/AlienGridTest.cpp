@@ -139,7 +139,7 @@ TEST(AlienGridControlTest, startRandomSwerveTest)
 	// only alien1 can be picked now
 	AlienGridControl::start_random_swerve(random, controls, { 0.0f, 0.0f });
 
-	EXPECT_EQ(alien1.get_mode(), AlienControl::SWERVE);
+	EXPECT_EQ(alien1.get_mode(), AlienControl::ATTACK);
 	EXPECT_EQ(alien1.get_swerve_state().target_column, ALIEN1_COLUMN);
 	EXPECT_EQ(alien1.get_swerve_state().target_row, ALIEN1_ROW);
 
@@ -158,11 +158,11 @@ TEST(AlienGridControlTest, startRandomSwerveTest)
 		AlienGridControl::start_random_swerve(random, controls, { 0.0f, 0.0f });
 
 		std::vector<AlienControl*> swerving_aliens;
-		if (alien1.get_mode() == AlienControl::SWERVE)
+		if (alien1.get_mode() == AlienControl::ATTACK)
 			swerving_aliens.push_back(&alien1);
-		if (alien2.get_mode() == AlienControl::SWERVE)
+		if (alien2.get_mode() == AlienControl::ATTACK)
 			swerving_aliens.push_back(&alien2);
-		if (alien3.get_mode() == AlienControl::SWERVE)
+		if (alien3.get_mode() == AlienControl::ATTACK)
 			swerving_aliens.push_back(&alien3);
 
 		// exactly 2 aliens must be swerving

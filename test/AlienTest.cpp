@@ -173,7 +173,7 @@ TEST_F(SwerveTest, swervingTest)
 	// check if aliens retreat after some time
 	for (size_t i = 0; i < MAX_ITERATIONS_FOR_RETREAT; i++)
 	{
-		bool should_retreat = swerve_state.update_swerve(FIXED_DELTA_60, PLAYER_POSITION);
+		bool should_retreat = swerve_state.update_attack(FIXED_DELTA_60, PLAYER_POSITION);
 
 		if (should_retreat)
 		{

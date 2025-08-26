@@ -1,6 +1,7 @@
 #ifndef CONSTANTS_HPP
 #define CONSTANTS_HPP
 
+#include <string_view>
 #include <SFML/Graphics.hpp>
 
 // Important globally used constants
@@ -11,6 +12,7 @@ namespace constants
     constexpr int VIEW_HEIGHT = 900;
     constexpr sf::FloatRect VIEW_RECT = { { 0.0f, 0.0f }, { VIEW_WIDTH, VIEW_HEIGHT } };
     constexpr unsigned int FRAME_RATE = 60;
+    constexpr std::string_view TITLE = "Space Invaders";
 
     constexpr float PADDING = 10.0f; // minimum distance of actors to the view's border
 
@@ -18,6 +20,9 @@ namespace constants
     {
         constexpr size_t INITIAL_LIVES = 5;
         constexpr size_t MAX_LEVEL = 10;
+        constexpr size_t POINTS_PER_BULLET_HIT = 50;
+        constexpr size_t POINTS_PER_LASER_HIT = 100;
+        constexpr size_t POINTS_PER_BOMB_HIT = 150;
     }
 
     // Constants for player character
@@ -28,8 +33,8 @@ namespace constants
         constexpr float SHOOT_COOLDOWN = 0.4f;
     }
 
-    // Constants for player bullet
-    namespace player_bullet
+    // Constants for player projectile
+    namespace player_projectile
     {
         constexpr float MOVE_SPEED = 1000.0f;
         constexpr sf::Vector2f BULLET_SIZE = { 6.0f, 12.0f };
@@ -91,7 +96,7 @@ namespace constants
     {
         constexpr sf::Vector2f SIZE = { 40.0f, 32.0f };
 
-        constexpr float MAX_SHOOT_TIME = 60.0f; // maximum time (in seconds) between consecutive shoots
+        constexpr float MAX_SHOOT_TIME = 70.0f; // maximum time (in seconds) between consecutive shoots
 
         constexpr float SHAKE_INTENSITY_EXPONENT = 0.4f; // softens the shake on higher intensities
         constexpr float SHAKE_MIN_TARGET_OFFSET = 2.0f; // minimum target offset from the alien's base position

@@ -9,7 +9,7 @@
 #include "UpgradeControl.hpp"
 #include "../Util.hpp"
 
-// Create PlayerController for Player at position
+// Creates a new PlayerControl for Player at position.
 PlayerControl::PlayerControl(sf::Vector2f position) :
 	m_player{ position },
 	m_player_view{},
@@ -18,13 +18,13 @@ PlayerControl::PlayerControl(sf::Vector2f position) :
 
 }
 
-// Initialize controller
+// Initializes control.
 void PlayerControl::init(const ControlList& controls)
 {
 	// nothing to do here
 }
 
-// Execute relevant updates
+// Executes relevant updates.
 void PlayerControl::update(const UpdateState& state) 
 {
 	// Get GameController
@@ -63,7 +63,7 @@ void PlayerControl::update(const UpdateState& state)
 		if (AlienControl* alien = control->is<AlienControl>())
 		{
 			// Check if alien is swerving, close to player and may hit player
-			if (alien->get_mode() == AlienControl::SWERVE &&
+			if (alien->get_mode() == AlienControl::ATTACK &&
 				!alien->get().has_hit_player &&
 				(m_player.hitbox().position - alien->get().hitbox().position).length() <= 90.0f)
 			{
@@ -95,7 +95,6 @@ void PlayerControl::update(const UpdateState& state)
 		}
 	}
 
-
 	// Update view
 	m_player_view.update(state.delta);
 
@@ -124,16 +123,16 @@ void PlayerControl::update(const UpdateState& state)
 		{
 			// Create Controller for new bullet at position of player
 			state.controls.request_add<PlayerBulletControl>(sf::Vector2f{
-				m_player.hitbox().getCenter().x - constants::player_bullet::BULLET_SIZE.x / 2.0f,
-				m_player.hitbox().position.y - constants::player_bullet::BULLET_SIZE.y
+				m_player.hitbox().getCenter().x - constants::player_projectile::BULLET_SIZE.x / 2.0f,
+				m_player.hitbox().position.y - constants::player_projectile::BULLET_SIZE.y
 			});
 		}
 		else if (m_weapon == constants::upgrades::Weapon::LASER)
 		{
 			// Create Controller for new bullet at position of player
 			state.controls.request_add<LaserControl>(sf::Vector2f{
-				m_player.hitbox().getCenter().x - constants::player_bullet::LASER_SIZE.x / 2.0f,
-				m_player.hitbox().position.y - constants::player_bullet::LASER_SIZE.y
+				m_player.hitbox().getCenter().x - constants::player_projectile::LASER_SIZE.x / 2.0f,
+				m_player.hitbox().position.y - constants::player_projectile::LASER_SIZE.y
 			});
 
 			// Play laser sound effect
@@ -143,8 +142,8 @@ void PlayerControl::update(const UpdateState& state)
 		{
 			// Create Controller for new bullet at position of player
 			state.controls.request_add<BombControl>(sf::Vector2f{
-				m_player.hitbox().getCenter().x - constants::player_bullet::BOMB_SIZE.x / 2.0f,
-				m_player.hitbox().position.y - constants::player_bullet::BOMB_SIZE.y
+				m_player.hitbox().getCenter().x - constants::player_projectile::BOMB_SIZE.x / 2.0f,
+				m_player.hitbox().position.y - constants::player_projectile::BOMB_SIZE.y
 			});
 		}
 
@@ -156,27 +155,25 @@ void PlayerControl::update(const UpdateState& state)
 	}
 }
 
-// Set weapon for next shot
+// Sets weapon for next shot.
 void PlayerControl::set_weapon(constants::upgrades::Weapon weapon)
 {
 	m_weapon = weapon;
 }
 
-
-// Draw player
+// Draws player.
 void PlayerControl::draw(LayerManager& layers)
 {
 	if (!m_hidden)
 		m_player_view.draw(layers.get(LayerID::ACTORS), m_player);
 }
 
-// Get reference to Player
+// Gets reference to model object.
 const Player& PlayerControl::get() const
 {
 	return m_player;
 }
 
-// Get reference to Player
 Player& PlayerControl::get()
 {
 	return m_player;

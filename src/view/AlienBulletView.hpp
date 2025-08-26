@@ -10,13 +10,13 @@
 class AlienBulletView
 {
 public:
-	// Create view
+	// Creates view.
 	AlienBulletView();
 
-	// Update view based on elapsed time
+	// Updates view based on elapsed time.
 	void update(float delta);
 
-	// Draw view
+	// Draws view.
 	void draw(Layer& layer, const AlienBullet& bullet);
 
 private:

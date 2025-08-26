@@ -1,12 +1,12 @@
 #include "Inputs.hpp"
 
-// Clear list of active inputs
+// Clears list of active inputs.
 void Inputs::update()
 {
 	pressed_keys.clear();
 }
 
-// Record when a key is pressed
+// Records when a key is pressed.
 void Inputs::event(const sf::Event& event)
 {
 	// If a key is pressed, add it to list of held keys

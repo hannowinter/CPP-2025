@@ -20,7 +20,7 @@ void PlayerProjectileView::draw(Layer& layer, const PlayerProjectile& projectile
 
 
 
-// Create PlayerBulletView
+// Creates PlayerBulletView.
 PlayerBulletView::PlayerBulletView() :
     PlayerProjectileView(AssetLoader::get().player_bullet)
 {
@@ -33,7 +33,7 @@ PlayerBulletView::PlayerBulletView() :
 
 
 
-// Create BombView
+// Creates BombView.
 LaserView::LaserView() :
     PlayerProjectileView(AssetLoader::get().laser_bullet)
 {
@@ -46,14 +46,14 @@ LaserView::LaserView() :
 
 
 
-// Create BombView
+// Creates BombView.
 BombView::BombView() :
     PlayerProjectileView(AssetLoader::get().bomb)
 {
 
 }
 
-// Make bomb explode
+// Makes bomb explode.
 void BombView::explode()
 {
     // Set explosion texture and resize bounding rectangle

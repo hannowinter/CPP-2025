@@ -3,13 +3,13 @@
 #include "../Util.hpp"
 #include "../model/Constants.hpp"
 
-// Initialize this controller
+// Initializes this control.
 void PlayerProjectileControl::init(const ControlList& controls)
 {
     // nothing to do here
 }
 
-// Execute relevant updates
+// Executes relevant updates.
 void PlayerProjectileControl::update(const UpdateState& state)
 {
     // Make projectile move up depending on elapsed time
@@ -20,19 +20,18 @@ void PlayerProjectileControl::update(const UpdateState& state)
         state.controls.request_remove(this);
 }
 
-// Draw PlayerProjectile
+// Draws PlayerProjectile.
 void PlayerProjectileControl::draw(LayerManager& layers)
 {
     m_projectile_view->draw(layers.get(LayerID::ACTORS), *m_projectile);
 }
 
-// Get reference to Bullet
+// Gets reference to model object.
 const PlayerProjectile& PlayerProjectileControl::get() const
 {
     return *m_projectile;
 }
 
-// Get reference to Bullet
 PlayerProjectile& PlayerProjectileControl::get()
 {
     return *m_projectile;
@@ -44,7 +43,7 @@ PlayerProjectile& PlayerProjectileControl::get()
 
 
 
-// Create BulletController for Bullet at position
+// Creates control at position.
 PlayerBulletControl::PlayerBulletControl(sf::Vector2f position) :
     PlayerProjectileControl{ PlayerBullet{ position }, PlayerBulletView{} }
 {
@@ -57,7 +56,7 @@ PlayerBulletControl::PlayerBulletControl(sf::Vector2f position) :
 
 
 
-// Create LaserControl at position
+// Creates control at position.
 LaserControl::LaserControl(sf::Vector2f position) :
     PlayerProjectileControl{ PlayerLaser{ position }, LaserView{} }
 {
@@ -70,7 +69,7 @@ LaserControl::LaserControl(sf::Vector2f position) :
 
 
 
-// Create BombControl at position
+// Creates control at position.
 BombControl::BombControl(sf::Vector2f position) :
     PlayerProjectileControl{ PlayerBomb{ position }, BombView{ } },
     m_lifetime{ constants::upgrades::EXPLOSION_TIME }
@@ -78,7 +77,7 @@ BombControl::BombControl(sf::Vector2f position) :
 
 }
 
-// Execute all relevant updates
+// Executes all relevant updates.
 void BombControl::update(const UpdateState& state)
 {
     // Make bomb move up depending on elapsed time if it has not yet exploded
@@ -98,8 +97,7 @@ void BombControl::update(const UpdateState& state)
         state.controls.request_remove(this);
 }
 
-
-// Make bomb explode
+// Makes bomb explode.
 void BombControl::explode()
 {
     static_cast<BombView*>(m_projectile_view.get())->explode();
@@ -108,7 +106,7 @@ void BombControl::explode()
     m_has_exploded = true;
 }
 
-// Check if bomb has exploded
+// Checks if bomb has exploded.
 bool BombControl::has_exploded() const
 {
     return m_has_exploded;

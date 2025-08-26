@@ -8,7 +8,7 @@
 class UpgradeControl : public Control {
 public:
 
-    // Create UpgradeControl
+    // Creates UpgradeControl.
     UpgradeControl();
 
     // Abstract methods of parent class
@@ -16,19 +16,19 @@ public:
     void update(const UpdateState& state) override;
     void draw(LayerManager& layers) override;
 
-    // Reset controller to spawn next upgrade
+    // Resets control to spawn next upgrade.
     void reset(const UpdateState& state);
 
-    // Indicate that the upgrade has been picked up
+    // Indicates that the upgrade has been picked up.
     void pick_up();
 
-    // Check if upgrade has been picked up
+    // Checks if upgrade has been picked up.
     bool is_picked_up();
 
-    // Get type of upgrade
+    // Gets type of upgrade.
     constants::upgrades::Weapon type();
 
-    // Get hitbox of upgrade
+    // Gets hitbox of upgrade.
     sf::FloatRect hitbox() const;
 
 private:

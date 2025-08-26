@@ -2,14 +2,14 @@
 #include "Constants.hpp"
 #include "../Util.hpp"
 
-// Initialize new bullet at shooting position
+// Initializes new bullet at shooting position.
 AlienBullet::AlienBullet(sf::Vector2f position) :
 	m_position{ position }
 {
 
 }
 
-// Get hitbox of bullet
+// Gets hitbox of bullet.
 sf::FloatRect AlienBullet::hitbox() const
 {
 	return {
@@ -18,7 +18,7 @@ sf::FloatRect AlienBullet::hitbox() const
 	};
 }
 
-// Increment vertical positon of bullet
+// Increments vertical positon of bullet.
 void AlienBullet::move_down(float delta)
 {
 	// Calculate offset from speed and amount of time that has passed

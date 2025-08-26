@@ -7,8 +7,7 @@
 class SmokeControl : public Control {
 
 public:
-
-    // Create BulletControl at position
+    // Creates control at position.
     SmokeControl(sf::Vector2f position);
 
     // Abstract methods of parent class
@@ -18,7 +17,7 @@ public:
 
 private:
 
-    // Controlled view
+    // View
     SmokeView m_smoke_view;
 
     // Position of smoke

@@ -7,15 +7,15 @@
 class UpgradeView {
 public:
 
-    // Create UpgradeView
+    // Creates UpgradeView.
     UpgradeView();
 
-    // Draw upgrade to screen
+    // Draws upgrade to screen.
     void draw(Layer& layer, constants::upgrades::Weapon weapon, sf::Vector2f position);
 
 private:
-
-    // Sprite to be drawn
+    
+    // Sprites to be drawn.
     sf::Sprite m_sprite;
 };
 

@@ -4,14 +4,14 @@
 #include "PlayerControl.hpp"
 #include "../model/Constants.hpp"
 
-// Create UpgradeControl
+// Creates UpgradeControl.
 UpgradeControl::UpgradeControl() :
     m_view{}
 {
 
 }
 
-// Initialize controller
+// Initializes control.
 void UpgradeControl::init(const ControlList& controls)
 {
     GameControl* game_control = controls.get<GameControl>();
@@ -23,7 +23,7 @@ void UpgradeControl::init(const ControlList& controls)
     m_upgrade = (game_control->random().operator()() % 2) == 0 ? constants::upgrades::Weapon::LASER : constants::upgrades::Weapon::BOMB;
 }
 
-// Execute all relevant updates
+// Executes all relevant updates.
 void UpgradeControl::update(const UpdateState& state)
 {
     // Decrement timer
@@ -106,7 +106,7 @@ void UpgradeControl::update(const UpdateState& state)
     }
 }
 
-// Draw Upgrade to screen
+// Draws Upgrade to screen.
 void UpgradeControl::draw(LayerManager& layers)
 {
     // If upgrade has not been picked up yet and the timer has finished, show the upgrade
@@ -117,7 +117,7 @@ void UpgradeControl::draw(LayerManager& layers)
     }
 }
 
-// Get hitbox of upgrade if it has been spawned
+// Gets hitbox of upgrade if it has been spawned.
 sf::FloatRect UpgradeControl::hitbox() const
 {
     // If no upgrade has been spawned, return unreachable hitbox
@@ -130,7 +130,7 @@ sf::FloatRect UpgradeControl::hitbox() const
             return {m_position, constants::upgrades::BOMB_ITEM_SIZE};
 }
 
-// Reset controller to spawn next upgrade
+// Resets controller to spawn next upgrade.
 void UpgradeControl::reset(const UpdateState& state)
 {
     // Reset state
@@ -149,20 +149,19 @@ void UpgradeControl::reset(const UpdateState& state)
     m_upgrade = (game_control->random().operator()() % 2) == 0 ? constants::upgrades::Weapon::LASER : constants::upgrades::Weapon::BOMB;
 }
 
-// Indicate that the upgrade has been picked up
+// Indicates that the upgrade has been picked up.
 void UpgradeControl::pick_up()
 {
     m_picked_up = true;
 }
 
-// Check if upgrade has been picked up
+// Checks if upgrade has been picked up.
 bool UpgradeControl::is_picked_up()
 {
     return m_picked_up;
 }
 
-
-// Get type of upgrade
+// Gets type of upgrade.
 constants::upgrades::Weapon UpgradeControl::type()
 {
     return m_upgrade;

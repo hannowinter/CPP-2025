@@ -4,14 +4,14 @@
 
 constexpr float ANIMATION_LENGTH = 0.1f;
 
-// Create view for alien bullet
+// Creates view for alien bullet.
 AlienBulletView::AlienBulletView() :
 	m_sprite{ AssetLoader::get().alien_bullet }
 {
 
 }
 
-// Update view based on elapsed time
+// Updates view based on elapsed time.
 void AlienBulletView::update(float delta)
 {
 	m_animation_timer += delta;
@@ -23,7 +23,7 @@ void AlienBulletView::update(float delta)
 	}
 }
 
-// Draw view
+// Draws view.
 void AlienBulletView::draw(Layer& layer, const AlienBullet& bullet)
 {
 	// Set position for texture

@@ -9,16 +9,16 @@
 class BackgroundView
 {
 public:
-	// Create view
+	// Creates view.
 	BackgroundView();
 
-	// Reset the move direction to a random angle
+	// Resets the move direction to a random angle.
 	void reset_direction(std::mt19937& random);
 
-	// Update the offset
+	// Updates the offset.
 	void update(float delta, float intensity);
 
-	// Draw the background
+	// Draws the background.
 	void draw(Layer& layer);
 
 private:

@@ -1,14 +1,14 @@
 #include "Player.hpp"
 #include "Constants.hpp"
 
-// Create player character at a specific position
+// Creates player character at a specific position.
 Player::Player(sf::Vector2f position) :
 	m_position{ position }
 {
 
 }
 
-// Get hitbox of player
+// Gets hitbox of player.
 sf::FloatRect Player::hitbox() const
 {
 	return {
@@ -17,7 +17,7 @@ sf::FloatRect Player::hitbox() const
 	};
 }
 
-// Move player character
+// Moves player character.
 void Player::move(Direction direction, float delta)
 {
 	// Calculate offset from player speed and amount of time passed

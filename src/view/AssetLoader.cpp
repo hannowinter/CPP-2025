@@ -1,6 +1,6 @@
 #include "AssetLoader.hpp"
 
-// Create AssetLoader with all textures loaded
+// Creates AssetLoader with all textures loaded.
 AssetLoader::AssetLoader() :
 	player{ "assets/player.png" },
 	player_hit{ "assets/player_hit.png" },
@@ -18,7 +18,7 @@ AssetLoader::AssetLoader() :
 
 }
 
-// Get AssetLoader instance
+// Gets AssetLoader instance.
 const AssetLoader& AssetLoader::get()
 {
 	// If no AssetLoader exists, create one

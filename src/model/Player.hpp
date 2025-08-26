@@ -13,16 +13,16 @@ public:
 		LEFT, RIGHT
 	};
 
-	// Create player at position
+	// Creates player at position.
 	Player(sf::Vector2f position);
 
-	// Get hitbox of player
+	// Gets hitbox of player.
 	sf::FloatRect hitbox() const;
 
-	// Move player
+	// Moves player.
 	void move(Direction direction, float delta);
 
-	// Ensure the player is always at least "constants::PADDING" away from the view's border
+	// Ensures the player is always at least "constants::PADDING" away from the view's border.
 	void clamp_position();
 
 private:

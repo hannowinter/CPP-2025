@@ -8,19 +8,19 @@
 class Layer 
 {
 public:
-    // Create a new layer in a given window
+    // Creates a new layer in a given window.
     Layer(sf::RenderWindow &window);
 
-    // Add entity to layer
+    // Adds entity to layer.
     void add_to_layer(const sf::Drawable &drawable);
 
-    // Draw layer
+    // Draws layer.
     void draw();
 
-    // Clear layer
+    // Clears layer.
     void clear();
 
-    // Set view on scene
+    // Sets view on scene.
     void set_view(const sf::View &view);
 
 private:

@@ -12,16 +12,16 @@
 class AlienView
 {
 public:
-	// Create AlienView of specific variant
+	// Creates AlienView of specific variant.
 	AlienView(Alien::Variant variant);
 
-	// Update view based on elapsed time
+	// Updates view based on elapsed time.
 	void update(float delta);
 
-	// Draw the view
+	// Draws the view.
 	void draw(Layer& layer, const Alien& alien);
 
-	// Randomize the animation of the alien
+	// Randomizes the animation of the alien.
 	void randomize_animation(std::mt19937& random);
 
 private:

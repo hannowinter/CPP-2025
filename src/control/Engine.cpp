@@ -5,11 +5,11 @@
 #include "GameControl.hpp"
 #include "../model/Constants.hpp"
 
-// Create new game instance with defined parameters and initialize GameController
+// Creates new engine instance and adds a GameControl.
 Engine::Engine() :
     m_window{
         sf::VideoMode{ { constants::VIEW_WIDTH, constants::VIEW_HEIGHT } }, 
-        "Space Invaders"
+        std::string{ constants::TITLE }
     },
     m_view{ constants::VIEW_RECT },
     m_layer_manager{ m_window }
@@ -17,15 +17,14 @@ Engine::Engine() :
     m_window.setFramerateLimit(constants::FRAME_RATE);
 }
 
-// Start game
+// Starts game.
 void Engine::start() 
 {
     // Game clock
     sf::Clock clock;
 
-    // Add the main `GameControl`
+    // Add the main "GameControl"
     const GameControl& game_control = m_control_list.request_add<GameControl>();
-
     m_control_list.execute_requests();
 
     // While game is running, read new state und update view
@@ -34,6 +33,9 @@ void Engine::start()
         sf::Time elapsed_time = clock.restart();
         if (game_control.state().over || game_control.state().level_won)
             elapsed_time = sf::Time::Zero;
+
+        if (elapsed_time.asSeconds() >= 0.5f) // Limit delta to half a second
+            elapsed_time = sf::Time{ std::chrono::milliseconds{ 500 } };
 
         PollResult_t poll_result = poll_events();
         if (poll_result == PollResult_t::closed)
@@ -47,7 +49,7 @@ void Engine::start()
     m_window.close();
 }
 
-// Poll inputs and other events (window closed, etc.)
+// Polls inputs and other events (window closed, etc.).
 Engine::PollResult_t Engine::poll_events()
 {
     m_inputs.update();
@@ -62,7 +64,7 @@ Engine::PollResult_t Engine::poll_events()
     return PollResult_t::running;
 }
 
-// Update all controllers and set current view
+// Updates all controls and sets current view.
 void Engine::update(float delta)
 {
     m_control_list.update(delta, m_inputs);
@@ -71,7 +73,7 @@ void Engine::update(float delta)
     m_layer_manager.set_view(m_view);
 }
 
-// Clear window and layers and draw new state
+// Clears window and layers and draws new state.
 void Engine::draw()
 {
     m_window.clear();
