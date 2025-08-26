@@ -1,8 +1,8 @@
 #include "TestCommon.hpp"
 #include "../src/control/AlienControl.hpp"
 
-// fixture for Alien model related testing
-// contains 3 Alien instances
+// Fixture for Alien model related testing
+// Contains 3 Alien instances.
 struct AlienTest : public testing::Test
 {
 protected:
@@ -23,9 +23,9 @@ protected:
 	Alien alien3{ Alien::Variant::YELLOW, GRID_ORIGIN_3, COLUMN_3, ROW_3 };
 };
 
-// test whether "Alien::grid_offset" is implemented properly
-// it should return the alien's offset to the grid's top-left corner
-// the alien's size and spacing should be taken into account
+// Tests whether "Alien::grid_offset" is implemented properly.
+// It should return the alien's offset to the grid's top-left corner.
+// The alien's size and spacing should be taken into account.
 TEST_F(AlienTest, alienGridOffsetTest)
 {
 	constexpr sf::Vector2f SIZE = constants::alien::SIZE;
@@ -41,8 +41,8 @@ TEST_F(AlienTest, alienGridOffsetTest)
 	EXPECT_NEAR(alien3.grid_offset().y, SIZE.y + SPACING.y, EPS); // row 1
 }
 
-// test whether the Alien constructor properly calculates its position based on the
-// grid's origin point and the column and row number
+// Tests whether the Alien constructor properly calculates its position based on the
+// grid's origin point and the column and row number.
 TEST_F(AlienTest, alienPositionTest)
 {
 	constexpr sf::Vector2f SIZE = constants::alien::SIZE;
@@ -58,7 +58,7 @@ TEST_F(AlienTest, alienPositionTest)
 	EXPECT_NEAR(alien3.hitbox().position.y, GRID_ORIGIN_3.y + SIZE.y + SPACING.y, EPS); // row 1
 }
 
-// test fixure for testing ShakeState
+// Test fixure for testing ShakeState
 struct ShakeTest : public testing::Test
 {
 protected:
@@ -75,7 +75,7 @@ protected:
 	ShakeState shake_state;
 };
 
-// test the ShakeState's "update" method in conjunction with the "finished_cycle" method
+// Tests the ShakeState's "update" method in conjunction with the "finished_cycle" method.
 TEST_F(ShakeTest, updateFinishedTest)
 {
 	shake_state.duration = 1.0f;
@@ -93,7 +93,7 @@ TEST_F(ShakeTest, updateFinishedTest)
 	EXPECT_TRUE(shake_state.finished_cycle()); // still true
 }
 
-// test the ShakeState's "new_cycle" method
+// Tests the ShakeState's "new_cycle" method.
 TEST_F(ShakeTest, newCycleTest)
 {
 	shake_state.timer = 0.5f;
@@ -128,7 +128,7 @@ TEST_F(ShakeTest, newCycleTest)
 	EXPECT_LE(shake_state.duration, constants::alien::SHAKE_MAX_DURATION / 4.0f);
 }
 
-// test the ShakeState's offset calculation
+// Tests the ShakeState's offset calculation.
 TEST_F(ShakeTest, offsetTest)
 {
 	shake_state.start = { 1.0f, 1.0f };
@@ -146,17 +146,17 @@ TEST_F(ShakeTest, offsetTest)
 	EXPECT_EQ(shake_state.get_offset(), shake_state.target);
 }
 
-// test fixure for SwerveState
+// Test fixure for SwerveState
 struct SwerveTest : testing::Test
 {
 protected:
 	SwerveState swerve_state;
 };
 
-// test if the swerving behaves correctly
-// start a new swerve and continuously update
-// check if the retreat threshold is reached after some time
-TEST_F(SwerveTest, swervingTest)
+// Tests if the attacking behaves correctly.
+// Starts a new swerve and continuously updates.
+// Checks if the retreat threshold is reached after some time.
+TEST_F(SwerveTest, attackingTest)
 {
 	swerve_state.start(
 		0, 0,
@@ -186,9 +186,9 @@ TEST_F(SwerveTest, swervingTest)
 	FAIL();
 }
 
-// test if the retreating behaves correctly
-// start a new retreat and continuously update
-// check if a quickly moving target can be reached after some time
+// Tests if the retreating behaves correctly.
+// Starts a new retreat and continuously updates.
+// Checks if a quickly moving target can be reached after some time.
 TEST_F(SwerveTest, retreatingTest)
 {
 	swerve_state.position = { 100.0f, constants::alien::RETREAT_THRESHOLD };

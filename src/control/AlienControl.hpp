@@ -139,11 +139,20 @@ public:
 	void update(const UpdateState& state) override;
 	void draw(LayerManager& layers) override;
 
+	// Updates the origin position, taking the screen's borders into account and changing the modes.
+	void update_origin(float delta, float intensity, const ControlList& controls);
+
 	// Gets the position of the grid's top-leftmost point
 	sf::Vector2f origin() const;
 
+	// Gets the base velocity the origin is moving with.
+	sf::Vector2f origin_velocity() const;
+
 	// Sets the mode.
 	void set_mode(Mode new_mode);
+
+	// Gets the mode.
+	Mode get_mode() const;
 
 	// Determines topmost and bottommost row in the grid of all aliens still alive.
 	static std::pair<size_t, size_t> get_min_max_row(const ControlList& controls);
@@ -158,7 +167,7 @@ public:
 
 	// Picks two random distinct aliens and initiates a swerve.
 	// If only one alien exists, only that one will swerve.
-	static void start_random_swerve(std::mt19937& random, const ControlList& controls, sf::Vector2f velocity);
+	void start_random_swerve(std::mt19937& random, const ControlList& controls) const;
 
 private:
 	// Current and previous mode of grid

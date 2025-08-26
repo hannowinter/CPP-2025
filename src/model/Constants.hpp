@@ -66,6 +66,7 @@ namespace constants
     {
         constexpr float MOVE_SPEED = 300.0f;
         constexpr sf::Vector2f SIZE = { 6.0f, 32.0f };
+        constexpr float ANIMATION_LENGTH = 0.1f;
     }
 
     // Constants for grid of aliens

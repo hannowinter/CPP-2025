@@ -437,9 +437,22 @@ void AlienGridControl::update(const UpdateState& state)
 	auto [min_row, max_row] = get_min_max_row(state.controls);
 	m_bottom = m_origin.y + max_row * (constants::alien::SIZE.y + constants::alien_grid::SPACING.y) + constants::alien::SIZE.x;
 
+	update_origin(state.delta, game_control.intensity(), state.controls);
+
+	// Check if a new pair of aliens needs to initiate a swerve
+	m_swerve_timer -= state.delta;
+	if (m_swerve_timer <= 0.0f)
+	{
+		reset_swerve_timer(game_control.random());
+		start_random_swerve(game_control.random(), state.controls);
+	}
+}
+
+void AlienGridControl::update_origin(float delta, float intensity, const ControlList& controls)
+{
 	// Calculate the grid's leftmost and rightmost points, 
 	// used to determine when the grid reaches the screen's left or right side
-	auto [min_col, max_col] = get_min_max_column(state.controls);
+	auto [min_col, max_col] = get_min_max_column(controls);
 
 	float alien_grid_leftmost =
 		min_col * (constants::alien::SIZE.x + constants::alien_grid::SPACING.x);
@@ -447,60 +460,30 @@ void AlienGridControl::update(const UpdateState& state)
 		max_col * (constants::alien::SIZE.x + constants::alien_grid::SPACING.x) + constants::alien::SIZE.x;
 
 	// Move the grid's origin depending on the current mode
-	sf::Vector2f velocity{};
-	switch (m_mode)
+	sf::Vector2f velocity = origin_velocity();
+	m_origin += velocity * delta * intensity;
+
+	if (m_mode == DESCEND)
+		m_descend_timer += delta;
+
+	// Check if grid collides with the left or right border
+	if (m_origin.x + alien_grid_rightmost > constants::VIEW_WIDTH - constants::PADDING)
 	{
-	case SHIFT_RIGHT:
-		// Determine velocity and move origin
-		velocity = { constants::alien_grid::SHIFT_SPEED, 0.0f };
-		m_origin += velocity * state.delta * game_control.intensity();
-
-		// Check if border has been reached
-		if (m_origin.x + alien_grid_rightmost > constants::VIEW_WIDTH - constants::PADDING)
-		{
-			m_origin.x = constants::VIEW_WIDTH - constants::PADDING - alien_grid_rightmost;
-			set_mode(DESCEND);
-		}
-
-		break;
-	case SHIFT_LEFT:
-		// Determine velocity and move origin
-		velocity = { -constants::alien_grid::SHIFT_SPEED, 0.0f };
-		m_origin += velocity * state.delta * game_control.intensity();
-
-		// Check if border has been reached
-		if (m_origin.x + alien_grid_leftmost < constants::PADDING)
-		{
-			m_origin.x = constants::PADDING - alien_grid_leftmost;
-			set_mode(DESCEND);
-		}
-
-		break;
-	case DESCEND:
-		// Determine velocity and move origin
-		velocity = { 0.0f, constants::alien_grid::DESCEND_SPEED };
-		m_origin += velocity * state.delta * game_control.intensity();
-
-		// Check if descend phase is over
-		m_descend_timer += state.delta;
-		if (m_descend_timer >= constants::alien_grid::DESCEND_DURATION / game_control.intensity())
-		{
-			m_descend_timer = 0.0f;
-			if (m_prev_mode == SHIFT_LEFT)
-				set_mode(SHIFT_RIGHT);
-			if (m_prev_mode == SHIFT_RIGHT)
-				set_mode(SHIFT_LEFT);
-		}
-
-		break;
+		m_origin.x = constants::VIEW_WIDTH - constants::PADDING - alien_grid_rightmost;
+		set_mode(DESCEND);
 	}
-
-	// Check if a new pair of aliens needs to initiate a swerve
-	m_swerve_timer -= state.delta;
-	if (m_swerve_timer <= 0.0f)
+	if (m_origin.x + alien_grid_leftmost < constants::PADDING)
 	{
-		reset_swerve_timer(game_control.random());
-		start_random_swerve(game_control.random(), state.controls, velocity);
+		m_origin.x = constants::PADDING - alien_grid_leftmost;
+		set_mode(DESCEND);
+	}
+	if (m_descend_timer >= constants::alien_grid::DESCEND_DURATION / intensity)
+	{
+		m_descend_timer = 0.0f;
+		if (m_prev_mode == SHIFT_LEFT)
+			set_mode(SHIFT_RIGHT);
+		if (m_prev_mode == SHIFT_RIGHT)
+			set_mode(SHIFT_LEFT);
 	}
 }
 
@@ -510,11 +493,30 @@ sf::Vector2f AlienGridControl::origin() const
 	return m_origin;
 }
 
+sf::Vector2f AlienGridControl::origin_velocity() const
+{
+	switch (m_mode)
+	{
+	case SHIFT_RIGHT:
+		return { constants::alien_grid::SHIFT_SPEED, 0.0f };
+	case SHIFT_LEFT:
+		return { -constants::alien_grid::SHIFT_SPEED, 0.0f };
+	case DESCEND:
+		return { 0.0f, constants::alien_grid::DESCEND_SPEED };
+	}
+}
+
 // Sets mode of grid.
 void AlienGridControl::set_mode(Mode new_mode)
 {
 	m_prev_mode = m_mode;
 	m_mode = new_mode;
+}
+
+// Gets mode of grid.
+AlienGridControl::Mode AlienGridControl::get_mode() const
+{
+	return m_mode;
 }
 
 // Randomizes time until next swerve.
@@ -566,7 +568,7 @@ float AlienGridControl::get_bottom() const
 	return m_bottom;
 }
 
-void AlienGridControl::start_random_swerve(std::mt19937& random, const ControlList& controls, sf::Vector2f velocity)
+void AlienGridControl::start_random_swerve(std::mt19937& random, const ControlList& controls) const
 {
 	size_t count = controls.count<AlienControl>();
 
@@ -585,6 +587,8 @@ void AlienGridControl::start_random_swerve(std::mt19937& random, const ControlLi
 	// Make chosen aliens swerve
 	AlienControl& alien1_control = *controls.get<AlienControl>(alien1_to_swerve);
 	AlienControl& alien2_control = *controls.get<AlienControl>(alien2_to_swerve);
+
+	sf::Vector2f velocity = origin_velocity();
 
 	alien1_control.start_swerve(velocity, alien2_control.get().column(), alien2_control.get().row());
 	alien2_control.start_swerve(velocity, alien1_control.get().column(), alien1_control.get().row());

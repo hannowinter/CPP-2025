@@ -19,6 +19,9 @@ public:
 	// Draws view.
 	void draw(Layer& layer, const AlienBullet& bullet);
 
+	// Gets the animation state.
+	bool is_flipped() const;
+
 private:
 	// Texture to be drawn
 	sf::Sprite m_sprite;
