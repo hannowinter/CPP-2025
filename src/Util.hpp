@@ -15,6 +15,7 @@ bool overlaps(const sf::Rect<T>& r1, const sf::Rect<T>& r2)
 		r2.position.y + r2.size.y > r1.position.y;
 }
 
+// Linear interpolation of "v1" and "v2" by ratio "r".
 template <typename T, typename R>
 T lerp(const T& v1, const T& v2, const R& r)
 { // std::lerp does not work with sf::Vector2f unfortunately

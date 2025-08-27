@@ -2,22 +2,22 @@
 
 #include "../model/Constants.hpp"
 
-// Create SmokeController
+// Creates control at position.
 SmokeControl::SmokeControl(sf::Vector2f position) :
-    m_smoke_view {},
-    m_position { position },
-    m_lifetime { constants::alien::EFFECT_DURATION }
+    m_smoke_view{},
+    m_position{ position },
+    m_lifetime{ constants::alien::EFFECT_DURATION }
 {
 
 }
 
-// Initialize SmokeController
+// Initializes SmokeControl.
 void SmokeControl::init(const ControlList& controls)
 {
     // nothing to do here
 }
 
-// Execute all relevant updates
+// Executes all relevant updates.
 void SmokeControl::update(const UpdateState& state)
 {
     // Decrement remaining lifetime
@@ -28,7 +28,7 @@ void SmokeControl::update(const UpdateState& state)
         state.controls.request_remove(this);
 }
 
-// Draw Smoke to screen
+// Draws Smoke to screen.
 void SmokeControl::draw(LayerManager& layers)
 {
     m_smoke_view.draw(layers.get(LayerID::EFFECTS), m_position);

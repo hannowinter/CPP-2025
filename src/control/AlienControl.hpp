@@ -8,7 +8,10 @@
 #include "../view/LayerManager.hpp"
 #include "../view/AlienView.hpp"
 
-// handles the aliens shaking smoothly
+// Alien shake state
+// Handles the aliens shaking smoothly.
+// On each new cycle, the target offset and shake duration are randomized.
+// The alien will slowly move towards the target offset and then start a new cycle.
 struct ShakeState
 {
 	sf::Vector2f start{}; // shake start position
@@ -16,20 +19,23 @@ struct ShakeState
 	float timer{}; // elapsed time for the current shake cycle (in seconds), counts up to "duration" and then a new cycle begins
 	float duration{}; // total duration for the current shake cycle (in seconds)
 
-	// update the shake state
+	// Updates the shake state.
 	void update(float delta);
-	// check if the current shake cycle finished
+	// Checks if the current shake cycle finished.
 	bool finished_cycle() const;
-	// start a new randomized shake cycle
+	// Starts a new randomized shake cycle.
 	void new_cycle(float intensity, std::mt19937& random);
-	// start a new shake cycle that moves towards { 0.0f, 0.0f }
+	// Starts a new shake cycle that moves towards { 0.0f, 0.0f }.
 	void reset();
 
-	// calculate the alien's offset produced by the shake
+	// Calculates the alien's current offset produced by the shake.
 	sf::Vector2f get_offset() const;
 };
 
-// handles the aliens' swerving maneuver
+// Alien swerve state
+// Handles the aliens' swerving maneuver.
+// On each swerve maneuver, the alien will move towards the player (Mode::ATTACK), and then after reaching a
+// certain threshold, turn around and realign with the grid (Mode::RETREAT).
 struct SwerveState
 {
 	// Position and velocity during swerving
@@ -40,6 +46,7 @@ struct SwerveState
 	size_t target_column{};
 	size_t target_row{};
 
+	// Starts a new swerve maneuver.
 	void start(
 		size_t target_column, 
 		size_t target_row, 
@@ -47,28 +54,28 @@ struct SwerveState
 		sf::Vector2f init_velocity
 	);
 
-	// update the process of swerving towards the player
-	// returns "true" if the retreat threshold has been reached and the alien should start to retreat
-	bool update_swerve(float delta, sf::Vector2f player_position);
+	// Updates the process of attacking the player.
+	// Returns "true" if the retreat threshold has been reached and the alien should start to retreat.
+	bool update_attack(float delta, sf::Vector2f player_position);
 
-	// update the process of retreating to the target destination
-	// returns "true" if the retreating process has finished
+	// Updates the process of retreating to the target destination.
+	// Returns "true" if the retreating process has finished.
 	bool update_retreat(float delta, float intensity, sf::Vector2f target);
 };
 
-// Controls an individual alien.
+// Control class for an individual alien.
 class AlienControl : public Control
 {
 public:
 	// Aliens can be in several distinct states
 	enum Mode
 	{
-		GRID_ALIGNED, 	// alien is aligned with the grid and shaking smoothly
-		SWERVE, 	// alien is swerving out of the grid heading towards the player
-		RETREAT 	// alien is retreating back to the grid after swerving out
+		GRID_ALIGNED, 	// Alien is aligned with the grid and shaking smoothly.
+		ATTACK, 	// Alien is swerving out of the grid heading towards the player.
+		RETREAT 	// Alien is retreating back to the grid after swerving out.
 	};
 
-	// Create AlienController
+	// Creates an AlienControl.
 	AlienControl(Alien::Variant variant, sf::Vector2f grid_origin, size_t column, size_t row);
 
 	// Abstract methods inherited from parent class
@@ -76,25 +83,27 @@ public:
 	void update(const UpdateState& state) override;
 	void draw(LayerManager& layers) override;
 
-	// Get mode of alien
+	// Gets the alien's current mode.
 	Mode get_mode() const;
 
-	// Gets the stored alien
+	// Gets a reference to the model object.
 	Alien& get();
 	const Alien& get() const;
 
-	// Gets the swerve state
+	// Gets the swerve state.
 	const SwerveState& get_swerve_state() const;
 
-	// Resets cooldown for next shot
+	// Resets cooldown for next shot.
 	void reset_shoot_timer(float intensity, std::mt19937& random);
 
-	// Initiates a swerve, putting the alien into "SWERVE" mode
+	// Initiates a new swerve maneuver, putting the alien into "ATTACK" mode.
 	void start_swerve(sf::Vector2f init_velocity, size_t target_column, size_t target_row);
 
 private:
-	// Controlled Alien and AlienView
+	// Model
 	Alien m_alien;
+
+	// View
 	AlienView m_alien_view;
 
 	// Current mode of alien
@@ -104,25 +113,24 @@ private:
 	float m_shoot_timer;
 
 	ShakeState m_shake_state;
-
 	SwerveState m_swerve_state;
 };
 
 // Controls the alien grid as a whole.
-// This class is responsible for spawning all aliens, moving the grid's origin point around,
-// determining the intensity and picking pairs of aliens to swerve at random times.
+// This class is responsible for spawning all aliens, moving the grid's origin point around and
+// picking pairs of aliens to swerve at random times.
 class AlienGridControl : public Control
 {
 public:
-	// Possible states of the grid
+	// Possible modes of the grid
 	enum Mode
 	{
-		SHIFT_RIGHT, 	// alien grid is moving to the right until hitting the screen's border
-		SHIFT_LEFT, 	// alien grid is moving to the left until hitting the screen's border
-		DESCEND 	// alien grid is descending downwards for a certain amount of time
+		SHIFT_RIGHT, 	// Alien grid is moving to the right until hitting the screen's border.
+		SHIFT_LEFT, 	// Alien grid is moving to the left until hitting the screen's border.
+		DESCEND 	// Alien grid is descending downwards for a certain amount of time.
 	};
 
-	// Create AlienGridControl
+	// Creates an AlienGridControl.
 	AlienGridControl();
 
 	// Abstract methods inherited from parent
@@ -131,31 +139,37 @@ public:
 	void update(const UpdateState& state) override;
 	void draw(LayerManager& layers) override;
 
-	// Returns the position of the grid's top-leftmost point
+	// Updates the origin position, taking the screen's borders into account and changing the modes.
+	void update_origin(float delta, float intensity, const ControlList& controls);
+
+	// Gets the position of the grid's top-leftmost point
 	sf::Vector2f origin() const;
+
+	// Gets the base velocity the origin is moving with.
+	sf::Vector2f origin_velocity() const;
 
 	// Sets the mode.
 	void set_mode(Mode new_mode);
 
-	// Determine topmost and bottommost row in the grid of all aliens still alive.
+	// Gets the mode.
+	Mode get_mode() const;
+
+	// Determines topmost and bottommost row in the grid of all aliens still alive.
 	static std::pair<size_t, size_t> get_min_max_row(const ControlList& controls);
-	// Determine leftmost and rightmost column in the grid of all aliens still alive.
+	// Determines leftmost and rightmost column in the grid of all aliens still alive.
 	static std::pair<size_t, size_t> get_min_max_column(const ControlList& controls);
 
-	// Get y-coordinate of bottommost alien
-	float get_bottom();
+	// Gets y-coordinate of the bottommost alien's bottom.
+	float get_bottom() const;
 
 	// Resets the wait time until picking a new pair of aliens to swerve.
 	void reset_swerve_timer(std::mt19937& random);
 
 	// Picks two random distinct aliens and initiates a swerve.
 	// If only one alien exists, only that one will swerve.
-	static void start_random_swerve(std::mt19937& random, const ControlList& controls, sf::Vector2f velocity);
+	void start_random_swerve(std::mt19937& random, const ControlList& controls) const;
 
 private:
-	// Surrogate for difficulty
-	float m_intensity = 1.0f;
-
 	// Current and previous mode of grid
 	Mode m_mode;
 	Mode m_prev_mode;
@@ -169,7 +183,7 @@ private:
 	// Cooldown until next swerve
 	float m_swerve_timer = 0.0f;
 
-	// Bottommost pixel
+	// Bottommost y-coordinate
 	float m_bottom;
 };
 

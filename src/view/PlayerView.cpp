@@ -2,14 +2,14 @@
 
 constexpr float ANIMATION_LENGTH = 0.15f;
 
-// Create PlayerView
+// Creates PlayerView.
 PlayerView::PlayerView() :
 	m_sprite{ AssetLoader::get().player }
 {
 
 }
 
-// Update view based on elapsed time
+// Updates view based on elapsed time.
 void PlayerView::update(float delta)
 {
 	// Only animate player when hit
@@ -34,7 +34,7 @@ void PlayerView::update(float delta)
 	}
 }
 
-// Draw player
+// Draws player.
 void PlayerView::draw(Layer& layer, const Player& player)
 {
 	// Set position of texture and add to layer

@@ -7,16 +7,16 @@
 class AlienBullet
 {
 public:
-	// Create new bullet
+	// Creates new bullet.
 	AlienBullet(sf::Vector2f position);
 
-	// Get hitbox of bullet
+	// Gets hitbox of bullet.
 	sf::FloatRect hitbox() const;
 
-	// Make bullet move further down
+	// Makes bullet move further down.
 	void move_down(float delta);
 
-	// Check if alien bullet is outside of view
+	// Checks if alien bullet is outside of view.
 	bool outside_view() const;
 
 private:

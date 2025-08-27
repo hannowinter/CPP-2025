@@ -17,7 +17,7 @@ struct PlayerProjectileTest : public testing::Test
 // test whether "PlayerProjectile::move_up" behaves properly, also in conjunction with different framerates
 TEST_F(PlayerProjectileTest, playerProjectileMoveUp)
 {
-	constexpr float MOVE_SPEED = constants::player_bullet::MOVE_SPEED;
+	constexpr float MOVE_SPEED = constants::player_projectile::MOVE_SPEED;
 
 	// moves once, 30fps
 	player_bullet.move_up(FIXED_DELTA_30);
@@ -49,10 +49,10 @@ TEST_F(PlayerProjectileTest, playerProjectileMoveUp)
 TEST_F(PlayerProjectileTest, bombExplodeHitbox)
 {
 	// not yet exploded
-	EXPECT_EQ(player_bomb.hitbox().size, constants::player_bullet::BOMB_SIZE);
+	EXPECT_EQ(player_bomb.hitbox().size, constants::player_projectile::BOMB_SIZE);
 
 	player_bomb.explode();
 
 	// exploded
-	EXPECT_EQ(player_bomb.hitbox().size, constants::player_bullet::EXPLOSION_SIZE);
+	EXPECT_EQ(player_bomb.hitbox().size, constants::player_projectile::EXPLOSION_SIZE);
 }

@@ -11,10 +11,10 @@ struct Inputs
 	std::unordered_set<sf::Keyboard::Key> pressed_keys;
 
 public:
-	// Clear list of active inputs
+	// Clears list of active inputs.
 	void update();
 
-	// Record when a key is pressed
+	// Records when a key is pressed.
 	void event(const sf::Event& event);
 };
 

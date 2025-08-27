@@ -9,11 +9,10 @@
 class PlayerProjectileControl : public Control 
 {
 public:
-
     // Create projectile shot by player at position
     template <
-        std::derived_from<PlayerProjectile> M, // model class
-        std::derived_from<PlayerProjectileView> V // view class
+        std::derived_from<PlayerProjectile> M, // model type
+        std::derived_from<PlayerProjectileView> V // view type
     >
     PlayerProjectileControl(
         M&& projectile,
@@ -30,50 +29,49 @@ public:
     void update(const UpdateState& state) override;
     void draw(LayerManager& layers) override;
 
-    // Get reference to projectile
+    // Gets reference to model object.
     const PlayerProjectile& get() const;
     PlayerProjectile& get();
 
 protected:
-
-    // Controlled PlayerProjectile
+    // Model
     std::unique_ptr<PlayerProjectile> m_projectile;
 
-    // Controlled PlayerProjectileView
+    // View
     std::unique_ptr<PlayerProjectileView> m_projectile_view;
 };
 
-// Controller for bullet shot by player
+// Control class for bullets shot by player
 class PlayerBulletControl : public PlayerProjectileControl
 {
 public:
 
-    // Create Bullet shot by player at position
+    // Creates control at position.
     PlayerBulletControl(sf::Vector2f position);
 };
 
-// Controller for laser shot by player
+// Control class for lasers shot by player
 class LaserControl : public PlayerProjectileControl {
 public:
 
-    // Create LaserControl
+    // Creates control at position.
     LaserControl(sf::Vector2f position);
 };
 
-// Controller for bomb shot by player
+// Control class for bombs shot by player
 class BombControl : public PlayerProjectileControl {
 public:
 
-    // Create BombControl
+    // Creates control at position.
     BombControl(sf::Vector2f position);
 
-    // Update BombControl
+    // Updates BombControl.
     void update(const UpdateState& state) override;
 
-    // Make bomb explode
+    // Makes bomb explode.
     void explode();
 
-    // Check if bomb has exploded
+    // Checks if bomb has exploded.
     bool has_exploded() const;
 
 private:

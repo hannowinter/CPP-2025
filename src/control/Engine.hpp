@@ -9,15 +9,14 @@
 #include "Inputs.hpp"
 
 // Class modelling the Game's engine
-// Responsible for managing the game window, layers, inputs and holding all controls
+// Responsible for managing the game window, layers, inputs and holding all controls.
 class Engine 
 {
-
 public:
-    // Create new `Engine` instance
+    // Creates new Engine instance.
     Engine();
 
-    // Start game
+    // Starts game.
     void start();
 
 private:
@@ -28,13 +27,13 @@ private:
         closed
     };
 
-    // Poll inputs and other events (window closed, etc.)
+    // Polls inputs and other events (window closed, etc.).
     PollResult_t poll_events();
 
-    // Update game
+    // Updates game.
     void update(float delta);
 
-    // Draw game
+    // Draws game.
     void draw();
 
     // Game window and main view

@@ -9,10 +9,10 @@ class PlayerProjectileView
 {
 public:
 
-    // Create PlayerProjectileView
+    // Creates PlayerProjectileView.
     PlayerProjectileView(const sf::Texture& sprite);
 
-    // Draw projectile
+    // Draws projectile.
     virtual void draw(Layer& layer, const PlayerProjectile& bullet);
 
 protected:
@@ -26,7 +26,7 @@ class PlayerBulletView : public PlayerProjectileView
 {
 public:
 
-    // Create bullet view
+    // Creates bullet view.
     PlayerBulletView();
 };
 
@@ -34,7 +34,7 @@ public:
 class LaserView : public PlayerProjectileView {
 public:
 
-    // Create LaserView
+    // Creates LaserView.
     LaserView();
 };
 
@@ -42,10 +42,10 @@ public:
 class BombView : public PlayerProjectileView {
 public:
 
-    // Create BombView
+    // Creates BombView.
     BombView();
 
-    // Make bomb explode
+    // Makes bomb explode.
     void explode();
 };
 

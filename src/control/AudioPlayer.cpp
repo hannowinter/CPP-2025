@@ -6,44 +6,35 @@
 #include <iostream>
 
 AudioPlayer::AudioPlayer() :
-    alien_hit_buffer(),
-    explosion_buffer(),
-    game_over_buffer(),
-    laser_buffer(),
-    player_hit_bullet_buffer(),
-    player_hit_swerve_buffer(),
-    level_won_buffer(),
-    upgrade_buffer(),
-    alien_hit(alien_hit_buffer),
-    explosion(explosion_buffer),
-    game_over(game_over_buffer),
-    laser(laser_buffer),
-    player_hit_bullet(player_hit_bullet_buffer),
-    player_hit_swerve(player_hit_swerve_buffer),
-    level_won(level_won_buffer),
-    upgrade(upgrade_buffer)
+    m_alien_hit_buffer{},
+    m_explosion_buffer{},
+    m_game_over_buffer{},
+    m_laser_buffer{},
+    m_player_hit_bullet_buffer{},
+    m_player_hit_swerve_buffer{},
+    m_level_won_buffer{},
+    m_upgrade_buffer{},
+    alien_hit{ m_alien_hit_buffer },
+    explosion{ m_explosion_buffer },
+    game_over{ m_game_over_buffer },
+    laser{ m_laser_buffer },
+    player_hit_bullet{ m_player_hit_bullet_buffer },
+    player_hit_swerve{ m_player_hit_swerve_buffer },
+    level_won{ m_level_won_buffer },
+    upgrade{ m_upgrade_buffer }
 {
     bool success = true;
-    success |= alien_hit_buffer.loadFromFile("assets/audio/alien_hit.wav");
-    success |= explosion_buffer.loadFromFile("assets/audio/explosion.wav");
-    success |= game_over_buffer.loadFromFile("assets/audio/game_over.wav");
-    success |= laser_buffer.loadFromFile("assets/audio/laser.wav");
-    success |= player_hit_bullet_buffer.loadFromFile("assets/audio/player_hit_bullet.wav");
-    success |= player_hit_swerve_buffer.loadFromFile("assets/audio/player_hit_swerve.wav");
-    success |= level_won_buffer.loadFromFile("assets/audio/level_won.wav");
-    success |= upgrade_buffer.loadFromFile("assets/audio/upgrade.wav");
+    success |= m_alien_hit_buffer.loadFromFile("assets/audio/alien_hit.wav");
+    success |= m_explosion_buffer.loadFromFile("assets/audio/explosion.wav");
+    success |= m_game_over_buffer.loadFromFile("assets/audio/game_over.wav");
+    success |= m_laser_buffer.loadFromFile("assets/audio/laser.wav");
+    success |= m_player_hit_bullet_buffer.loadFromFile("assets/audio/player_hit_bullet.wav");
+    success |= m_player_hit_swerve_buffer.loadFromFile("assets/audio/player_hit_swerve.wav");
+    success |= m_level_won_buffer.loadFromFile("assets/audio/level_won.wav");
+    success |= m_upgrade_buffer.loadFromFile("assets/audio/upgrade.wav");
 
     if (!success)
         std::cerr << "Warning: One or multiple audio files failed to load!\n";
-
-    alien_hit.setBuffer(alien_hit_buffer);
-    explosion.setBuffer(explosion_buffer);
-    game_over.setBuffer(game_over_buffer);
-    laser.setBuffer(laser_buffer);
-    player_hit_bullet.setBuffer(player_hit_bullet_buffer);
-    player_hit_swerve.setBuffer(player_hit_swerve_buffer);
-    level_won.setBuffer(level_won_buffer);
-    upgrade.setBuffer(upgrade_buffer);
 }
 
 AudioPlayer& AudioPlayer::get()

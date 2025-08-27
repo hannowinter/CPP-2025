@@ -8,10 +8,10 @@
 class HUDView
 {
 public:
-	// Create HUD
+	// Creates HUD.
 	HUDView();
 
-	// Draw HUD
+	// Draws HUD.
 	void draw(Layer& layer, const GameState& state);
 
 private:

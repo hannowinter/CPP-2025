@@ -1,8 +1,8 @@
 #include "TestCommon.hpp"
 #include "../src/control/AlienBulletControl.hpp"
 
-// fixture for AlienBullet model related testing
-// contains 3 AlienBullet instances
+// Fixture for AlienBullet model related testing
+// Contains 5 AlienBullet instances.
 struct AlienBulletTest : public testing::Test
 {
 protected:
@@ -21,7 +21,7 @@ protected:
 	AlienBullet alien_bullet_outside{ POSITION_OUTSIDE };
 };
 
-// test whether "AlienBullet::move_down" behaves properly, also in conjunction with different framerates
+// Tests whether "AlienBullet::move_down" behaves properly, also in conjunction with different framerates.
 TEST_F(AlienBulletTest, alienBulletMoveDownTest)
 {
 	constexpr float MOVE_SPEED = constants::alien_bullet::MOVE_SPEED;
@@ -52,6 +52,7 @@ TEST_F(AlienBulletTest, alienBulletMoveDownTest)
 	EXPECT_EQ(alien_bullet3.hitbox().position.x, POSITION_3.x);
 }
 
+// Tests whether "AlienBullet::outside_view" properly checks if the alien is out of view.
 TEST_F(AlienBulletTest, alienBulletOutsideViewTest)
 {
 	EXPECT_FALSE(alien_bullet_almost_outside.outside_view());
@@ -61,4 +62,25 @@ TEST_F(AlienBulletTest, alienBulletOutsideViewTest)
 
 	// should still be outside
 	EXPECT_TRUE(alien_bullet_outside.outside_view());
+}
+
+// Tests whether the view's animation behaves properly
+TEST(AlienBulletViewTest, alienBulletViewUpdateTest)
+{
+	AlienBulletView view;
+
+	// we don't care specifically if it's flipped by default or not
+	bool initial = view.is_flipped();
+
+	// no flip yet
+	view.update(constants::alien_bullet::ANIMATION_LENGTH / 2);
+	EXPECT_EQ(initial, view.is_flipped());
+
+	// now it should flip
+	view.update(constants::alien_bullet::ANIMATION_LENGTH);
+	EXPECT_EQ(!initial, view.is_flipped());
+
+	// now it should flip back
+	view.update(constants::alien_bullet::ANIMATION_LENGTH);
+	EXPECT_EQ(initial, view.is_flipped());
 }

@@ -8,14 +8,14 @@
 // Struct to hold and play all audio files (Singleton)
 struct AudioPlayer {
 private:
-    sf::SoundBuffer alien_hit_buffer;
-    sf::SoundBuffer explosion_buffer;
-    sf::SoundBuffer game_over_buffer;
-    sf::SoundBuffer laser_buffer;
-    sf::SoundBuffer player_hit_bullet_buffer;
-    sf::SoundBuffer player_hit_swerve_buffer;
-    sf::SoundBuffer level_won_buffer;
-    sf::SoundBuffer upgrade_buffer;
+    sf::SoundBuffer m_alien_hit_buffer;
+    sf::SoundBuffer m_explosion_buffer;
+    sf::SoundBuffer m_game_over_buffer;
+    sf::SoundBuffer m_laser_buffer;
+    sf::SoundBuffer m_player_hit_bullet_buffer;
+    sf::SoundBuffer m_player_hit_swerve_buffer;
+    sf::SoundBuffer m_level_won_buffer;
+    sf::SoundBuffer m_upgrade_buffer;
 
     static std::unique_ptr<AudioPlayer> inst;
 
@@ -32,8 +32,6 @@ public:
     AudioPlayer();
 
     static AudioPlayer& get();
-
-
 };
 
 #endif

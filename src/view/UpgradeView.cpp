@@ -2,15 +2,15 @@
 
 #include "AssetLoader.hpp"
 
-// Create UpgradeView
-// Initialize with random texture
+// Creates UpgradeView.
+// Initializes with random texture.
 UpgradeView::UpgradeView() :
     m_sprite { AssetLoader::get().smoke }
 {
 
 }
 
-// Draw upgrade to screen
+// Draws upgrade to screen.
 void UpgradeView::draw(Layer& layer, constants::upgrades::Weapon weapon, sf::Vector2f position)
 {
     // Select correct texture and reset bounding rectangle

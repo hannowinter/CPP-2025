@@ -2,20 +2,18 @@
 #include "AssetLoader.hpp"
 #include "../model/Constants.hpp"
 
-constexpr float ANIMATION_LENGTH = 0.1f;
-
-// Create view for alien bullet
+// Creates view for alien bullet.
 AlienBulletView::AlienBulletView() :
 	m_sprite{ AssetLoader::get().alien_bullet }
 {
 
 }
 
-// Update view based on elapsed time
+// Updates view based on elapsed time.
 void AlienBulletView::update(float delta)
 {
 	m_animation_timer += delta;
-	if (m_animation_timer >= ANIMATION_LENGTH)
+	if (m_animation_timer >= constants::alien_bullet::ANIMATION_LENGTH)
 	{
 		// Reset timer and flip texture
 		m_animation_timer = 0.0f;
@@ -23,7 +21,7 @@ void AlienBulletView::update(float delta)
 	}
 }
 
-// Draw view
+// Draws view.
 void AlienBulletView::draw(Layer& layer, const AlienBullet& bullet)
 {
 	// Set position for texture
@@ -35,4 +33,9 @@ void AlienBulletView::draw(Layer& layer, const AlienBullet& bullet)
 
 	// Add texture to layer
 	layer.add_to_layer(m_sprite);
+}
+
+bool AlienBulletView::is_flipped() const
+{
+	return m_flipped;
 }

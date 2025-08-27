@@ -25,3 +25,7 @@ Mit jedem Level steigert sich die Intensität und die Aliens bewegen sich und fe
 3. Das Projekt und die Tests bauen: "make game" bzw. "make tests"
 4. Den Pfad im Terminal anpassen: "export LD_LIBRARY_PATH=./SFML/lib:./libFLAC:$LD_LIBRARY_PATH"
 5. Das Spiel oder die Test ausführen (in der Konsolen-Anwendung, nicht VSCode!): "./game" oder "./tests"
+
+## Credits
+
+- https://opengameart.org/content/assets-for-a-space-invader-like-game

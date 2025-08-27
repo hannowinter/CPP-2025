@@ -54,7 +54,7 @@ void ShakeState::new_cycle(float intensity, std::mt19937& random)
 sf::Vector2f ShakeState::get_offset() const
 {
 	float ratio = timer / duration;
-	return lerp(start, target, ratio);
+	return lerp(start, target, ratio); // linear interpolation
 }
 
 void SwerveState::start(
@@ -70,7 +70,7 @@ void SwerveState::start(
 	this->target_row = target_row;
 }
 
-bool SwerveState::update_swerve(float delta, sf::Vector2f player_position)
+bool SwerveState::update_attack(float delta, sf::Vector2f player_position)
 {
 	constexpr float MAX_SPEED = constants::alien::SWERVE_MAX_SPEED;
 
@@ -114,7 +114,7 @@ bool SwerveState::update_retreat(float delta, float intensity, sf::Vector2f targ
 		{
 			velocity = dist.normalized() * MAX_SPEED;
 		}
-		else // the next step of movement would overshoot, so we finish the retreat
+		else // the next step of movement would overshoot, so we snap to target and finish the retreat
 		{
 			position = target;
 			return true;
@@ -141,7 +141,7 @@ bool SwerveState::update_retreat(float delta, float intensity, sf::Vector2f targ
 	return false;
 }
 
-// Create new AlienController
+// Creates an AlienControl.
 AlienControl::AlienControl(Alien::Variant variant, sf::Vector2f grid_origin, size_t column, size_t row) :
 	m_alien{ variant, grid_origin, column, row },
 	m_alien_view{ variant },
@@ -153,10 +153,10 @@ AlienControl::AlienControl(Alien::Variant variant, sf::Vector2f grid_origin, siz
 
 }
 
-// Initialize AlienController
+// Initializes the AlienControl.
 void AlienControl::init(const ControlList& controls)
 {
-	// Get GameController
+	// Get the GameControl
 	GameControl& game_control = *controls.get<GameControl>();
 
 	// Randomize alien animation, shooting cooldown and shaking animation
@@ -165,7 +165,7 @@ void AlienControl::init(const ControlList& controls)
 	m_shake_state.new_cycle(constants::alien_grid::MIN_INTENSITY, game_control.random());
 }
 
-// Execute all relevant updates
+// Executes all relevant updates.
 void AlienControl::update(const UpdateState& state)
 {
 	// Get AlienGridControl and GameControl
@@ -192,7 +192,7 @@ void AlienControl::update(const UpdateState& state)
 				AudioPlayer::get().alien_hit.play();
 
 				// Increment score
-				game_control.state().score += 50;
+				game_control.state().score += constants::game::POINTS_PER_BULLET_HIT;
 			}
 		}
 
@@ -211,7 +211,7 @@ void AlienControl::update(const UpdateState& state)
 				AudioPlayer::get().alien_hit.play();
 
 				// Increment score
-				game_control.state().score += 100;
+				game_control.state().score += constants::game::POINTS_PER_LASER_HIT;
 			}
 		}
 
@@ -233,7 +233,7 @@ void AlienControl::update(const UpdateState& state)
 				bomb->explode();
 
 				// Increment score
-				game_control.state().score += 150;
+				game_control.state().score += constants::game::POINTS_PER_BOMB_HIT;
 			}
 			// Check if alien is within explosion
 			else if (overlaps(bomb->get().hitbox(), m_alien.hitbox()) && bomb->has_exploded())
@@ -248,12 +248,12 @@ void AlienControl::update(const UpdateState& state)
 				AudioPlayer::get().alien_hit.play();
 
 				// Increment score
-				game_control.state().score += 150;
+				game_control.state().score += constants::game::POINTS_PER_BOMB_HIT;
 			}
 		}
 	}
 
-	// Update view (animations are sped up by a factor of intensity())
+	// Update view (animations are sped up by a factor of intensity)
 	m_alien_view.update(state.delta * intensity);
 
 	// Check if alien needs to shoot
@@ -295,13 +295,13 @@ void AlienControl::update(const UpdateState& state)
 		new_position = alien_grid_control.origin() + m_alien.grid_offset();
 		break;
 	}
-	case SWERVE:
+	case ATTACK:
 	{
 		// Get Player reference and position
 		const PlayerControl& player = *state.controls.get<PlayerControl>();
 		sf::Vector2f player_position = player.get().hitbox().position;
 
-		bool should_retreat = m_swerve_state.update_swerve(state.delta, player_position);
+		bool should_retreat = m_swerve_state.update_attack(state.delta, player_position);
 		if (should_retreat)
 			m_mode = RETREAT;
 
@@ -331,25 +331,24 @@ void AlienControl::update(const UpdateState& state)
 	m_alien.set_position(new_position + shake_offset);
 }
 
-// Draw alien on scene
+// Draws alien.
 void AlienControl::draw(LayerManager& layers)
 {
 	m_alien_view.draw(layers.get(LayerID::ACTORS), m_alien);
 }
 
-// Get mode of alien
+// Gets mode of alien.
 AlienControl::Mode AlienControl::get_mode() const
 {
 	return m_mode;
 }
 
-// Get reference to alien
+// Gets reference to alien.
 Alien& AlienControl::get()
 {
 	return m_alien;
 }
 
-// Get reference to alien
 const Alien& AlienControl::get() const
 {
 	return m_alien;
@@ -360,7 +359,7 @@ const SwerveState& AlienControl::get_swerve_state() const
 	return m_swerve_state;
 }
 
-// Rest cooldown for next shot
+// Resets cooldown for next shot.
 void AlienControl::reset_shoot_timer(float intensity, std::mt19937& random)
 {
 	std::uniform_real_distribution<float> dist{
@@ -371,10 +370,10 @@ void AlienControl::reset_shoot_timer(float intensity, std::mt19937& random)
 	m_shoot_timer = dist(random);
 }
 
-// Make alien swerve
+// Makes alien swerve.
 void AlienControl::start_swerve(sf::Vector2f init_velocity, size_t target_column, size_t target_row)
 {
-	m_mode = SWERVE;
+	m_mode = ATTACK;
 	m_shake_state.reset();
 	m_swerve_state.start(target_column, target_row, m_alien.hitbox().position, init_velocity);
 }
@@ -385,9 +384,8 @@ void AlienControl::start_swerve(sf::Vector2f init_velocity, size_t target_column
 
 
 
-// Create AlienGridControl
+// Creates a new AlienGridControl.
 AlienGridControl::AlienGridControl() :
-	m_intensity{ constants::alien_grid::MIN_INTENSITY },
 	m_mode{ SHIFT_RIGHT },
 	m_prev_mode{ m_mode },
 	m_origin{ constants::PADDING, 5 * constants::PADDING },
@@ -398,9 +396,9 @@ AlienGridControl::AlienGridControl() :
 
 }
 
+// Adds all the aliens.
 void AlienGridControl::add_children(ControlList& controls)
 {
-	// Fill grid with aliens
 	for (size_t x = 0; x < constants::alien_grid::COLUMNS; x++)
 	{
 		size_t y = 0;
@@ -419,107 +417,109 @@ void AlienGridControl::add_children(ControlList& controls)
 	}
 }
 
-// Initialize this controller
+// Initializes the control.
 void AlienGridControl::init(const ControlList& controls)
 {
-	// Get game controller
+	// Get GameController
 	GameControl& game_control = *controls.get<GameControl>();
 
-	// Set random time until first swerve
+	// Randomize time until first swerve
 	reset_swerve_timer(game_control.random());
 }
 
-// Execute all updates
+// Executes all updates.
 void AlienGridControl::update(const UpdateState& state)
 {
-	// Get game controller
+	// Get GameControl
 	GameControl& game_control = *state.controls.get<GameControl>();
 
-	// Determine bottomost point in grid
+	// Determine bottommost point in grid
 	auto [min_row, max_row] = get_min_max_row(state.controls);
 	m_bottom = m_origin.y + max_row * (constants::alien::SIZE.y + constants::alien_grid::SPACING.y) + constants::alien::SIZE.x;
 
-	// calculate the grid's leftmost and rightmost points, 
+	update_origin(state.delta, game_control.intensity(), state.controls);
+
+	// Check if a new pair of aliens needs to initiate a swerve
+	m_swerve_timer -= state.delta;
+	if (m_swerve_timer <= 0.0f)
+	{
+		reset_swerve_timer(game_control.random());
+		start_random_swerve(game_control.random(), state.controls);
+	}
+}
+
+void AlienGridControl::update_origin(float delta, float intensity, const ControlList& controls)
+{
+	// Calculate the grid's leftmost and rightmost points, 
 	// used to determine when the grid reaches the screen's left or right side
-	auto [min_col, max_col] = get_min_max_column(state.controls);
+	auto [min_col, max_col] = get_min_max_column(controls);
 
 	float alien_grid_leftmost =
 		min_col * (constants::alien::SIZE.x + constants::alien_grid::SPACING.x);
 	float alien_grid_rightmost =
 		max_col * (constants::alien::SIZE.x + constants::alien_grid::SPACING.x) + constants::alien::SIZE.x;
 
-	// move the grid's origin depending on the current mode
-	sf::Vector2f velocity{};
-	switch (m_mode)
+	// Move the grid's origin depending on the current mode
+	sf::Vector2f velocity = origin_velocity();
+	m_origin += velocity * delta * intensity;
+
+	if (m_mode == DESCEND)
+		m_descend_timer += delta;
+
+	// Check if grid collides with the left or right border
+	if (m_origin.x + alien_grid_rightmost > constants::VIEW_WIDTH - constants::PADDING)
 	{
-	case SHIFT_RIGHT:
-		// Determine velocity and move origin
-		velocity = { constants::alien_grid::SHIFT_SPEED, 0.0f };
-		m_origin += velocity * state.delta * game_control.intensity();
-
-		// Check if border has been reached
-		if (m_origin.x + alien_grid_rightmost > constants::VIEW_WIDTH - constants::PADDING)
-		{
-			m_origin.x = constants::VIEW_WIDTH - constants::PADDING - alien_grid_rightmost;
-			set_mode(DESCEND);
-		}
-
-		break;
-	case SHIFT_LEFT:
-		// Determine velocity and move origin
-		velocity = { -constants::alien_grid::SHIFT_SPEED, 0.0f };
-		m_origin += velocity * state.delta * game_control.intensity();
-
-		// Check if border has been reached
-		if (m_origin.x + alien_grid_leftmost < constants::PADDING)
-		{
-			m_origin.x = constants::PADDING - alien_grid_leftmost;
-			set_mode(DESCEND);
-		}
-
-		break;
-	case DESCEND:
-		// Determine velocity and move origin
-		velocity = { 0.0f, constants::alien_grid::DESCEND_SPEED };
-		m_origin += velocity * state.delta * game_control.intensity();
-
-		// Check if descend phase is over
-		m_descend_timer += state.delta;
-		if (m_descend_timer >= constants::alien_grid::DESCEND_DURATION / game_control.intensity())
-		{
-			m_descend_timer = 0.0f;
-			if (m_prev_mode == SHIFT_LEFT)
-				set_mode(SHIFT_RIGHT);
-			if (m_prev_mode == SHIFT_RIGHT)
-				set_mode(SHIFT_LEFT);
-		}
-
-		break;
+		m_origin.x = constants::VIEW_WIDTH - constants::PADDING - alien_grid_rightmost;
+		set_mode(DESCEND);
 	}
-
-	// check if a new pair of aliens needs to initiate a swerve
-	m_swerve_timer -= state.delta;
-	if (m_swerve_timer <= 0.0f)
+	if (m_origin.x + alien_grid_leftmost < constants::PADDING)
 	{
-		reset_swerve_timer(game_control.random());
-		start_random_swerve(game_control.random(), state.controls, velocity);
+		m_origin.x = constants::PADDING - alien_grid_leftmost;
+		set_mode(DESCEND);
+	}
+	if (m_descend_timer >= constants::alien_grid::DESCEND_DURATION / intensity)
+	{
+		m_descend_timer = 0.0f;
+		if (m_prev_mode == SHIFT_LEFT)
+			set_mode(SHIFT_RIGHT);
+		if (m_prev_mode == SHIFT_RIGHT)
+			set_mode(SHIFT_LEFT);
 	}
 }
 
-// Get origin of grid
+// Gets origin of grid.
 sf::Vector2f AlienGridControl::origin() const
 {
 	return m_origin;
 }
 
-// Set mode of grid
+sf::Vector2f AlienGridControl::origin_velocity() const
+{
+	switch (m_mode)
+	{
+	case SHIFT_RIGHT:
+		return { constants::alien_grid::SHIFT_SPEED, 0.0f };
+	case SHIFT_LEFT:
+		return { -constants::alien_grid::SHIFT_SPEED, 0.0f };
+	case DESCEND:
+		return { 0.0f, constants::alien_grid::DESCEND_SPEED };
+	}
+}
+
+// Sets mode of grid.
 void AlienGridControl::set_mode(Mode new_mode)
 {
 	m_prev_mode = m_mode;
 	m_mode = new_mode;
 }
 
-// Randomly set time until next swerve
+// Gets mode of grid.
+AlienGridControl::Mode AlienGridControl::get_mode() const
+{
+	return m_mode;
+}
+
+// Randomizes time until next swerve.
 void AlienGridControl::reset_swerve_timer(std::mt19937& random)
 {
 	m_swerve_timer = std::uniform_real_distribution<float>{
@@ -528,7 +528,6 @@ void AlienGridControl::reset_swerve_timer(std::mt19937& random)
 	}(random);
 }
 
-// Draw grid
 void AlienGridControl::draw(LayerManager& layers)
 {
 	// nothing to do here
@@ -564,12 +563,12 @@ std::pair<size_t, size_t> AlienGridControl::get_min_max_column(const ControlList
 	return { min_col, max_col };
 }
 
-float AlienGridControl::get_bottom()
+float AlienGridControl::get_bottom() const
 {
 	return m_bottom;
 }
 
-void AlienGridControl::start_random_swerve(std::mt19937& random, const ControlList& controls, sf::Vector2f velocity)
+void AlienGridControl::start_random_swerve(std::mt19937& random, const ControlList& controls) const
 {
 	size_t count = controls.count<AlienControl>();
 
@@ -588,6 +587,8 @@ void AlienGridControl::start_random_swerve(std::mt19937& random, const ControlLi
 	// Make chosen aliens swerve
 	AlienControl& alien1_control = *controls.get<AlienControl>(alien1_to_swerve);
 	AlienControl& alien2_control = *controls.get<AlienControl>(alien2_to_swerve);
+
+	sf::Vector2f velocity = origin_velocity();
 
 	alien1_control.start_swerve(velocity, alien2_control.get().column(), alien2_control.get().row());
 	alien2_control.start_swerve(velocity, alien1_control.get().column(), alien1_control.get().row());

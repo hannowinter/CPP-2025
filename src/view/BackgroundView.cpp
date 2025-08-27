@@ -6,7 +6,7 @@ constexpr size_t TILE_SIZE = 400;
 constexpr size_t STAR_COUNT = 60;
 constexpr float BASE_SPEED = 200.0f;
 
-// Generate the tile
+// Generates the tile.
 sf::Texture generate_tile()
 {
 	std::mt19937 random;

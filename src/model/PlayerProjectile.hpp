@@ -7,16 +7,15 @@
 // Abstract class for different types of player ammunition
 class PlayerProjectile {
 public:
-    // Methods for all types of ammunition
     virtual ~PlayerProjectile() = default;
 
-    // Create ammunition object
+    // Creates ammunition object.
     PlayerProjectile(sf::Vector2f position);
 
-    // Get hitbox of ammunition
+    // Gets hitbox of ammunition.
     virtual sf::FloatRect hitbox() const = 0;
 
-    // Make projectile move up
+    // Makes projectile move up.
     virtual void move_up(float delta);
 
 protected:
@@ -29,10 +28,10 @@ protected:
 class PlayerBullet : public PlayerProjectile
 {
 public:
-    // Create player bullet
+    // Creates player bullet.
     PlayerBullet(sf::Vector2f position);
 
-    // Get hitbox of bullet
+    // Gets hitbox of bullet.
     sf::FloatRect hitbox() const override;
 };
 
@@ -41,10 +40,10 @@ class PlayerLaser : public PlayerProjectile
 {
 public:
 
-    // Create laser projectile
+    // Creates laser projectile.
     PlayerLaser(sf::Vector2f position);
 
-    // Get hotbox of projectile
+    // Gets hotbox of projectile.
     sf::FloatRect hitbox() const override;
 };
 
@@ -53,13 +52,13 @@ class PlayerBomb : public PlayerProjectile
 {
 public:
 
-    // Create bomb projectile
+    // Creates bomb projectile.
     PlayerBomb(sf::Vector2f position);
 
-    // Make bomb explode
+    // Makes bomb explode.
     void explode();
 
-    // Get hitbox
+    // Gets hitbox.
     sf::FloatRect hitbox() const override;
 
 private:

@@ -8,7 +8,7 @@ SmokeView::SmokeView() :
 
 }
 
-// Draw view to screen
+// Draws view to screen.
 void SmokeView::draw(Layer& layer, const sf::Vector2f position)
 {
     m_smoke.setPosition(position);

@@ -11,11 +11,11 @@
 #include "../view/HUDView.hpp"
 #include "../view/BackgroundView.hpp"
 
-// Controller for state of game
+// Control class managing the state of the game
 class GameControl : public Control
 {
 public:
-	// Create GameController with controllers
+	// Creates a new GameControl.
 	GameControl();
 
 	// Abstract methods of parent class
@@ -24,18 +24,19 @@ public:
 	void update(const UpdateState& state) override;
 	void draw(LayerManager& layers) override;
 
-	// Get to next level or rest game
+	// Increments current level.
 	void increment_level();
+	// Resets current level.
 	void reset_game();
 
 	// Returns the current intensity, which depends on the current level.
 	// The intensity controls the difficulty by influencing move speed, timers and shoot frequency.
 	float intensity() const;
 
-	// Get pseudo-random number generator
+	// Gets the pseudo-random number generator instance.
 	std::mt19937& random();
 
-	// Get current game state
+	// Gets current game state.
 	GameState& state();
 	const GameState& state() const;
 

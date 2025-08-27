@@ -8,11 +8,11 @@
 #include "../view/LayerManager.hpp"
 #include "../view/AlienBulletView.hpp"
 
-// Controller for Bullet shot by alien
+// Control class for bullets shot by aliens
 class AlienBulletControl : public Control
 {
 public:
-	// Create BulletControl at position
+	// Creates BulletControl at position.
 	AlienBulletControl(sf::Vector2f position);
 
 	// Abstract methods of parent class
@@ -20,15 +20,15 @@ public:
 	void update(const UpdateState& state) override;
 	void draw(LayerManager& layers) override;
 
-	// Get reference to controlled bullet
+	// Gets reference to the model object.
 	const AlienBullet& get() const;
 	AlienBullet& get();
 
 private:
-	// Controlled Bullet
+	// Model
 	AlienBullet m_bullet;
 
-	// Controlled view
+	// View
 	AlienBulletView m_bullet_view;
 };
 

@@ -11,16 +11,16 @@
 class PlayerView
 {
 public:
-	// Create PlayerView
+	// Creates PlayerView.
 	PlayerView();
 
-	// Draw PlayerView
+	// Draws PlayerView.
 	void draw(Layer& layer, const Player& player);
 
-	// Update view based on elapsed time
+	// Updates view based on elapsed time.
 	void update(float delta);
 
-	// Run hit animation
+	// Runs hit animation.
 	void hit_animation();
 
 private:

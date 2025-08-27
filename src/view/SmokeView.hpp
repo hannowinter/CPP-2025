@@ -8,15 +8,15 @@ class SmokeView {
 
 public:
 
-    // Create view
+    // Creates view.
     SmokeView();
 
-    // Draw view
+    // Draws view.
     void draw(Layer& layer, sf::Vector2f position);
 
 private:
 
-    // Smoke texture
+    // Smokes texture.
     sf::Sprite m_smoke;
 };
 

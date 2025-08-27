@@ -7,7 +7,7 @@
 #include "UpgradeControl.hpp"
 #include "../model/Constants.hpp"
 
-// Create GameController
+// Creates a new GameControl.
 GameControl::GameControl() :
     m_random{ static_cast<unsigned int>(
         std::chrono::high_resolution_clock::now().time_since_epoch().count() 
@@ -16,7 +16,7 @@ GameControl::GameControl() :
 
 }
 
-// Move to next level
+// Increments current level.
 void GameControl::increment_level()
 {
     m_state.level++;
@@ -27,10 +27,10 @@ void GameControl::increment_level()
     m_background.reset_direction(random());
 }
 
-// Reset game to beginning
+// Resets current level.
 void GameControl::reset_game()
 {
-    m_state.level = 10;
+    m_state.level = 1;
     m_state.lives = constants::game::INITIAL_LIVES;
     m_state.score = 0;
     m_state.over = false;
@@ -39,7 +39,7 @@ void GameControl::reset_game()
     m_background.reset_direction(random());
 }
 
-// Add child controllers
+// Adds child controls, which includes the player, alien grid and the upgrade control.
 void GameControl::add_children(ControlList& controls)
 {
     // Add PlayerController to list of controllers
@@ -56,20 +56,20 @@ void GameControl::add_children(ControlList& controls)
 }
 
 
-// Initialize this controller
+// Initializes the control.
 void GameControl::init(const ControlList& controls)
 {
     m_background.reset_direction(random());
 }
 
-// Execute relevant updates
+// Executes relevant updates.
 void GameControl::update(const UpdateState& state)
 {
     m_background.update(state.delta, intensity());
 
     // Check if game is over (no lives left or aliens reached bottom)
     AlienGridControl* grid = state.controls.get<AlienGridControl>();
-    if (grid != nullptr && (m_state.lives == 0 || grid->get_bottom() >= constants::VIEW_HEIGHT - 100.0f) && !m_gameover_shown)
+    if (grid != nullptr && (m_state.lives == 0 || grid->get_bottom() >= constants::VIEW_HEIGHT - 70.0f) && !m_gameover_shown)
     {
         // Play sound
         AudioPlayer::get().game_over.play();
@@ -162,19 +162,18 @@ float GameControl::intensity() const
     );
 }
 
-// Get pseudo-random number generator
+// Gets pseudo-random number generator instance.
 std::mt19937& GameControl::random()
 {
     return m_random;
 }
 
-// Get current state
+// Gets current state.
 GameState& GameControl::state()
 {
     return m_state;
 }
 
-// Get current state
 const GameState& GameControl::state() const
 {
     return m_state;
