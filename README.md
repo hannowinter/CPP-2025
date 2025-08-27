@@ -6,9 +6,9 @@ Als Bibliothek für Grafik und Sound haben wir [SFML](https://github.com/SFML/SF
 
 ## Spielablauf
 
-Der Spieler startet als Raumschiff am unteren Rand des Spielfeldes während sich am oberen Rand ein großer Schwarm von Aliens befindet.
-Dieser bewegt sich als Einheit hin und her und sinkt dabei langsam hinab.
-Der Spieler kann sich durch drücken der Pfeiltasten LEFT und RIGHT bewegen und durch drücken von SPACE Projektile abfeuern.
+Der Spieler startet als Raumschiff am unteren Rand des Spielfeldes, während sich am oberen Rand ein großer Schwarm von Aliens befindet.
+Dieser bewegt sich als Einheit hin und her und sinkt dabei langsam herab.
+Der Spieler kann sich durch Drücken der Pfeiltasten LEFT und RIGHT bewegen und durch Drücken von SPACE Projektile abfeuern.
 Ziel ist es, durch geschicktes abfeuern der Projektile die Aliens zu treffen und so den gesamten Schwarm zu vernichten.
 Dies wird dem Spieler dadurch erschwert, dass die Aliens ebenfalls Projektive abfeuern.
 Diesen muss der Spieler ausweichen, da ihm jeder Treffer ein Leben kostet.
