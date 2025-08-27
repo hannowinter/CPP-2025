@@ -37,62 +37,12 @@ void PlayerControl::update(const UpdateState& state)
 	// Decrement remaining cooldown
 	m_shoot_cooldown -= state.delta;
 
-	// Check if player has been hit
+	// Collision checks
 	for (const auto& control : state.controls)
 	{
-		// Check if player has been hit by alien bullet
-		if (const AlienBulletControl* bullet = control->is<AlienBulletControl>())
-		{
-			if (overlaps(bullet->get().hitbox(), m_player.hitbox()))
-			{
-				// Delete bullet
-				state.controls.request_remove(bullet);
-
-				// Start hit animation
-				m_player_view.hit_animation();
-
-				// Decrement lives
-				game_control.state().lives -= 1;
-
-				// Play sound
-				AudioPlayer::get().player_hit_bullet.play();
-			}
-		}
-
-		// Check if player has been hit by swerving alien
-		if (AlienControl* alien = control->is<AlienControl>())
-		{
-			// Check if alien is swerving, close to player and may hit player
-			if (alien->get_mode() == AlienControl::ATTACK &&
-				!alien->get().has_hit_player &&
-				(m_player.hitbox().position - alien->get().hitbox().position).length() <= 90.0f)
-			{
-				// Decrement lives and start hit animation
-				m_player_view.hit_animation();
-				game_control.state().lives -= 1;
-				alien->get().has_hit_player = true;
-
-				// Play sound
-				AudioPlayer::get().player_hit_swerve.play();
-			}
-		}
-
-		// Check if player has picked up an upgrade
-		if (UpgradeControl* upgrade = control->is<UpgradeControl>())
-		{
-			if (overlaps(upgrade->hitbox(), m_player.hitbox()) && !upgrade->is_picked_up())
-			{
-				// Change weapon of player and indicate that upgrade has been picked up
-				m_weapon = upgrade->type();
-				upgrade->pick_up();
-
-				// Play upgrade sound
-				AudioPlayer::get().upgrade.play();
-
-				// Reset UpgradeControl
-				upgrade->reset(state);
-			}
-		}
+		check_collision_bullet(*control, state.controls, game_control.state());
+		check_collision_alien(*control, state.controls, game_control.state());
+		check_collision_upgrade(*control, state.controls, game_control.random());
 	}
 
 	// Update view
@@ -119,6 +69,8 @@ void PlayerControl::update(const UpdateState& state)
 		state.inputs.pressed_keys.contains(sf::Keyboard::Key::Space)
 	)
 	{
+		UpgradeControl& upgrade = *state.controls.get<UpgradeControl>();
+
 		if (m_weapon == constants::upgrades::Weapon::DEFAULT)
 		{
 			// Create Controller for new bullet at position of player
@@ -137,6 +89,8 @@ void PlayerControl::update(const UpdateState& state)
 
 			// Play laser sound effect
 			AudioPlayer::get().laser.play();
+
+			upgrade.reset(game_control.random());
 		}
 		else // m_weapon == Weapon::BOMB
 		{
@@ -145,6 +99,8 @@ void PlayerControl::update(const UpdateState& state)
 				m_player.hitbox().getCenter().x - constants::player_projectile::BOMB_SIZE.x / 2.0f,
 				m_player.hitbox().position.y - constants::player_projectile::BOMB_SIZE.y
 			});
+
+			upgrade.reset(game_control.random());
 		}
 
 		// Reset cooldown period
@@ -153,6 +109,72 @@ void PlayerControl::update(const UpdateState& state)
 		// Reset weapon
 		m_weapon = constants::upgrades::Weapon::DEFAULT;
 	}
+}
+
+void PlayerControl::check_collision_bullet(Control& control, ControlList& controls, GameState& state)
+{
+	// Check if player has been hit by alien bullet
+	if (const AlienBulletControl* bullet = control.is<AlienBulletControl>())
+	{
+		if (overlaps(bullet->get().hitbox(), m_player.hitbox()))
+		{
+			// Delete bullet
+			controls.request_remove(bullet);
+
+			// Start hit animation
+			m_player_view.play_hit_animation();
+
+			// Decrement lives
+			state.lives -= 1;
+
+			// Play sound
+			AudioPlayer::get().player_hit_bullet.play();
+		}
+	}
+}
+
+void PlayerControl::check_collision_alien(Control& control, ControlList& controls, GameState& state)
+{
+	// Check if player has been hit by swerving alien
+	if (AlienControl* alien = control.is<AlienControl>())
+	{
+		// Check if alien is swerving, close to player and may hit player
+		if (alien->get_mode() == AlienControl::ATTACK &&
+			!alien->get().has_hit_player &&
+			(m_player.hitbox().position - alien->get().hitbox().position).length() <= 90.0f)
+		{
+			// Decrement lives and start hit animation
+			m_player_view.play_hit_animation();
+			state.lives -= 1;
+			alien->get().has_hit_player = true;
+
+			// Play sound
+			AudioPlayer::get().player_hit_swerve.play();
+		}
+	}
+}
+
+void PlayerControl::check_collision_upgrade(Control& control, ControlList& controls, std::mt19937& random)
+{
+	// Check if player has picked up an upgrade
+	if (UpgradeControl* upgrade = control.is<UpgradeControl>())
+	{
+		if (overlaps(upgrade->hitbox(), m_player.hitbox()) && !upgrade->is_picked_up())
+		{
+			// Change weapon of player and indicate that upgrade has been picked up
+			m_weapon = upgrade->type();
+			upgrade->pick_up();
+
+			// Play upgrade sound
+			AudioPlayer::get().upgrade.play();
+		}
+	}
+}
+
+// Gets weapon for next shot.
+constants::upgrades::Weapon PlayerControl::get_weapon() const
+{
+	return m_weapon;
 }
 
 // Sets weapon for next shot.
@@ -177,6 +199,11 @@ const Player& PlayerControl::get() const
 Player& PlayerControl::get()
 {
 	return m_player;
+}
+
+const PlayerView& PlayerControl::get_view() const
+{
+	return m_player_view;
 }
 
 void PlayerControl::hide()

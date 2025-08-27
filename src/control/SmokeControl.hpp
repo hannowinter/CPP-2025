@@ -15,6 +15,8 @@ public:
     void update(const UpdateState& state) override;
     void draw(LayerManager& layers) override;
 
+    void update_lifetime(float delta, ControlList& controls);
+
 private:
 
     // View

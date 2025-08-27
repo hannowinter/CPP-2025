@@ -176,81 +176,7 @@ void AlienControl::update(const UpdateState& state)
 	// Check for collisions
 	for (const auto& control : state.controls)
 	{
-		// Collisions with bullets
-		if (const PlayerBulletControl* bullet = control->is<PlayerBulletControl>())
-		{
-			if (overlaps(bullet->get().hitbox(), m_alien.hitbox()))
-			{
-				// Show smoke texture
-				state.controls.request_add<SmokeControl>(m_alien.hitbox().position);
-
-				// Despawn alien and bullet
-				state.controls.request_remove(this);
-				state.controls.request_remove(bullet);
-
-				// Play hit sound
-				AudioPlayer::get().alien_hit.play();
-
-				// Increment score
-				game_control.state().score += constants::game::POINTS_PER_BULLET_HIT;
-			}
-		}
-
-		// Collisions with lasers
-		if (const LaserControl* laser = control->is<LaserControl>())
-		{
-			if (overlaps(laser->get().hitbox(), m_alien.hitbox()))
-			{
-				// Show smoke texture
-				state.controls.request_add<SmokeControl>(m_alien.hitbox().position);
-
-				// Despawn alien
-				state.controls.request_remove(this);
-
-				// Play hit sound
-				AudioPlayer::get().alien_hit.play();
-
-				// Increment score
-				game_control.state().score += constants::game::POINTS_PER_LASER_HIT;
-			}
-		}
-
-		// Collisions with bombs
-		if (BombControl* bomb = control->is<BombControl>())
-		{
-			// Check if bomb explodes on contact with this alien
-			if (overlaps(bomb->get().hitbox(), m_alien.hitbox()) && !bomb->has_exploded())
-			{
-				// Show smoke texture
-				state.controls.request_add<SmokeControl>(m_alien.hitbox().position);
-
-				// Despawn alien
-				state.controls.request_remove(this);
-
-				// Play hit and explosion sound, make bomb explode
-				AudioPlayer::get().alien_hit.play();
-				AudioPlayer::get().explosion.play();
-				bomb->explode();
-
-				// Increment score
-				game_control.state().score += constants::game::POINTS_PER_BOMB_HIT;
-			}
-			// Check if alien is within explosion
-			else if (overlaps(bomb->get().hitbox(), m_alien.hitbox()) && bomb->has_exploded())
-			{
-				// Show smoke texture
-				state.controls.request_add<SmokeControl>(m_alien.hitbox().position);
-
-				// Despawn alien
-				state.controls.request_remove(this);
-
-				// Play hit sound
-				AudioPlayer::get().alien_hit.play();
-
-				// Increment score
-				game_control.state().score += constants::game::POINTS_PER_BOMB_HIT;
-			}
-		}
+		check_collision(*control, state.controls, game_control.state());
 	}
 
 	// Update view (animations are sped up by a factor of intensity)
@@ -335,6 +261,85 @@ void AlienControl::update(const UpdateState& state)
 void AlienControl::draw(LayerManager& layers)
 {
 	m_alien_view.draw(layers.get(LayerID::ACTORS), m_alien);
+}
+
+void AlienControl::check_collision(Control& control, ControlList& controls, GameState& state)
+{
+	// Collisions with bullets
+	if (const PlayerBulletControl* bullet = control.is<PlayerBulletControl>())
+	{
+		if (overlaps(bullet->get().hitbox(), m_alien.hitbox()))
+		{
+			// Show smoke texture
+			controls.request_add<SmokeControl>(m_alien.hitbox().position);
+
+			// Despawn alien and bullet
+			controls.request_remove(this);
+			controls.request_remove(bullet);
+
+			// Play hit sound
+			AudioPlayer::get().alien_hit.play();
+
+			// Increment score
+			state.score += constants::game::POINTS_PER_BULLET_HIT;
+		}
+	}
+
+	// Collisions with lasers
+	if (const LaserControl* laser = control.is<LaserControl>())
+	{
+		if (overlaps(laser->get().hitbox(), m_alien.hitbox()))
+		{
+			// Show smoke texture
+			controls.request_add<SmokeControl>(m_alien.hitbox().position);
+
+			// Despawn alien
+			controls.request_remove(this);
+
+			// Play hit sound
+			AudioPlayer::get().alien_hit.play();
+
+			// Increment score
+			state.score += constants::game::POINTS_PER_LASER_HIT;
+		}
+	}
+
+	// Collisions with bombs
+	if (BombControl* bomb = control.is<BombControl>())
+	{
+		// Check if bomb explodes on contact with this alien
+		if (overlaps(bomb->get().hitbox(), m_alien.hitbox()) && !bomb->has_exploded())
+		{
+			// Show smoke texture
+			controls.request_add<SmokeControl>(m_alien.hitbox().position);
+
+			// Despawn alien
+			controls.request_remove(this);
+
+			// Play hit and explosion sound, make bomb explode
+			AudioPlayer::get().alien_hit.play();
+			AudioPlayer::get().explosion.play();
+			bomb->explode();
+
+			// Increment score
+			state.score += constants::game::POINTS_PER_BOMB_HIT;
+		}
+		// Check if alien is within explosion
+		else if (overlaps(bomb->get().hitbox(), m_alien.hitbox()) && bomb->has_exploded())
+		{
+			// Show smoke texture
+			controls.request_add<SmokeControl>(m_alien.hitbox().position);
+
+			// Despawn alien
+			controls.request_remove(this);
+
+			// Play hit sound
+			AudioPlayer::get().alien_hit.play();
+
+			// Increment score
+			state.score += constants::game::POINTS_PER_BOMB_HIT;
+		}
+	}
 }
 
 // Gets mode of alien.

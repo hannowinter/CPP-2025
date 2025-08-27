@@ -42,7 +42,17 @@ void PlayerView::draw(Layer& layer, const Player& player)
 	layer.add_to_layer(m_sprite);
 }
 
-void PlayerView::hit_animation()
+void PlayerView::play_hit_animation()
 {
 	m_hit = true;
+}
+
+bool PlayerView::is_hit_animation() const
+{
+	return m_hit;
+}
+
+size_t PlayerView::get_animation_phase() const
+{
+	return m_animation_phase;
 }

@@ -20,12 +20,17 @@ void SmokeControl::init(const ControlList& controls)
 // Executes all relevant updates.
 void SmokeControl::update(const UpdateState& state)
 {
+    update_lifetime(state.delta, state.controls);
+}
+
+void SmokeControl::update_lifetime(float delta, ControlList& controls)
+{
     // Decrement remaining lifetime
-    m_lifetime -= state.delta;
+    m_lifetime -= delta;
 
     // Delete smoke if lifetime is over
     if (m_lifetime <= 0.0f)
-        state.controls.request_remove(this);
+        controls.request_remove(this);
 }
 
 // Draws Smoke to screen.

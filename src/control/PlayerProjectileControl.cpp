@@ -80,21 +80,31 @@ BombControl::BombControl(sf::Vector2f position) :
 // Executes all relevant updates.
 void BombControl::update(const UpdateState& state)
 {
-    // Make bomb move up depending on elapsed time if it has not yet exploded
-    if (!m_has_exploded)
-        m_projectile->move_up(state.delta);
+    update_move(state.delta);
 
     // Delete bomb if it has left the scene
     if (!overlaps(constants::VIEW_RECT, m_projectile->hitbox())) // projectile is outside of view
         state.controls.request_remove(this);
 
+    update_lifetime(state.delta, state.controls);
+}
+
+void BombControl::update_move(float delta)
+{
+    // Make bomb move up depending on elapsed time if it has not yet exploded
+    if (!m_has_exploded)
+        m_projectile->move_up(delta);
+}
+
+void BombControl::update_lifetime(float delta, ControlList& controls)
+{
     // Decrement lifetime if bomb has exploded
     if (m_has_exploded)
-        m_lifetime -= state.delta;
+        m_lifetime -= delta;
 
     // Delete explosion if timer is over
     if (m_lifetime <= 0.0f)
-        state.controls.request_remove(this);
+        controls.request_remove(this);
 }
 
 // Makes bomb explode.

@@ -21,6 +21,12 @@ public:
 	// Draws the background.
 	void draw(Layer& layer);
 
+	// Gets the move direction.
+	float get_direction() const;
+
+	// Gets the offset.
+	sf::Vector2f get_offset() const;
+
 private:
 	// The background reuses the same tile and draws it repeatedly with
 	// different offsets to fill the entire screen

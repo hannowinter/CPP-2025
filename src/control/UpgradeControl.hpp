@@ -1,11 +1,15 @@
 #ifndef UPGRADECONTROL_HPP
 #define UPGRADECONTROL_HPP
 
+#include <random>
+
 #include "Control.hpp"
 #include "../view/UpgradeView.hpp"
 #include "../model/Constants.hpp"
+#include "../control/PlayerControl.hpp"
 
-class UpgradeControl : public Control {
+class UpgradeControl : public Control 
+{
 public:
 
     // Creates UpgradeControl.
@@ -16,8 +20,14 @@ public:
     void update(const UpdateState& state) override;
     void draw(LayerManager& layers) override;
 
+    // Determine a random position for the upgrade to be placed at.
+    sf::Vector2f determine_random_position(PlayerControl& player, std::mt19937& random) const;
+
+    // Spawns the upgrade.
+    void spawn_at(sf::Vector2f position, constants::upgrades::Weapon weapon);
+
     // Resets control to spawn next upgrade.
-    void reset(const UpdateState& state);
+    void reset(std::mt19937& random);
 
     // Indicates that the upgrade has been picked up.
     void pick_up();

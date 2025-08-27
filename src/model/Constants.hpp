@@ -25,6 +25,14 @@ namespace constants
         constexpr size_t POINTS_PER_BOMB_HIT = 150;
     }
 
+    // Constants for the starry background
+    namespace background
+    {
+        constexpr size_t TILE_SIZE = 400;
+        constexpr size_t STAR_COUNT = 60;
+        constexpr float BASE_SPEED = 200.0f;
+    }
+
     // Constants for player character
     namespace player
     {

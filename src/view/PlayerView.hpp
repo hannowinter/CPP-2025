@@ -21,7 +21,12 @@ public:
 	void update(float delta);
 
 	// Runs hit animation.
-	void hit_animation();
+	void play_hit_animation();
+
+	bool is_hit_animation() const;
+
+	// Gets animation phase.
+	size_t get_animation_phase() const;
 
 private:
 	// Texture of player

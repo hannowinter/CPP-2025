@@ -29,3 +29,5 @@ Mit jedem Level steigert sich die Intensität und die Aliens bewegen sich und fe
 ## Credits
 
 - https://opengameart.org/content/assets-for-a-space-invader-like-game
+- https://opengameart.org/content/pixel-explosion-12-frames
+- Rest ist Eigenanfertigung (Sounds in https://sfxr.me/ erstellt.)

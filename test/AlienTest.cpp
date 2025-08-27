@@ -1,5 +1,7 @@
 #include "TestCommon.hpp"
 #include "../src/control/AlienControl.hpp"
+#include "../src/control/PlayerProjectileControl.hpp"
+#include "../src/control/SmokeControl.hpp"
 
 // Fixture for Alien model related testing
 // Contains 3 Alien instances.
@@ -217,4 +219,109 @@ TEST_F(SwerveTest, retreatingTest)
 	}
 
 	FAIL();
+}
+
+// Fixure for a control list containing an alien control at { 100.0f, 200.0f }.
+struct AlienControlTest : testing::Test
+{
+protected:
+	AlienControlTest() :
+		alien{ controls.request_add<AlienControl>(Alien::RED, sf::Vector2f{ 100.0f, 200.0f }, 0, 0) }
+	{
+		controls.clear_init_requests();
+		controls.execute_requests();
+
+		state.score = 0;
+	}
+
+	ControlList controls;
+	AlienControl& alien;
+	GameState state;
+};
+
+// Tests whether the collisions with player bullets are checked correctly.
+TEST_F(AlienControlTest, checkCollisionBulletTest)
+{
+	// should not collide
+	PlayerBulletControl& bullet1 = controls.request_add<PlayerBulletControl>(sf::Vector2f{ 0.0f, 0.0f });
+	controls.execute_requests();
+
+	alien.check_collision(bullet1, controls, state);
+	controls.execute_requests();
+	EXPECT_EQ(controls.count<PlayerBulletControl>(), 1);
+	EXPECT_EQ(state.score, 0);
+
+	// should collide
+	PlayerBulletControl& bullet2 = controls.request_add<PlayerBulletControl>(sf::Vector2f{ 100.0f, 200.0f });
+	controls.execute_requests();
+
+	alien.check_collision(bullet2, controls, state);
+	controls.execute_requests();
+	EXPECT_EQ(controls.count<PlayerBulletControl>(), 1); // remove bullet2 on collision
+	EXPECT_EQ(controls.count<AlienControl>(), 0);
+	EXPECT_EQ(controls.count<SmokeControl>(), 1);
+	EXPECT_EQ(state.score, constants::game::POINTS_PER_BULLET_HIT);
+}
+
+// Tests whether the collisions with player lasers are checked correctly.
+TEST_F(AlienControlTest, checkCollisionLaserTest)
+{
+	// should not collide
+	LaserControl& laser1 = controls.request_add<LaserControl>(sf::Vector2f{ 0.0f, 0.0f });
+	controls.execute_requests();
+
+	alien.check_collision(laser1, controls, state);
+	controls.execute_requests();
+	EXPECT_EQ(controls.count<LaserControl>(), 1);
+	EXPECT_EQ(state.score, 0);
+
+	// should collide
+	LaserControl& laser2 = controls.request_add<LaserControl>(sf::Vector2f{ 100.0f, 200.0f });
+	controls.execute_requests();
+
+	alien.check_collision(laser2, controls, state);
+	controls.execute_requests();
+	EXPECT_EQ(controls.count<LaserControl>(), 2); // don't remove laser2 on collision
+	EXPECT_EQ(controls.count<AlienControl>(), 0);
+	EXPECT_EQ(controls.count<SmokeControl>(), 1);
+	EXPECT_EQ(state.score, constants::game::POINTS_PER_LASER_HIT);
+}
+
+// Tests whether the collisions with player bombs are checked correctly.
+TEST_F(AlienControlTest, checkCollisionBombTest)
+{
+	// should not collide
+	BombControl& bomb1 = controls.request_add<BombControl>(sf::Vector2f{ 0.0f, 0.0f });
+	controls.execute_requests();
+
+	alien.check_collision(bomb1, controls, state);
+	controls.execute_requests();
+	EXPECT_EQ(controls.count<BombControl>(), 1);
+	EXPECT_EQ(state.score, 0);
+	EXPECT_FALSE(bomb1.has_exploded());
+
+	// should collide
+	BombControl& bomb2 = controls.request_add<BombControl>(sf::Vector2f{ 100.0f, 200.0f });
+	controls.execute_requests();
+
+	alien.check_collision(bomb2, controls, state);
+	controls.execute_requests();
+	EXPECT_EQ(controls.count<BombControl>(), 2); // don't remove bomb yet
+	EXPECT_EQ(controls.count<AlienControl>(), 0);
+	EXPECT_EQ(controls.count<SmokeControl>(), 1);
+	EXPECT_EQ(state.score, constants::game::POINTS_PER_BOMB_HIT);
+	EXPECT_TRUE(bomb2.has_exploded());
+
+	// a new alien should also collide with the explosion
+	AlienControl& alien2 = controls.request_add<AlienControl>(Alien::RED, sf::Vector2f{ 100.0f, 200.0f }, 0, 0);
+	controls.clear_init_requests();
+	controls.execute_requests();
+
+	alien2.check_collision(bomb2, controls, state);
+	controls.execute_requests();
+	EXPECT_EQ(controls.count<BombControl>(), 2); // don't remove explosion
+	EXPECT_EQ(controls.count<AlienControl>(), 0);
+	EXPECT_EQ(controls.count<SmokeControl>(), 2);
+	EXPECT_EQ(state.score, constants::game::POINTS_PER_BOMB_HIT * 2);
+	EXPECT_TRUE(bomb2.has_exploded());
 }

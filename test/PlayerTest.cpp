@@ -1,5 +1,9 @@
 #include "TestCommon.hpp"
 #include "../src/control/PlayerControl.hpp"
+#include "../src/model/GameState.hpp"
+#include "../src/control/AlienBulletControl.hpp"
+#include "../src/control/AlienControl.hpp"
+#include "../src/control/UpgradeControl.hpp"
 
 // fixture for Player model related testing
 // contains 3 Player instances
@@ -64,4 +68,148 @@ TEST_F(PlayerTest, playerClamp)
 	EXPECT_EQ(player1.hitbox().position.y, POSITION_1.y);
 	EXPECT_EQ(player2.hitbox().position.y, POSITION_2.y);
 	EXPECT_EQ(player3.hitbox().position.y, POSITION_3.y);
+}
+
+// Fixure for a control list containing a player control at { 100.0f, 200.0f }.
+struct PlayerControlTest : testing::Test
+{
+protected:
+	PlayerControlTest() :
+		player{ controls.request_add<PlayerControl>(sf::Vector2f{ 100.0f, 200.0f }) }
+	{
+		controls.clear_init_requests();
+		controls.execute_requests();
+
+		state.lives = constants::game::INITIAL_LIVES;
+	}
+
+	ControlList controls;
+	PlayerControl& player;
+	GameState state;
+};
+
+// Tests whether the collisions with alien bullets are checked correctly.
+TEST_F(PlayerControlTest, checkCollisionBulletTest)
+{
+	// should not collide
+	AlienBulletControl& bullet1 = controls.request_add<AlienBulletControl>(sf::Vector2f{ 0.0f, 0.0f });
+	controls.execute_requests();
+
+	player.check_collision_bullet(bullet1, controls, state);
+	controls.execute_requests();
+	EXPECT_EQ(controls.count<AlienBulletControl>(), 1);
+	EXPECT_EQ(state.lives, constants::game::INITIAL_LIVES);
+
+	// should collide
+	AlienBulletControl& bullet2 = controls.request_add<AlienBulletControl>(sf::Vector2f{ 100.0f, 200.0f });
+	controls.execute_requests();
+
+	player.check_collision_bullet(bullet2, controls, state);
+	controls.execute_requests();
+	EXPECT_EQ(controls.count<AlienBulletControl>(), 1); // remove bullet2 on collision
+	EXPECT_TRUE(player.get_view().is_hit_animation());
+	EXPECT_EQ(state.lives, constants::game::INITIAL_LIVES - 1);
+}
+
+// Tests whether the collisions with aliens are checked correctly.
+TEST_F(PlayerControlTest, checkCollisionAlienTest)
+{
+	// should not collide
+	AlienControl& alien1 = controls.request_add<AlienControl>(Alien::RED, sf::Vector2f{ 0.0f, 0.0f }, 0, 0);
+	controls.clear_init_requests();
+	controls.execute_requests();
+
+	player.check_collision_alien(alien1, controls, state);
+	controls.execute_requests();
+	EXPECT_EQ(controls.count<AlienControl>(), 1);
+	EXPECT_EQ(state.lives, constants::game::INITIAL_LIVES);
+
+	// should collide, but is not in attack mode
+	AlienControl& alien2 = controls.request_add<AlienControl>(Alien::RED, sf::Vector2f{ 100.0f, 200.0f }, 0, 0);
+	controls.clear_init_requests();
+	controls.execute_requests();
+
+	player.check_collision_alien(alien2, controls, state);
+	controls.execute_requests();
+	EXPECT_EQ(controls.count<AlienControl>(), 2);
+	EXPECT_FALSE(player.get_view().is_hit_animation());
+	EXPECT_EQ(state.lives, constants::game::INITIAL_LIVES);
+
+	// only now it collides
+	alien2.start_swerve(sf::Vector2f{}, 0, 0);
+
+	player.check_collision_alien(alien2, controls, state);
+	controls.execute_requests();
+	EXPECT_EQ(controls.count<AlienControl>(), 2); // don't remove alien
+	EXPECT_TRUE(player.get_view().is_hit_animation());
+	EXPECT_EQ(state.lives, constants::game::INITIAL_LIVES - 1);
+
+	// should not collide a second time
+	player.check_collision_alien(alien2, controls, state);
+	controls.execute_requests();
+	EXPECT_EQ(controls.count<AlienControl>(), 2); // don't remove alien
+	EXPECT_EQ(state.lives, constants::game::INITIAL_LIVES - 1);
+}
+
+// Tests whether the collisions with upgrades are checked correctly.
+TEST_F(PlayerControlTest, checkCollisionUpgradeTest)
+{
+	std::mt19937 random;
+	random.seed(0);
+
+	// should not collide, upgrade not spawned yet
+	UpgradeControl& upgrade = controls.request_add<UpgradeControl>();
+	controls.clear_init_requests();
+	controls.execute_requests();
+
+	player.check_collision_bullet(upgrade, controls, state);
+	EXPECT_EQ(player.get_weapon(), constants::upgrades::Weapon::DEFAULT);
+	EXPECT_FALSE(upgrade.is_picked_up());
+
+	// spawned, but away from player
+	upgrade.spawn_at(sf::Vector2f{ 0.0f, 0.0f }, constants::upgrades::Weapon::BOMB);
+
+	player.check_collision_upgrade(upgrade, controls, random);
+	EXPECT_EQ(player.get_weapon(), constants::upgrades::Weapon::DEFAULT);
+	EXPECT_FALSE(upgrade.is_picked_up());
+
+	// spawn inside player
+	upgrade.spawn_at(sf::Vector2f{ 100.0f, 200.0f }, constants::upgrades::Weapon::BOMB);
+
+	player.check_collision_upgrade(upgrade, controls, random);
+	EXPECT_EQ(player.get_weapon(), constants::upgrades::Weapon::BOMB);
+	EXPECT_TRUE(upgrade.is_picked_up());
+}
+
+TEST(PlayerViewTest, playerHitAnimationTest)
+{
+	PlayerView player;
+
+	// not hit yet
+	EXPECT_FALSE(player.is_hit_animation());
+	EXPECT_EQ(player.get_animation_phase(), 0);
+
+	// now hit
+	player.play_hit_animation();
+	EXPECT_TRUE(player.is_hit_animation());
+	EXPECT_EQ(player.get_animation_phase(), 0);
+
+	size_t phase_counter = 0;
+
+	constexpr size_t MAX_ITERATIONS = 10000;
+	for (size_t i = 0; ; i++)
+	{
+		if (i == MAX_ITERATIONS)
+			FAIL();
+
+		player.update(FIXED_DELTA_60);
+
+		if (player.get_animation_phase() > phase_counter)
+		{
+			EXPECT_EQ(player.get_animation_phase(), phase_counter + 1);
+			phase_counter++;
+		}
+		if (!player.is_hit_animation())
+			break;
+	}
 }

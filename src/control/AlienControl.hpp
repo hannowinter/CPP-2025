@@ -7,6 +7,7 @@
 #include "../model/Alien.hpp"
 #include "../view/LayerManager.hpp"
 #include "../view/AlienView.hpp"
+#include "../model/GameState.hpp"
 
 // Alien shake state
 // Handles the aliens shaking smoothly.
@@ -82,6 +83,9 @@ public:
 	void init(const ControlList& controls) override;
 	void update(const UpdateState& state) override;
 	void draw(LayerManager& layers) override;
+
+	// Checks for collision with player projectiles.
+	void check_collision(Control& control, ControlList& controls, GameState& state);
 
 	// Gets the alien's current mode.
 	Mode get_mode() const;

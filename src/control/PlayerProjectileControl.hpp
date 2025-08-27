@@ -51,7 +51,8 @@ public:
 };
 
 // Control class for lasers shot by player
-class LaserControl : public PlayerProjectileControl {
+class LaserControl : public PlayerProjectileControl 
+{
 public:
 
     // Creates control at position.
@@ -59,7 +60,8 @@ public:
 };
 
 // Control class for bombs shot by player
-class BombControl : public PlayerProjectileControl {
+class BombControl : public PlayerProjectileControl 
+{
 public:
 
     // Creates control at position.
@@ -67,6 +69,9 @@ public:
 
     // Updates BombControl.
     void update(const UpdateState& state) override;
+
+    void update_move(float delta);
+    void update_lifetime(float delta, ControlList& controls);
 
     // Makes bomb explode.
     void explode();
